@@ -1,0 +1,16 @@
+{
+   "bootload": {
+      "files": [
+         {
+            "type": "image",
+            "key": "loading",
+            "url": "assets/Boot/loading.png"
+         },
+         {
+            "type": "image",
+            "key": "alert-panel",
+            "url": "assets/Boot/alert-panel.png"
+         }
+      ]
+   }
+}

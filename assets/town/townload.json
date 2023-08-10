@@ -1,0 +1,116 @@
+{
+    "townload": {
+        "files": [
+            {
+                "type": "image",
+                "key": "mock-cp-town",
+                "url": "assets/town/map-cp-mock.png"
+            },
+            {
+                "type": "image",
+                "key": "check-mark",
+                "url": "assets/town/check-mark.png"
+            },
+            {
+                "type": "image",
+                "key": "guideline-bg",
+                "url": "assets/town/guideline-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_1",
+                "url": "assets/town/ingredient/ingredient_01.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_2",
+                "url": "assets/town/ingredient/ingredient_02.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_3",
+                "url": "assets/town/ingredient/ingredient_03.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_4",
+                "url": "assets/town/ingredient/ingredient_04.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_5",
+                "url": "assets/town/ingredient/ingredient_05.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_6",
+                "url": "assets/town/ingredient/ingredient_06.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_7",
+                "url": "assets/town/ingredient/ingredient_07.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_8",
+                "url": "assets/town/ingredient/ingredient_08.png"
+            },
+            {
+                "type": "image",
+                "key": "efx_01",
+                "url": "assets/efx/efx_effect_01.png"
+            },
+            {
+                "type": "image",
+                "key": "efx_02",
+                "url": "assets/efx/efx_effect_02.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_1",
+                "url": "assets/town/ingredient/ingredient_bw_01.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_2",
+                "url": "assets/town/ingredient/ingredient_bw_02.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_3",
+                "url": "assets/town/ingredient/ingredient_bw_03.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_4",
+                "url": "assets/town/ingredient/ingredient_bw_04.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_5",
+                "url": "assets/town/ingredient/ingredient_bw_05.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_6",
+                "url": "assets/town/ingredient/ingredient_bw_06.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_7",
+                "url": "assets/town/ingredient/ingredient_bw_07.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_bw_8",
+                "url": "assets/town/ingredient/ingredient_bw_08.png"
+            },
+            {
+                "type": "image",
+                "key": "bg_guideline",
+                "url": "assets/town/bg_guideline.png"
+            }
+        ]
+    }
+}
