@@ -1,4 +1,4 @@
-import { TownTimeState } from '../Town/TownTimeState'
+import { TownTimeState } from '../Town/Type/TownTimeState'
 
 export class IngredientBean {
     public ingredientID: number

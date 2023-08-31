@@ -1,23 +1,22 @@
-import { Observable, Observer, map, of } from 'rxjs'
-import { InteractableObjectBean } from '../Town/InteractableObjectBean'
-import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
-import { InteractableObjectPickupState } from '../Town/Type/InteractableObjectPickupState'
-import { IngredientBean } from '../Guideline/IngredientBean'
+import { Observable, map, of } from 'rxjs'
 import { GameConfig } from '../GameConfig'
+import { IngredientBean } from '../Guideline/IngredientBean'
+import { IngredientObjectBean } from '../Town/Bean/IngredientObjectBean'
+import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 
 export class TownBuildingRepository {
     mockIngredientBeans: IngredientBean[]
 
-    getInteractableData(): Observable<InteractableObjectBean[]> {
-        if (GameConfig.IS_MOCK_DATA) {
-            //JSON.parse(json)
-            return ResourceManager.instance
-                .loadText('interactableData', 'assets/town/interactableData.json')
-                .pipe(map((json) => JSON.parse(json)))
-        } else {
-            let data: InteractableObjectBean[] = []
-            return of(data)
-        }
+    getIngredientObjectData(): Observable<IngredientObjectBean[]> {
+        return ResourceManager.instance
+            .loadText('ingredientObjectData', 'assets/town/ingredientObjectData.json')
+            .pipe(map((json) => JSON.parse(json)))
+    }
+
+    getInteractableObjectData(): Observable<IngredientObjectBean[]> {
+        return ResourceManager.instance
+            .loadText('interactableObjectData', 'assets/town/interactableObjectData.json')
+            .pipe(map((json) => JSON.parse(json)))
     }
 
     getIngredientBeanData(): Observable<IngredientBean[]> {
@@ -31,12 +30,14 @@ export class TownBuildingRepository {
         }
     }
 
-    interactObject(): Observable<IngredientBean> {
-        let randomIndex = Math.floor(Math.random() * this.mockIngredientBeans.length)
-        let randomResult = this.mockIngredientBeans[randomIndex]
-        this.mockIngredientBeans.splice(randomIndex, 1)
-
-        return of(randomResult)
+    interactObject(id: number): Observable<IngredientBean> {
+        if (GameConfig.IS_MOCK_DATA) {
+            let result = this.mockIngredientBeans.find((x) => x.ingredientID == id)
+            return of(result)
+        } else {
+            let result = this.mockIngredientBeans.find((x) => x.ingredientID == id)
+            return of(result)
+        }
     }
 
     setMockIngredientBeans(mockData: IngredientBean[]) {

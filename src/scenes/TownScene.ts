@@ -31,6 +31,5 @@ export class TownScene extends Scene {
 
    update() {
       this.townBuildingView.update()
-      this.cameraControlView.update()
    }
 }

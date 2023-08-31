@@ -1,0 +1,32 @@
+[
+    {
+        "id": 104,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "stand",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "move_damage",
+                "animTime": 750
+            },
+            {
+                "stateType": "End",
+                "animKey": "gameover",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 0,
+        "positionY": 700,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactWidth": 0,
+        "interactHeight": 0,
+        "depth": 5,
+        "keyAsset": "Lays"
+    }
+]

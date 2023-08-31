@@ -1,76 +1,104 @@
-import { Cameras, GameObjects, Input, Scene } from 'phaser'
+import { Cameras, GameObjects, Input, Scene, Math } from 'phaser'
 import { CameraControlPod } from './CameraControlPod'
 import { PodProvider } from '../pod/PodProvider'
 import { GameConfig } from '../GameConfig'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
+import { Vector } from 'matter'
 
 export class CameraControlView extends GameObjects.GameObject {
    private gameCamera: Cameras.Scene2D.Camera
    private dragPoint: Input.Pointer
-   private keyZ: Input.Keyboard.Key
+   private dragPointOffsetX: number
+   private dragPointOffsetY: number
+   private oldZoom: number
+   private nextZoom: number
    private cameraControlPod: CameraControlPod
-   private touchEvent: Input.InputPlugin
+   private dragEvent: Input.InputPlugin
+   private zoomEvent: Input.InputPlugin
+   private pointerUpEvent: Input.InputPlugin
 
    constructor(scene: Scene) {
       super(scene, 'gameObject')
       GameObjectConstructor(scene, this)
    }
 
+   private setDragPointAndOffset(pointer: any): void {
+      this.dragPoint = pointer
+      this.dragPointOffsetX = this.dragPoint.x - this.dragPoint.prevPosition.x
+      this.dragPointOffsetY = this.dragPoint.y - this.dragPoint.prevPosition.y
+   }
+
    private dragCamera(): void {
-      this.gameCamera.scrollX -= (this.dragPoint.x - this.dragPoint.prevPosition.x) / this.gameCamera.zoom
-      this.gameCamera.scrollY -= (this.dragPoint.y - this.dragPoint.prevPosition.y) / this.gameCamera.zoom
+      this.gameCamera.scrollX -= this.dragPointOffsetX / this.gameCamera.zoom
+      this.gameCamera.scrollY -= this.dragPointOffsetY / this.gameCamera.zoom
    }
 
-   private checkIsDragLimit(): void {
-      if (this.gameCamera.scrollX >= GameConfig.CAMERA_DRAG_LIMIT_X)
-         this.gameCamera.scrollX = GameConfig.CAMERA_DRAG_LIMIT_X
-      else if (this.gameCamera.scrollX <= -GameConfig.CAMERA_DRAG_LIMIT_X)
-         this.gameCamera.scrollX = -GameConfig.CAMERA_DRAG_LIMIT_X
+   private zoomCamera(zoomFactor: number, x: number, y: number): void {
+      this.oldZoom = this.gameCamera.zoom
+      let zoomValue = this.oldZoom + zoomFactor * 0.001
+      zoomValue = Math.Clamp(zoomValue, GameConfig.MIN_CAMERA_ZOOM, GameConfig.MAX_CAMERA_ZOOM)
 
-      if (this.gameCamera.scrollY >= GameConfig.CAMERA_DRAG_LIMIT_Y)
-         this.gameCamera.scrollY = GameConfig.CAMERA_DRAG_LIMIT_Y
-      else if (this.gameCamera.scrollY <= -GameConfig.CAMERA_DRAG_LIMIT_Y)
-         this.gameCamera.scrollY = -GameConfig.CAMERA_DRAG_LIMIT_Y
+      this.gameCamera.setZoom(zoomValue)
+      this.nextZoom = this.gameCamera.zoom
+      if (zoomFactor > 0 && this.oldZoom != zoomValue) {
+         this.panCamera(x, y)
+      }
    }
 
-   private zoomCamera(): void {
-      this.gameCamera.zoomX += (this.dragPoint.x - this.dragPoint.prevPosition.x) / GameConfig.CAMERA_ZOOM_RATIO
-      this.gameCamera.zoomY += (this.dragPoint.y - this.dragPoint.prevPosition.y) / GameConfig.CAMERA_ZOOM_RATIO
+   private panCamera(x: number, y: number): void {
+      let scaleAdjust = this.nextZoom / this.oldZoom
+
+      let adjustX = (x - this.gameCamera.midPoint.x) * (this.nextZoom - this.oldZoom) * scaleAdjust * 4
+      let adjustY = (y - this.gameCamera.midPoint.y) * (this.nextZoom - this.oldZoom) * scaleAdjust * 4
+      let panPositionX = this.gameCamera.midPoint.x + adjustX
+      let panPositionY = this.gameCamera.midPoint.y + adjustY
+
+      this.gameCamera.pan(panPositionX, panPositionY, 200, 'Sine.easeInOut')
    }
 
-   private checkIsZoomLimit(): void {
-      if (this.gameCamera.zoom >= GameConfig.MAX_CAMERA_ZOOM) this.gameCamera.zoom = GameConfig.MAX_CAMERA_ZOOM
-      if (this.gameCamera.zoom <= GameConfig.MIN_CAMERA_ZOOM) this.gameCamera.zoom = GameConfig.MIN_CAMERA_ZOOM
+   public setCameraBound(topLeftCoordinate: Vector, width: number, height: number): void {
+      this.gameCamera.setBounds(topLeftCoordinate.x, topLeftCoordinate.y, width, height, true)
    }
 
    public enableCameraMovements(): void {
-      this.touchEvent = this.scene.input.on('pointermove', () => {
-         switch (true) {
-            case this.dragPoint.isDown && !this.keyZ.isDown && !this.cameraControlPod.isHoldingButton:
-               this.dragCamera()
-               this.checkIsDragLimit()
-               break
-            case this.dragPoint.isDown && this.keyZ.isDown && !this.cameraControlPod.isHoldingButton:
-               this.zoomCamera()
-               this.checkIsZoomLimit()
-               break
-         }
-      })
+      if (this.dragEvent == undefined) {
+         this.dragEvent = this.scene.input.on('pointermove', (pointer) => {
+            this.setDragPointAndOffset(pointer)
+            switch (true) {
+               case this.dragPoint.isDown && !this.cameraControlPod.isHoldingButton:
+                  this.dragCamera()
+                  break
+            }
+         })
+      }
+
+      if (this.zoomEvent == undefined) {
+         this.zoomEvent = this.scene.input.on('wheel', (pointer) => {
+            this.zoomCamera(pointer.deltaY, pointer.worldX, pointer.worldY)
+         })
+      }
+
+      if (this.pointerUpEvent == undefined) {
+         this.pointerUpEvent = this.scene.input.on('pointerup', () => {
+            this.cameraControlPod.setIsHoldingButton(false)
+         })
+      }
    }
 
    public disableCameraMovements(): void {
-      this.touchEvent.removeAllListeners()
+      this.dragEvent.removeAllListeners()
+      this.zoomEvent.removeAllListeners()
+      this.pointerUpEvent.removeAllListeners()
+      this.dragEvent = undefined
+      this.zoomEvent = undefined
+      this.pointerUpEvent = undefined
    }
 
    public doInit(): void {
       this.cameraControlPod = PodProvider.instance.cameraControlPod
+      this.dragPoint = this.scene.input.activePointer
       this.gameCamera = this.scene.cameras.main
-      this.dragPoint = this.scene.input.pointer1
-      this.keyZ = this.scene.input.keyboard.addKey('Z')
+      this.gameCamera.setZoom(0.62)
       this.enableCameraMovements()
-   }
-
-   public update(): void {
-      if (!this.dragPoint.isDown) this.cameraControlPod.setIsHoldingButton(false)
    }
 }

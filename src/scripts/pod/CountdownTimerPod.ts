@@ -1,4 +1,4 @@
-import { TownTimeState } from '../Town/TownTimeState'
+import { TownTimeState } from '../Town/Type/TownTimeState'
 import { CountdownTimerRepository } from './../Repository/CountdownTimerRepository'
 import { RepositoryProvider } from '../Repository/RepositoryProvider'
 import { Observable, map } from 'rxjs'
@@ -9,8 +9,8 @@ export class CountdownTimerPod {
    public timeDiffseconds: number
    private currentTimeStamp: Date
    private localTimeStamp: Date
-   private noonTimeStamp: Date
-   private midnightTimeStamp: Date
+   private dayTimeStamp: Date
+   private nightTimeStamp: Date
    private timeDiffTimeStamp: Date
    private timeDiff: number
    private timeZoneOffset: number
@@ -19,28 +19,39 @@ export class CountdownTimerPod {
 
    constructor() {
       this.countDownTimerRepository = RepositoryProvider.instance.countdownTimerRepository
-      this.setupTimeStamps()
    }
 
    public setupTimeStamps(): void {
       this.localTimeStamp = new Date()
       this.timeZoneOffset = this.localTimeStamp.getTimezoneOffset() * 60000
 
-      this.noonTimeStamp = new Date(
-         this.localTimeStamp.getFullYear(),
-         this.localTimeStamp.getMonth(),
-         this.localTimeStamp.getDay() - 1,
-         12,
-         0,
-         0,
-         0
-      )
+      if (this.currentTownTimeState == TownTimeState.Night) {
+         this.dayTimeStamp = new Date(
+            this.localTimeStamp.getFullYear(),
+            this.localTimeStamp.getMonth(),
+            this.localTimeStamp.getDate() + 1,
+            6,
+            0,
+            0,
+            0
+         )
+      } else {
+         this.dayTimeStamp = new Date(
+            this.localTimeStamp.getFullYear(),
+            this.localTimeStamp.getMonth(),
+            this.localTimeStamp.getDate(),
+            6,
+            0,
+            0,
+            0
+         )
+      }
 
-      this.midnightTimeStamp = new Date(
+      this.nightTimeStamp = new Date(
          this.localTimeStamp.getFullYear(),
          this.localTimeStamp.getMonth(),
-         this.localTimeStamp.getDay() - 1,
-         24,
+         this.localTimeStamp.getDate(),
+         18,
          0,
          0,
          0
@@ -49,16 +60,16 @@ export class CountdownTimerPod {
 
    public updateTimeDiffTimeStamp(): void {
       this.localTimeStamp = new Date()
-      if (this.localTimeStamp < this.noonTimeStamp) {
-         this.timeDiff = this.noonTimeStamp.getTime() - this.localTimeStamp.getTime()
+      if (this.localTimeStamp < this.dayTimeStamp) {
+         this.timeDiff = this.dayTimeStamp.getTime() - this.localTimeStamp.getTime()
       } else {
-         this.timeDiff = this.midnightTimeStamp.getTime() - this.localTimeStamp.getTime()
+         this.timeDiff = this.nightTimeStamp.getTime() - this.localTimeStamp.getTime()
       }
 
       this.timeDiffTimeStamp = new Date(this.timeDiff + this.timeZoneOffset)
    }
 
-   public checkIsCoundownFinish(): boolean {
+   public checkIsCountdownFinish(): boolean {
       return this.timeDiffhours == 0 && this.timeDiffminutes == 0 && this.timeDiffseconds == 0
    }
 
@@ -81,6 +92,7 @@ export class CountdownTimerPod {
       return this.countDownTimerRepository.getCurrentTimeState().pipe(
          map((timeState) => {
             this.currentTownTimeState = timeState
+            this.setupTimeStamps()
             return this.currentTownTimeState
          })
       )
@@ -89,7 +101,7 @@ export class CountdownTimerPod {
    public getCurrentTownTimeStateByTimeStamp(): Observable<TownTimeState> {
       return this.getCurrentTimeStamp().pipe(
          map((timestamp) => {
-            if (timestamp > this.noonTimeStamp) {
+            if (timestamp > this.dayTimeStamp) {
                return TownTimeState.Night
             } else {
                return TownTimeState.Day

@@ -13,6 +13,16 @@
     src: url('../font/PSL244pro.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'DB_HeaventRounded';
+    src: url('../font/DB_HeaventRoundedv3_2.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'DB_HeaventRounded_Bd';
+    src: url('../font/DB_HeaventRounded_Bdv3_2.ttf') format('truetype');
+}
+
 body {
     background-color: black;
     height: 100%;

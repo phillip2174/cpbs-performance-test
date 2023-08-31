@@ -1,50 +1,50 @@
 [
-    {
-        "ingredientID": 1,
-        "amount": 1,
-        "townTimeState": "Day",
-        "isFound": false
-    },
-    {
-        "ingredientID": 2,
-        "amount": 1,
-        "townTimeState": "Day",
-        "isFound": false
-    },
-    {
-        "ingredientID": 3,
-        "amount": 1,
-        "townTimeState": "Day",
-        "isFound": false
-    },
-    {
-        "ingredientID": 4,
-        "amount": 1,
-        "townTimeState": "Night",
-        "isFound": false
-    },
-    {
-        "ingredientID": 5,
-        "amount": 1,
-        "townTimeState": "Night",
-        "isFound": false
-    },
-    {
-        "ingredientID": 6,
-        "amount": 1,
-        "townTimeState": "Night",
-        "isFound": false
-    },
-    {
-        "ingredientID": 7,
-        "amount": 1,
-        "townTimeState": "Night",
-        "isFound": false
-    },
-    {
-        "ingredientID": 8,
-        "amount": 1,
-        "townTimeState": "Night",
-        "isFound": false
-    }
+   {
+      "ingredientID": 1,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 2,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 3,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 4,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 5,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 6,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 7,
+      "amount": 1,
+      "townTimeState": "Day",
+      "isFound": false
+   },
+   {
+      "ingredientID": 8,
+      "amount": 1,
+      "townTimeState": "Night",
+      "isFound": false
+   }
 ]

@@ -43,7 +43,7 @@ export class AlertDialogueView extends GameObjects.GameObject {
       this.yesButton.setButtonSize(174, 88.5)
 
       this.yesButton.setTextStyle({
-         fill: 'white',
+         fill: 'blue',
          fontSize: 30,
          fontFamily: 'PSL245pro',
       })
@@ -65,7 +65,7 @@ export class AlertDialogueView extends GameObjects.GameObject {
       this.noButton.setButtonSize(174, 88.5)
 
       this.noButton.setTextStyle({
-         fill: 'white',
+         fill: 'red',
          fontSize: 30,
          fontFamily: 'PSL245pro',
       })
@@ -89,7 +89,7 @@ export class AlertDialogueView extends GameObjects.GameObject {
       this.confirmButton.setButtonSize(174, 88.5)
 
       this.confirmButton.setTextStyle({
-         fill: 'white',
+         fill: 'blue',
          fontSize: 30,
          fontFamily: 'PSL245pro',
       })

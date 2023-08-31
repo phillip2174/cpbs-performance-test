@@ -1,6 +1,7 @@
 import { LazyGetter } from 'lazy-get-decorator'
 import { TownBuildingRepository } from './TownBuildingRepository'
 import { CountdownTimerRepository } from './CountdownTimerRepository'
+import { BillboardObjectRepository } from './BillboardObjectRepository'
 
 export class RepositoryProvider {
    private static _instance: RepositoryProvider
@@ -24,5 +25,10 @@ export class RepositoryProvider {
    @LazyGetter()
    get countdownTimerRepository(): CountdownTimerRepository {
       return new CountdownTimerRepository()
+   }
+
+   @LazyGetter()
+   get billboardObjectRepository(): BillboardObjectRepository {
+      return new BillboardObjectRepository()
    }
 }

@@ -1,18 +1,20 @@
-import { GameObjects, Scene, Tweens } from 'phaser'
-import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
+import { GameObjects, Scene } from 'phaser'
 import { timer } from 'rxjs'
-import { SuccessIndicatorPod } from './SuccessIndicatorPod'
-import { SuccessIndicatorState } from './Type/SuccessIndicatorState'
 import { IngredientBean } from '../Guideline/IngredientBean'
+import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
+import { SuccessIndicatorPod } from './Pod/SuccessIndicatorPod'
+import { SuccessIndicatorState } from './Type/SuccessIndicatorState'
 
-export class SuccessIndicatorView extends GameObjects.GameObject {
-    public static readonly DRAW_SPAWN_TIME: number = 600
-    public static readonly DRAW_SPAWN_MOVE_TIME: number = 3000
-    public static readonly DRAW_PARTICLE_TIME: number = 3650
+export class SuccessIndicatorView extends GameObjects.Container {
+    public static readonly DRAW_SPAWN_TIME: number = 300
+    public static readonly DRAW_SPAWN_MOVE_TIME: number = 800
+    public static readonly DRAW_PARTICLE_TIME: number = 1150
     public static readonly DRAW_PARTICLE_ROTATE_TIME: number = 1000
-    public static readonly DRAW_CIRCLE_TIME: number = 300
-    public static readonly DRAW_CHECKMARK_TIME: number = 400
+    public static readonly DRAW_CIRCLE_TIME: number = 200
+    public static readonly DRAW_CHECKMARK_TIME: number = 300
+
+    public static readonly DRAW_CIRCLE_SIZE: number = 35
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
 
     ingredientImage: GameObjects.Image
@@ -23,22 +25,14 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
     graphicsCircle: GameObjects.Graphics
     maskGraphics: GameObjects.Graphics
 
-    groupUI: GameObjects.Group
-
-    private positionX: number
-    private positionY: number
     private pod: SuccessIndicatorPod
 
-    constructor(scene: Scene) {
-        super(scene, 'gameObject')
+    constructor(scene: Scene, x: number, y: number) {
+        super(scene, x, y)
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(x: number, y: number, bean: IngredientBean) {
-        this.positionX = x
-        this.positionY = y
-        this.groupUI = this.scene.add.group()
-
+    public doInit(bean: IngredientBean) {
         this.pod = new SuccessIndicatorPod(this.scene)
         this.pod.setBean(bean)
 
@@ -47,11 +41,8 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
                 case SuccessIndicatorState.SpawnIngredient:
                     this.spawnIngredient()
                     break
-                case SuccessIndicatorState.DrawCircle:
-                    PodProvider.instance.guideLineUIManager.updateGuideLineCellUI(this.pod.ingredientBean)
-                    this.drawCircle()
-                    break
                 case SuccessIndicatorState.CheckMark:
+                    PodProvider.instance.guideLineUIManager.updateGuideLineCellUI(this.pod.ingredientBean)
                     this.drawCheckMark()
                     break
                 case SuccessIndicatorState.TweenGroupObject:
@@ -59,22 +50,21 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
                     break
             }
         })
+
+        this.setDepth(1000)
     }
 
     private spawnIngredient() {
-        this.particle01Circle = this.scene.add.image(this.positionX, this.positionY, 'efx_02').setScale(0).setDepth(4)
-        this.particle02Circle = this.scene.add.image(this.positionX, this.positionY, 'efx_01').setScale(0).setDepth(4)
+        this.particle01Circle = this.scene.add.image(0, 0, 'efx_02').setScale(0)
+
+        this.particle02Circle = this.scene.add.image(0, 0, 'efx_01').setScale(0)
 
         this.ingredientImage = this.scene.add
-            .image(
-                this.positionX,
-                this.positionY,
-                SuccessIndicatorView.INGREDIENT_IMAGE_KEY + this.pod.ingredientBean.ingredientID
-            )
+            .image(0, 0, SuccessIndicatorView.INGREDIENT_IMAGE_KEY + this.pod.ingredientBean.ingredientID)
             .setScale(0.4)
-            .setDepth(6)
 
-        this.createMaskImage()
+        this.add([this.particle01Circle, this.particle02Circle, this.ingredientImage])
+        //this.createMaskImage()
         this.tweenIngredient()
     }
 
@@ -109,7 +99,7 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
             },
         })
 
-        //Tween 2 Particle Scale and Move
+        // //Tween 2 Particle Scale and Move
         this.scene.add.tween({
             targets: this.particle01Circle,
             ease: 'cubic.inout',
@@ -176,10 +166,9 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
                     repeat: 20,
                     duration: 100,
                     props: {
-                        x: { from: this.ingredientImage.x, to: this.positionX - 1 },
+                        x: { from: this.ingredientImage.x, to: this.ingredientImage.x - 1 },
                     },
                 })
-
                 this.scene.add.tween({
                     targets: this.ingredientImage,
                     ease: 'cubic.inout',
@@ -187,12 +176,12 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
                     repeat: 0,
                     duration: SuccessIndicatorView.DRAW_SPAWN_MOVE_TIME,
                     props: {
-                        y: { from: this.ingredientImage.y, to: this.positionY - 37 },
+                        y: { from: this.ingredientImage.y, to: this.ingredientImage.y - 37 },
                         scale: { from: this.ingredientImage.scale, to: 0.6 },
                     },
                     onComplete: () => {
-                        shakeTween.remove()
-                        this.pod.changeState(SuccessIndicatorState.DrawCircle)
+                        shakeTween.stop()
+                        this.pod.changeState(SuccessIndicatorState.CheckMark)
                         this.scene.add.tween({
                             targets: this.ingredientImage,
                             ease: 'cubic.inout',
@@ -200,12 +189,12 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
                             repeat: 0,
                             duration: SuccessIndicatorView.DRAW_SPAWN_TIME,
                             props: {
-                                y: { from: this.ingredientImage.y, to: this.positionY + 80 },
+                                y: { from: this.ingredientImage.y, to: this.ingredientImage.y + 80 },
                                 scale: { from: this.ingredientImage.scale, to: 0 },
                             },
                             onComplete: () => {
-                                loopParticle01.remove()
-                                loopParticle02.remove()
+                                loopParticle01.stop()
+                                loopParticle02.stop()
                             },
                         })
                     },
@@ -216,7 +205,7 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
 
     createMaskImage(): void {
         this.maskGraphics = this.scene.add.graphics()
-        this.maskGraphics.setPosition(this.positionX - 50, this.positionY - 75)
+        this.maskGraphics.setPosition(-50, -75)
         this.maskGraphics.fillStyle(0xffffff, 0)
 
         this.maskGraphics.beginPath()
@@ -228,17 +217,24 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
 
     private drawCircle() {
         this.graphicsCircle = this.scene.add.graphics()
-        this.graphicsCircle.setPosition(this.positionX, this.positionY)
+        this.graphicsCircle.setPosition(0, 0)
 
         this.graphicsCircle.lineStyle(4, 0xefaa16, 1)
 
         this.graphicsCircle.beginPath()
 
-        this.graphicsCircle.arc(0, 0, 40, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(0), true).setDepth(5)
+        this.graphicsCircle.arc(
+            0,
+            0,
+            SuccessIndicatorView.DRAW_CIRCLE_SIZE,
+            Phaser.Math.DegToRad(0),
+            Phaser.Math.DegToRad(0),
+            true
+        )
 
         this.graphicsCircle.strokePath()
 
-        this.groupUI.add(this.graphicsCircle)
+        this.add([this.graphicsCircle])
         this.tweenCircle()
     }
 
@@ -254,7 +250,14 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
                 this.graphicsCircle.clear()
                 this.graphicsCircle.lineStyle(4, 0xefaa16, 1)
                 this.graphicsCircle.beginPath()
-                this.graphicsCircle.arc(0, 0, 40, Phaser.Math.DegToRad(t), Phaser.Math.DegToRad(0), true).setDepth(5)
+                this.graphicsCircle.arc(
+                    0,
+                    0,
+                    SuccessIndicatorView.DRAW_CIRCLE_SIZE,
+                    Phaser.Math.DegToRad(t),
+                    Phaser.Math.DegToRad(0),
+                    true
+                )
                 if (t == 359) {
                     this.graphicsCircle.closePath()
 
@@ -266,9 +269,10 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
     }
 
     private drawCheckMark() {
-        this.checkmarkImage = this.scene.add.image(this.positionX, this.positionY, 'check-mark').setScale(0).setDepth(6)
+        this.checkmarkImage = this.scene.add.image(0, 0, 'check-mark').setScale(0)
 
-        this.groupUI.add(this.checkmarkImage)
+        this.add([this.checkmarkImage])
+
         this.tweenCheckMark()
     }
 
@@ -280,7 +284,7 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
             repeat: 0,
             duration: SuccessIndicatorView.DRAW_CHECKMARK_TIME,
             props: {
-                scale: { from: 0, to: 0.05 },
+                scale: { from: 0, to: 0.04 },
             },
             onComplete: () => {
                 this.pod.changeState(SuccessIndicatorState.TweenGroupObject)
@@ -290,16 +294,14 @@ export class SuccessIndicatorView extends GameObjects.GameObject {
 
     private tweenGroupObject() {
         timer(SuccessIndicatorView.DRAW_CHECKMARK_TIME).subscribe((x) => {
-            this.groupUI.children.iterate((child) => {
-                this.scene.add.tween({
-                    targets: child,
-                    ease: 'cubic.inout',
-                    yoyo: false,
-                    repeat: 0,
-                    duration: SuccessIndicatorView.DRAW_CHECKMARK_TIME,
-                    alpha: 0,
-                    scale: 0,
-                })
+            this.scene.add.tween({
+                targets: this,
+                ease: 'cubic.inout',
+                yoyo: false,
+                repeat: 0,
+                duration: SuccessIndicatorView.DRAW_CHECKMARK_TIME,
+                alpha: 0,
+                scale: 0,
             })
         })
     }

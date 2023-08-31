@@ -1,15 +1,15 @@
 import 'phaser'
-import { NineSlice } from 'phaser3-nineslice'
 import { timer } from 'rxjs'
 import { TextAdapter } from '../text-adapter/TextAdapter'
 import { ButtonStyleConfig } from './button-style/ButtonStyleConfig'
+import { GameObjects, Tweens, Types } from 'phaser'
 
 export class Button extends Phaser.GameObjects.Container {
    //private static readonly INTERACT_DELAY: number = 1000
 
    declare scene: Phaser.Scene
    background: Phaser.GameObjects.Sprite
-   backgroundSlice: NineSlice
+   backgroundSlice: GameObjects.NineSlice
 
    label: Phaser.GameObjects.Text
    labelSize: {}
@@ -99,6 +99,7 @@ export class Button extends Phaser.GameObjects.Container {
             yoyo: false,
             ease: `Cubic.easeIn`,
          },
+         persist: true,
       })
 
       this.onClickUpTweener = this.scene.tweens.add({
@@ -115,6 +116,7 @@ export class Button extends Phaser.GameObjects.Container {
             yoyo: false,
             ease: `Cubic.easeIn`,
          },
+         persist: true,
          onComplete: () => {
             if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.restart()
          },
@@ -122,7 +124,7 @@ export class Button extends Phaser.GameObjects.Container {
    }
 
    public setIdleTween(idleTweenProfile: object): void {
-      this.onButtonIdleTweener = this.scene.tweens.add(idleTweenProfile)
+      this.onButtonIdleTweener = this.scene.tweens.add(idleTweenProfile as Types.Tweens.TweenBuilderConfig)
    }
 
    private setInteractionOnButtonPointerDown(): void {
@@ -196,23 +198,26 @@ export class Button extends Phaser.GameObjects.Container {
    }
 
    setNineSlice(buttonStyleObject: ButtonStyleConfig): void {
-      let imageKey = `${buttonStyleObject.imageKey}_slice`
-      if (this.scene.textures.exists(imageKey)) this.scene.textures.remove(imageKey)
+      // let imageKey = `${buttonStyleObject.imageKey}_slice`
+      // if (this.scene.textures.exists(imageKey)) this.scene.textures.remove(imageKey)
 
-      this.scene.textures.addImage(
-         imageKey,
-         this.scene.textures.get(buttonStyleObject.imageKey).getSourceImage() as HTMLImageElement
-      )
+      // this.scene.textures.addImage(
+      //    imageKey,
+      //    this.scene.textures.get(buttonStyleObject.imageKey).getSourceImage() as HTMLImageElement
+      // )
 
       this.backgroundSlice = this.scene.add
          .nineslice(
             0,
             0,
+            buttonStyleObject.imageKey,
+            '',
             this.buttonWidth,
             this.buttonHeight,
-            imageKey,
             buttonStyleObject.offset,
-            buttonStyleObject.safeAreaOffset
+            buttonStyleObject.offset,
+            buttonStyleObject.offset,
+            buttonStyleObject.offset
          )
          .setOrigin(0.5)
 
@@ -239,7 +244,7 @@ export class Button extends Phaser.GameObjects.Container {
       this.background.setSize(widht, height)
       this.background.setDisplaySize(widht, height)
 
-      if (this.backgroundSlice) this.backgroundSlice.resize(widht, height)
+      if (this.backgroundSlice) this.backgroundSlice.setSize(widht, height)
 
       this.setSize(widht, height)
       this.setDisplaySize(widht, height)
@@ -312,9 +317,9 @@ export class Button extends Phaser.GameObjects.Container {
       this.setButtonSize(this.label.width + offsetX * 2, this.background.height)
    }
 
-   fitToBorder() {
-      TextAdapter.autoSizeTextInBound(this.label, this.background.width)
-   }
+   // fitToBorder() {
+   //    TextAdapter.autoSizeTextInBound(this.label, this.background.width)
+   // }
 
    private changeButtonCanInteractGraphic(value: boolean) {
       if (!value) this.setAlpha(0.5)
