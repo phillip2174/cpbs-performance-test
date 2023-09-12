@@ -1,22 +1,22 @@
 @font-face {
    font-family: PSL245pro;
-   src: url(./assets/PSL245pro.27ddbba4.ttf) format('truetype');
+   src: url(./PSL245pro.27ddbba4.ttf) format('truetype');
 }
 @font-face {
    font-family: FC_Lamoon_Bold;
-   src: url(./assets/FC_Lamoon_Bold.77858bbc.ttf) format('truetype');
+   src: url(./FC_Lamoon_Bold.77858bbc.ttf) format('truetype');
 }
 @font-face {
    font-family: PSL244pro;
-   src: url(./assets/PSL244pro.c1cce1a9.ttf) format('truetype');
+   src: url(./PSL244pro.c1cce1a9.ttf) format('truetype');
 }
 @font-face {
    font-family: DB_HeaventRounded;
-   src: url(./assets/DB_HeaventRoundedv3_2.2db29f5e.ttf) format('truetype');
+   src: url(./DB_HeaventRoundedv3_2.2db29f5e.ttf) format('truetype');
 }
 @font-face {
    font-family: DB_HeaventRounded_Bd;
-   src: url(./assets/DB_HeaventRounded_Bdv3_2.4a3bec4d.ttf) format('truetype');
+   src: url(./DB_HeaventRounded_Bdv3_2.4a3bec4d.ttf) format('truetype');
 }
 body {
    background-color: #000;
