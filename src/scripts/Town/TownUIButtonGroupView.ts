@@ -1,11 +1,10 @@
 import { Actions, GameObjects, Scene } from 'phaser'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
-import { UIUtil } from '../plugins/utils/UIUtil'
-import { TownUIButtonView } from './TownUIButtonView'
 import { PodProvider } from '../pod/PodProvider'
-import { TownUIState } from './Type/TownUIState'
-import { TownUIButtonType } from './Type/TownUIButtonType'
 import { TownUIButtonNotificationManager } from './TownUIButtonNotificationManager'
+import { TownUIButtonView } from './TownUIButtonView'
+import { TownUIButtonType } from './Type/TownUIButtonType'
+import { TownUIState } from './Type/TownUIState'
 
 export class TownUIButtonGroupView extends GameObjects.Container {
    private dimBackground: GameObjects.Rectangle
@@ -132,7 +131,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
       this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
       this.setDepth(6)
       this.dimBackground = this.scene.add
-         .rectangle(0, 0, UIUtil.getCanvasWidth(), UIUtil.getCanvasHeight(), 0x000000, 0.3)
+         .rectangle(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height, 0x000000, 0.3)
          .setOrigin(0.5)
 
       this.buttonGroupBackground = this.scene.add.image(0, 0, 'ui-button-group-bg').setOrigin(0.5)

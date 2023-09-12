@@ -1,32 +1,127 @@
 [
-    {
-        "id": 104,
-        "typeAnimation": "OneTime",
-        "animationWithStateBeans": [
-            {
-                "stateType": "Idle",
-                "animKey": "stand",
-                "animTime": -1
-            },
-            {
-                "stateType": "Transition1",
-                "animKey": "move_damage",
-                "animTime": 750
-            },
-            {
-                "stateType": "End",
-                "animKey": "gameover",
-                "animTime": -1
-            }
-        ],
-        "typeAsset": "Spine",
-        "positionX": 0,
-        "positionY": 700,
-        "scaleX": 0.2,
-        "scaleY": 0.2,
-        "interactWidth": 0,
-        "interactHeight": 0,
-        "depth": 5,
-        "keyAsset": "Lays"
-    }
+   {
+      "id": 104,
+      "typeAnimation": "OneTime",
+      "animationWithStateBeans": [
+         {
+            "stateType": "Idle",
+            "animKey": "stand",
+            "animTime": -1
+         },
+         {
+            "stateType": "Transition1",
+            "animKey": "move_damage",
+            "animTime": 750
+         },
+         {
+            "stateType": "End",
+            "animKey": "gameover",
+            "animTime": -1
+         }
+      ],
+      "typeAsset": "Spine",
+      "positionX": 0,
+      "positionY": 700,
+      "scaleX": 0.2,
+      "scaleY": 0.2,
+      "interactWidth": 0,
+      "interactHeight": 0,
+      "depth": 5,
+      "keyAsset": "Lays"
+   },
+   {
+      "id": 10,
+      "typeAnimation": "OneTime",
+      "animationWithStateBeans": [
+         {
+            "stateType": "Idle",
+            "animKey": "idle1",
+            "animTime": -1
+         },
+         {
+            "stateType": "Transition1",
+            "animKey": "interact",
+            "animTime": 10800
+         },
+         {
+            "stateType": "End",
+            "animKey": "idle2",
+            "animTime": -1
+         }
+      ],
+      "typeAsset": "Spine",
+      "positionX": 420,
+      "positionY": 405,
+      "scaleX": 1,
+      "scaleY": 1,
+      "interactWidth": 0,
+      "interactHeight": 0,
+      "depth": 5,
+      "keyAsset": "7-11-cat"
+   },
+   {
+      "id": 11,
+      "typeAnimation": "OneTime",
+      "animationWithStateBeans": [
+         {
+            "stateType": "Idle",
+            "animKey": "idle1",
+            "animTime": -1
+         },
+         {
+            "stateType": "Transition1",
+            "animKey": "interact",
+            "animTime": 1666
+         },
+         {
+            "stateType": "End",
+            "animKey": "idle2",
+            "animTime": -1
+         }
+      ],
+      "typeAsset": "Spine",
+      "positionX": 890,
+      "positionY": 468,
+      "scaleX": 1,
+      "scaleY": 1,
+      "interactWidth": 0,
+      "interactHeight": 0,
+      "depth": 5,
+      "keyAsset": "people-group-b"
+   },
+   {
+      "id": 12,
+      "typeAnimation": "Repeat",
+      "animationWithStateBeans": [
+         {
+            "stateType": "Idle",
+            "animKey": "idle",
+            "animTime": -1
+         },
+         {
+            "stateType": "Transition1",
+            "animKey": "interact",
+            "animTime": 1000
+         },
+         {
+            "stateType": "End",
+            "animKey": "interact",
+            "animTime": 1000
+         },
+         {
+            "stateType": "Transition2",
+            "animKey": "interact",
+            "animTime": 12333
+         }
+      ],
+      "typeAsset": "Spine",
+      "positionX": 185,
+      "positionY": 635,
+      "scaleX": 1,
+      "scaleY": 1,
+      "interactWidth": 0,
+      "interactHeight": 0,
+      "depth": 5,
+      "keyAsset": "cp-foodtruck"
+   }
 ]

@@ -1,0 +1,13 @@
+
+7-11-door.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+13_7-11-door
+  rotate: false
+  xy: 2, 2
+  size: 34, 100
+  orig: 36, 102
+  offset: 1, 1
+  index: -1

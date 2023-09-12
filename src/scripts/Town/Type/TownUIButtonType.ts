@@ -6,4 +6,5 @@ export enum TownUIButtonType {
    DailyLogin,
    Minigame,
    Hide,
+   Zoom,
 }

@@ -23,6 +23,8 @@ export class CountdownManager extends GameObjects.GameObject {
    private countdownTimerPod: CountdownTimerPod
    private cameraControlView: CameraControlView
    private isAllFoundSubscription: Subscription
+   private gameScreenWidth: number = this.scene.cameras.main.width
+   private gameScreenHeight: number = this.scene.cameras.main.height
 
    constructor(scene: Scene) {
       super(scene, 'gameObject')
@@ -50,12 +52,12 @@ export class CountdownManager extends GameObjects.GameObject {
    }
 
    private doOnIsAllFound() {
-      this.countdownTimerText.setPosition(UIUtil.getCanvasWidth() / 2, UIUtil.getCanvasHeight() - 40)
+      this.countdownTimerText.setPosition(this.gameScreenWidth / 2, this.gameScreenHeight - 40)
 
       let text = TextAdapter.instance
          .getVectorText(this.scene, 'FC_Lamoon_Bold')
          .setText('Coming in : ')
-         .setPosition(UIUtil.getCanvasWidth() / 2, UIUtil.getCanvasHeight() - 80)
+         .setPosition(this.gameScreenWidth / 2, this.gameScreenHeight - 80)
          .setOrigin(0.5, 0.5)
          .setStyle({
             fill: '#ff0000',
@@ -70,8 +72,8 @@ export class CountdownManager extends GameObjects.GameObject {
 
       this.countdownTimerBackground = this.scene.add
          .image(
-            UIUtil.getCanvasWidth() / 2,
-            UIUtil.getCanvasHeight() - 110,
+            this.gameScreenWidth / 2,
+            this.gameScreenHeight - 110,
             CountdownManager.TIMER_BACKGROUND_KEY + state.toLowerCase()
          )
          .setDepth(3)
@@ -81,7 +83,7 @@ export class CountdownManager extends GameObjects.GameObject {
       this.countdownTimerIcon = this.scene.add
          .image(
             this.countdownTimerBackground.x - 52,
-            UIUtil.getCanvasHeight() - 123,
+            this.gameScreenHeight - 123,
             state.toLowerCase() + CountdownManager.TIMER_ICON_KEY
          )
          .setDepth(3)

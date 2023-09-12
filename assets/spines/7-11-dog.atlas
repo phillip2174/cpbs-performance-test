@@ -1,0 +1,20 @@
+
+7-11-dog.png
+size: 64,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: false
+  xy: 2, 27
+  size: 42, 29
+  orig: 44, 31
+  offset: 1, 1
+  index: -1
+tail
+  rotate: false
+  xy: 46, 41
+  size: 10, 15
+  orig: 12, 17
+  offset: 1, 1
+  index: -1

@@ -40,24 +40,16 @@ export class TextAdapter {
          .setPadding(0, 15, 0, 15)
    }
 
-   // static autoSizeTextInBound(
-   //     vectorText: GameObjects.Text,
-   //     width: number,
-   // ): void {
-   //     while (vectorText.width > width) {
-   //         const fontSize = +vectorText.style.fontSize.replace(`px`, ``)
-   //         let newFontSize =
-   //             fontSize -
-   //             3 -
-   //             (vectorText.width / vectorText.text.length -
-   //                 width / vectorText.text.length)
-   //         if (newFontSize < TextAdapter.MIN_FONT_SIZE)
-   //             newFontSize = TextAdapter.MIN_FONT_SIZE
+   static autoSizeTextInBound(vectorText: GameObjects.Text, width: number): void {
+      while (vectorText.width > width) {
+         const fontSize = +vectorText.style.fontSize
+         let newFontSize = fontSize - 3 - (vectorText.width / vectorText.text.length - width / vectorText.text.length)
+         if (newFontSize < TextAdapter.MIN_FONT_SIZE) newFontSize = TextAdapter.MIN_FONT_SIZE
 
-   //         vectorText.y += 1
-   //         vectorText.setFontSize(newFontSize)
-   //     }
-   // }
+         vectorText.y += 1
+         vectorText.setFontSize(newFontSize)
+      }
+   }
 
    static autoSizeTextInBoundBitmap(bitmapText: GameObjects.BitmapText, width: number): void {
       while (bitmapText.width > width) {

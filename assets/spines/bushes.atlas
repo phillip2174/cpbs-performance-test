@@ -1,0 +1,209 @@
+
+bushes.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+grass1a
+  rotate: false
+  xy: 306, 440
+  size: 50, 38
+  orig: 51, 39
+  offset: 0, 0
+  index: -1
+grass1b
+  rotate: true
+  xy: 220, 483
+  size: 26, 43
+  orig: 32, 45
+  offset: 0, 1
+  index: -1
+grass1c
+  rotate: false
+  xy: 154, 484
+  size: 64, 25
+  orig: 64, 29
+  offset: 0, 0
+  index: -1
+grass1d
+  rotate: false
+  xy: 196, 402
+  size: 55, 43
+  orig: 56, 48
+  offset: 0, 5
+  index: -1
+grass1e
+  rotate: false
+  xy: 384, 478
+  size: 68, 31
+  orig: 68, 34
+  offset: 0, 0
+  index: -1
+grass1f
+  rotate: false
+  xy: 82, 408
+  size: 62, 42
+  orig: 63, 47
+  offset: 0, 1
+  index: -1
+grass1g
+  rotate: true
+  xy: 446, 384
+  size: 50, 59
+  orig: 52, 59
+  offset: 1, 0
+  index: -1
+grass1h
+  rotate: false
+  xy: 72, 354
+  size: 62, 52
+  orig: 63, 52
+  offset: 1, 0
+  index: -1
+grass1i
+  rotate: false
+  xy: 49, 488
+  size: 54, 21
+  orig: 57, 27
+  offset: 2, 5
+  index: -1
+grass1j
+  rotate: false
+  xy: 2, 458
+  size: 41, 32
+  orig: 42, 37
+  offset: 0, 3
+  index: -1
+grass2a
+  rotate: true
+  xy: 146, 407
+  size: 42, 48
+  orig: 42, 50
+  offset: 0, 2
+  index: -1
+grass2b
+  rotate: true
+  xy: 335, 480
+  size: 29, 47
+  orig: 30, 47
+  offset: 0, 0
+  index: -1
+grass2c
+  rotate: false
+  xy: 105, 486
+  size: 47, 23
+  orig: 47, 23
+  offset: 0, 0
+  index: -1
+grass2d
+  rotate: true
+  xy: 262, 442
+  size: 37, 42
+  orig: 37, 43
+  offset: 0, 1
+  index: -1
+grass2e
+  rotate: false
+  xy: 45, 455
+  size: 57, 31
+  orig: 58, 33
+  offset: 1, 0
+  index: -1
+grass2f
+  rotate: true
+  xy: 104, 452
+  size: 32, 41
+  orig: 32, 43
+  offset: 0, 0
+  index: -1
+grass2g
+  rotate: false
+  xy: 147, 451
+  size: 59, 31
+  orig: 60, 33
+  offset: 1, 0
+  index: -1
+grass2h
+  rotate: false
+  xy: 2, 412
+  size: 78, 41
+  orig: 81, 44
+  offset: 1, 3
+  index: -1
+grass3a
+  rotate: true
+  xy: 454, 478
+  size: 31, 46
+  orig: 31, 48
+  offset: 0, 2
+  index: -1
+grass3b
+  rotate: true
+  xy: 340, 392
+  size: 45, 54
+  orig: 45, 55
+  offset: 0, 1
+  index: -1
+grass3c
+  rotate: false
+  xy: 2, 362
+  size: 68, 48
+  orig: 73, 52
+  offset: 5, 0
+  index: -1
+grass3d
+  rotate: false
+  xy: 358, 439
+  size: 78, 37
+  orig: 78, 38
+  offset: 0, 0
+  index: -1
+grass3e
+  rotate: false
+  xy: 253, 396
+  size: 85, 42
+  orig: 85, 42
+  offset: 0, 0
+  index: -1
+grass3f
+  rotate: true
+  xy: 136, 341
+  size: 59, 61
+  orig: 60, 63
+  offset: 1, 0
+  index: -1
+grass3g
+  rotate: false
+  xy: 438, 436
+  size: 71, 40
+  orig: 76, 42
+  offset: 1, 0
+  index: -1
+grass3h
+  rotate: false
+  xy: 265, 481
+  size: 68, 28
+  orig: 69, 30
+  offset: 0, 0
+  index: -1
+grass3i
+  rotate: false
+  xy: 208, 447
+  size: 52, 34
+  orig: 54, 36
+  offset: 1, 1
+  index: -1
+grass3j
+  rotate: false
+  xy: 2, 492
+  size: 45, 17
+  orig: 48, 19
+  offset: 1, 1
+  index: -1
+grass3k
+  rotate: true
+  xy: 396, 389
+  size: 45, 48
+  orig: 48, 51
+  offset: 2, 2
+  index: -1

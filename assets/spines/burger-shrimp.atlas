@@ -1,0 +1,195 @@
+
+burger-shrimp.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm-l
+  rotate: false
+  xy: 150, 813
+  size: 8, 31
+  orig: 10, 33
+  offset: 1, 1
+  index: -1
+body_bread
+  rotate: false
+  xy: 2, 789
+  size: 146, 216
+  orig: 148, 219
+  offset: 1, 2
+  index: -1
+bow_lshrimp
+  rotate: true
+  xy: 2, 256
+  size: 162, 147
+  orig: 164, 149
+  offset: 1, 1
+  index: -1
+bread-bottom_bur
+  rotate: true
+  xy: 150, 846
+  size: 159, 67
+  orig: 161, 69
+  offset: 1, 1
+  index: -1
+bread-top_bur
+  rotate: true
+  xy: 2, 100
+  size: 154, 106
+  orig: 156, 108
+  offset: 1, 1
+  index: -1
+cheese-long1_bur
+  rotate: true
+  xy: 189, 607
+  size: 17, 33
+  orig: 19, 35
+  offset: 1, 1
+  index: -1
+cheese-long2_bur
+  rotate: true
+  xy: 147, 601
+  size: 23, 21
+  orig: 25, 23
+  offset: 1, 1
+  index: -1
+cheese_bur
+  rotate: true
+  xy: 147, 626
+  size: 161, 55
+  orig: 163, 57
+  offset: 1, 1
+  index: -1
+food-area_lshrimp
+  rotate: false
+  xy: 2, 2
+  size: 150, 96
+  orig: 152, 98
+  offset: 1, 1
+  index: -1
+head
+  rotate: false
+  xy: 170, 605
+  size: 17, 19
+  orig: 19, 21
+  offset: 1, 1
+  index: -1
+leg-low-l
+  rotate: true
+  xy: 143, 420
+  size: 15, 27
+  orig: 17, 29
+  offset: 1, 1
+  index: -1
+leg-low-r
+  rotate: false
+  xy: 150, 794
+  size: 25, 17
+  orig: 27, 19
+  offset: 1, 1
+  index: -1
+leg-up-l
+  rotate: true
+  xy: 237, 613
+  size: 14, 12
+  orig: 16, 14
+  offset: 1, 1
+  index: -1
+leg-up-r
+  rotate: true
+  xy: 224, 610
+  size: 17, 11
+  orig: 19, 14
+  offset: 1, 1
+  index: -1
+man-sit3
+  rotate: false
+  xy: 160, 815
+  size: 24, 29
+  orig: 26, 31
+  offset: 1, 1
+  index: -1
+middle_bur
+  rotate: true
+  xy: 204, 629
+  size: 158, 75
+  orig: 160, 77
+  offset: 1, 1
+  index: -1
+sesame_bur
+  rotate: true
+  xy: 151, 275
+  size: 143, 94
+  orig: 145, 96
+  offset: 1, 1
+  index: -1
+shadow_bread
+  rotate: false
+  xy: 2, 601
+  size: 143, 186
+  orig: 149, 193
+  offset: 3, 3
+  index: -1
+shadow_bur
+  rotate: false
+  xy: 110, 101
+  size: 142, 153
+  orig: 146, 156
+  offset: 2, 1
+  index: -1
+shrimp1
+  rotate: true
+  xy: 154, 9
+  size: 90, 82
+  orig: 94, 84
+  offset: 2, 1
+  index: -1
+shrimp2
+  rotate: true
+  xy: 247, 274
+  size: 79, 71
+  orig: 82, 74
+  offset: 1, 2
+  index: -1
+shrimp3
+  rotate: true
+  xy: 247, 355
+  size: 80, 72
+  orig: 83, 75
+  offset: 1, 2
+  index: -1
+shrimp4
+  rotate: true
+  xy: 238, 17
+  size: 82, 74
+  orig: 85, 77
+  offset: 2, 2
+  index: -1
+smoke_shrimp
+  rotate: false
+  xy: 2, 420
+  size: 139, 179
+  orig: 141, 182
+  offset: 1, 1
+  index: -1
+top_shrimp
+  rotate: true
+  xy: 143, 437
+  size: 162, 106
+  orig: 164, 108
+  offset: 1, 1
+  index: -1
+veggie_shrimp
+  rotate: false
+  xy: 177, 789
+  size: 97, 24
+  orig: 99, 26
+  offset: 1, 1
+  index: -1
+water_shrimp
+  rotate: true
+  xy: 219, 850
+  size: 155, 61
+  orig: 155, 61
+  offset: 0, 0
+  index: -1

@@ -2,18 +2,18 @@ import { GameObjects, Scene } from 'phaser'
 import { Subscription } from 'rxjs'
 import { CountdownManager } from '../Countdown/CountdownManager'
 import { GuideLineUIView } from '../Guideline/GuideLineUIView'
+import { CameraControlPod } from '../camera/CameraControlPod'
 import { CameraControlView } from '../camera/CameraControlView'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
-import { UIUtil } from '../plugins/utils/UIUtil'
 import { PodProvider } from '../pod/PodProvider'
 import { CPPointUIButtonView } from './CPPointUIButtonView'
 import { TownUIPod } from './Pod/TownUIPod'
 import { TownUIButtonGroupView } from './TownUIButtonGroupView'
+import { TownUIButtonNotificationManager } from './TownUIButtonNotificationManager'
 import { TownUIButtonView } from './TownUIButtonView'
 import { TownUICircleButtonView } from './TownUICircleButtonView'
-import { TownUIState } from './Type/TownUIState'
 import { TownUIButtonType } from './Type/TownUIButtonType'
-import { TownUIButtonNotificationManager } from './TownUIButtonNotificationManager'
+import { TownUIState } from './Type/TownUIState'
 
 export class TownUIView extends GameObjects.GameObject {
    private guideLineUIView: GuideLineUIView
@@ -28,12 +28,20 @@ export class TownUIView extends GameObjects.GameObject {
    private townUIButtonGroupView: TownUIButtonGroupView
    private userProfileCircleButtonView: TownUICircleButtonView
    private settingCircleButtonView: TownUICircleButtonView
+   private zoomInCircleButtonView: TownUICircleButtonView
+   private zoomOutCircleButtonView: TownUICircleButtonView
+   private zoomButtonGroupContainer: GameObjects.Container
+   private zoomButtonGroupBackground: GameObjects.Image
    private cpLogoButton: GameObjects.Image
    private cpPointButton: CPPointUIButtonView
    private uiStateDisposable: Subscription
    private townUIPod: TownUIPod
    private separateButtonLine: GameObjects.Rectangle
    private townUIButtonNotificationManager: TownUIButtonNotificationManager
+   private townUIMenuBackground: GameObjects.NineSlice
+   private gameScreenWidth: number = this.scene.cameras.main.width
+   private gameScreenHeight: number = this.scene.cameras.main.height
+   private cameraControlPod: CameraControlPod
 
    constructor(scene: Scene) {
       super(scene, 'gameObject')
@@ -71,13 +79,13 @@ export class TownUIView extends GameObjects.GameObject {
       this.setupCircleButtons()
 
       this.cpPointButton = new CPPointUIButtonView(this.scene)
-      this.cpPointButton.doInit(UIUtil.getCanvasWidth() - 83, 105, 'cp-point', '1,200')
+      this.cpPointButton.doInit(this.gameScreenWidth - 83, 105, 'cp-point', '1,200')
 
       if (!this.scene.sys.game.device.os.desktop) {
          this.menuGroupButton = new TownUIButtonView(this.scene)
          this.menuGroupButton.doInit(
-            UIUtil.getCanvasWidth() - 70,
-            UIUtil.getCanvasHeight() - 152,
+            this.gameScreenWidth - 50,
+            this.gameScreenHeight - 152,
             'menu-group',
             TownUIButtonType.MenuGroup
          )
@@ -86,10 +94,12 @@ export class TownUIView extends GameObjects.GameObject {
             this.townUIPod.changeUIState(TownUIState.MenuButtonGroup)
          })
       } else {
+         this.setupZoomButtonGroup()
+
          this.dailyLoginButton = new TownUIButtonView(this.scene)
          this.dailyLoginButton.doInit(
-            UIUtil.getCanvasWidth() - 200,
-            UIUtil.getCanvasHeight() - 60,
+            this.gameScreenWidth - 195,
+            this.gameScreenHeight - 60,
             'daily-login',
             TownUIButtonType.DailyLogin,
             'DAILY LOGIN'
@@ -100,20 +110,20 @@ export class TownUIView extends GameObjects.GameObject {
 
          this.minigameButton = new TownUIButtonView(this.scene)
          this.minigameButton.doInit(
-            UIUtil.getCanvasWidth() - 85,
-            UIUtil.getCanvasHeight() - 60,
+            this.gameScreenWidth - 85,
+            this.gameScreenHeight - 60,
             'minigame',
             TownUIButtonType.Minigame,
             'MINI GAME'
          )
 
          this.cookingButton = new TownUIButtonView(this.scene)
-         this.cookingButton.doInit(315, UIUtil.getCanvasHeight() - 60, 'cooking', TownUIButtonType.Cooking, 'COOKING')
+         this.cookingButton.doInit(305, this.gameScreenHeight - 60, 'cooking', TownUIButtonType.Cooking, 'COOKING')
 
          this.inventoryButton = new TownUIButtonView(this.scene)
          this.inventoryButton.doInit(
-            200,
-            UIUtil.getCanvasHeight() - 60,
+            195,
+            this.gameScreenHeight - 60,
             'inventory',
             TownUIButtonType.Inventory,
             'MY INVENTORY'
@@ -125,7 +135,7 @@ export class TownUIView extends GameObjects.GameObject {
          this.collectionsButton = new TownUIButtonView(this.scene)
          this.collectionsButton.doInit(
             85,
-            UIUtil.getCanvasHeight() - 60,
+            this.gameScreenHeight - 60,
             'collections',
             TownUIButtonType.Collections,
             'COLLECTIONS'
@@ -134,9 +144,8 @@ export class TownUIView extends GameObjects.GameObject {
    }
 
    private setupCircleButtons(): void {
-      console.log(UIUtil.getCanvasWidth() + ':' + UIUtil.getCanvasHeight())
       this.userProfileCircleButtonView = new TownUICircleButtonView(this.scene)
-      this.userProfileCircleButtonView.doInit(UIUtil.getCanvasWidth() - 115, 40, 'user-profile')
+      this.userProfileCircleButtonView.doInit(this.gameScreenWidth - 115, 40, 'user-profile')
 
       this.settingCircleButtonView = new TownUICircleButtonView(this.scene)
       this.settingCircleButtonView.doInit(
@@ -156,10 +165,91 @@ export class TownUIView extends GameObjects.GameObject {
       })
    }
 
+   private setupZoomButtonGroup(): void {
+      let zoomButtonOffsetY = 28
+      let midZoomValue =
+         (this.cameraControlPod.maxCameraZoom - this.cameraControlPod.minCameraZoom) / 2 +
+         this.cameraControlPod.minCameraZoom
+      this.zoomButtonGroupContainer = this.scene.add.container()
+
+      this.zoomButtonGroupBackground = this.scene.add.image(0, 0, 'zoom-button-group-bg')
+
+      this.zoomInCircleButtonView = new TownUICircleButtonView(this.scene)
+      this.zoomInCircleButtonView.doInit(
+         0,
+         this.zoomButtonGroupBackground.y - zoomButtonOffsetY,
+         'zoom-in',
+         TownUIButtonType.Zoom
+      )
+      this.zoomInCircleButtonView.onClick(() => {
+         if (
+            this.cameraControlView.getCameraZoom() < midZoomValue &&
+            this.cameraControlView.getCameraZoom() >= this.cameraControlPod.minCameraZoom
+         ) {
+            this.cameraControlView.setCameraZoom(midZoomValue)
+            this.zoomOutCircleButtonView.setInteractable(true)
+         } else if (
+            this.cameraControlView.getCameraZoom() >= midZoomValue &&
+            this.cameraControlView.getCameraZoom() < this.cameraControlPod.maxCameraZoom
+         ) {
+            this.cameraControlView.setCameraZoom(this.cameraControlPod.maxCameraZoom)
+            this.zoomInCircleButtonView.setInteractable(false)
+         }
+      })
+
+      this.zoomOutCircleButtonView = new TownUICircleButtonView(this.scene)
+      this.zoomOutCircleButtonView.doInit(
+         0,
+         this.zoomButtonGroupBackground.y + zoomButtonOffsetY,
+         'zoom-out',
+         TownUIButtonType.Zoom
+      )
+      this.zoomOutCircleButtonView.setInteractable(false)
+      this.zoomOutCircleButtonView.onClick(() => {
+         if (
+            this.cameraControlView.getCameraZoom() <= midZoomValue &&
+            this.cameraControlView.getCameraZoom() > this.cameraControlPod.minCameraZoom
+         ) {
+            this.cameraControlView.setCameraZoom(this.cameraControlPod.minCameraZoom)
+            this.zoomOutCircleButtonView.setInteractable(false)
+         } else if (
+            this.cameraControlView.getCameraZoom() > midZoomValue &&
+            this.cameraControlView.getCameraZoom() <= this.cameraControlPod.maxCameraZoom
+         ) {
+            this.cameraControlView.setCameraZoom(midZoomValue)
+            this.zoomInCircleButtonView.setInteractable(true)
+         }
+      })
+
+      this.cameraControlView.zoomInButton = this.zoomInCircleButtonView
+      this.cameraControlView.zoomOutButton = this.zoomOutCircleButtonView
+
+      this.zoomButtonGroupContainer.add([
+         this.zoomButtonGroupBackground,
+         this.zoomInCircleButtonView,
+         this.zoomOutCircleButtonView,
+      ])
+      this.zoomButtonGroupContainer.setPosition(this.gameScreenWidth - 60, this.gameScreenHeight - 205)
+   }
+
    public doInit(camera: CameraControlView): void {
       this.townUIPod = PodProvider.instance.townUIPod
       this.townUIButtonNotificationManager = PodProvider.instance.townUIButtonNotificationManager
+      this.cameraControlPod = PodProvider.instance.cameraControlPod
       this.cameraControlView = camera
+
+      this.townUIMenuBackground = this.scene.add.nineslice(
+         this.gameScreenWidth / 2,
+         this.gameScreenHeight - 39,
+         'town-ui-menu-bg',
+         '',
+         this.gameScreenWidth,
+         77,
+         0,
+         0,
+         30,
+         0
+      )
 
       this.guideLineUIView = new GuideLineUIView(this.scene)
       this.guideLineUIView.doInit()

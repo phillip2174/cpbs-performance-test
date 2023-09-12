@@ -1,0 +1,34 @@
+
+sauce-bottle.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+sauce-bottle-body
+  rotate: true
+  xy: 2, 44
+  size: 91, 215
+  orig: 93, 218
+  offset: 1, 2
+  index: -1
+sauce-bottle-body2
+  rotate: false
+  xy: 2, 185
+  size: 61, 40
+  orig: 66, 56
+  offset: 3, 5
+  index: -1
+sauce-bottle-cap
+  rotate: false
+  xy: 65, 174
+  size: 64, 51
+  orig: 66, 56
+  offset: 1, 3
+  index: -1
+sauce-splash
+  rotate: true
+  xy: 131, 137
+  size: 88, 94
+  orig: 90, 96
+  offset: 1, 1
+  index: -1

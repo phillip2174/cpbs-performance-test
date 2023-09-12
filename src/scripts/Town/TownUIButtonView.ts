@@ -29,6 +29,7 @@ export class TownUIButtonView extends GameObjects.Container {
    private onClickUpButtonIconTween: Tweens.Tween
    private onClickUpButtonTextTween: Tweens.Tween
    private callback: Function
+   private holdCallback: Function
    private clickDelay: number
    private isOnClickDelay: boolean = false
    private isPointerDown: boolean = false
@@ -121,6 +122,17 @@ export class TownUIButtonView extends GameObjects.Container {
       }
    }
 
+   private onPointerOutOrOutside(): void {
+      if (this.isPointerDown) {
+         this.onClickUpButtonIconTween?.restart()
+         this.onClickUpButtonTextTween?.restart()
+         if (this.holdCallback != null && this.callback != null) {
+            this.callback()
+         }
+         this.isPointerDown = false
+      }
+   }
+
    private createButtonClickTweens(): void {
       this.onClickDownButtonIconTween = this.scene.tweens.add({
          targets:
@@ -190,6 +202,9 @@ export class TownUIButtonView extends GameObjects.Container {
          this.onClickDownButtonIconTween?.restart()
          this.onClickDownButtonTextTween?.restart()
 
+         if (this.holdCallback != null && !this.isOnClickDelay) {
+            this.holdCallback()
+         }
          this.isPointerDown = true
       })
 
@@ -207,6 +222,14 @@ export class TownUIButtonView extends GameObjects.Container {
             })
             this.isPointerDown = false
          }
+      })
+
+      this.backgroundButton.on('pointerout', () => {
+         this.onPointerOutOrOutside()
+      })
+
+      this.backgroundButton.on('pointerupoutside', () => {
+         this.onPointerOutOrOutside()
       })
    }
 
@@ -297,7 +320,7 @@ export class TownUIButtonView extends GameObjects.Container {
          .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
          .setText(buttonText)
          .setOrigin(0.5)
-         .setPosition(-0.5, 17)
+         .setPosition(-0.5, 23)
          .setStyle({ fill: '#585858', fontSize: 16 })
       this.add([this.backgroundButton, this.buttonIcon, this.buttonText])
    }
@@ -312,8 +335,9 @@ export class TownUIButtonView extends GameObjects.Container {
       this.setupMenuGroupButtonSubscribe()
    }
 
-   public onClick(callback: Function): void {
+   public onClick(callback: Function, holdCallback: Function = null): void {
       this.callback = callback
+      this.holdCallback = holdCallback
    }
 
    public doInit(

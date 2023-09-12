@@ -1,0 +1,69 @@
+
+cloud-ham.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Layer 3
+  rotate: false
+  xy: 2, 706
+  size: 310, 178
+  orig: 316, 201
+  offset: 3, 1
+  index: -1
+cloud
+  rotate: false
+  xy: 633, 620
+  size: 352, 227
+  orig: 354, 230
+  offset: 1, 1
+  index: -1
+ham1
+  rotate: true
+  xy: 275, 886
+  size: 99, 145
+  orig: 102, 148
+  offset: 2, 2
+  index: -1
+ham1 copy
+  rotate: true
+  xy: 128, 904
+  size: 81, 145
+  orig: 84, 148
+  offset: 2, 2
+  index: -1
+ham1a
+  rotate: false
+  xy: 749, 849
+  size: 172, 136
+  orig: 172, 136
+  offset: 0, 0
+  index: -1
+ham2
+  rotate: false
+  xy: 576, 851
+  size: 171, 134
+  orig: 173, 136
+  offset: 1, 1
+  index: -1
+ham3
+  rotate: false
+  xy: 422, 866
+  size: 152, 119
+  orig: 154, 121
+  offset: 1, 1
+  index: -1
+sd
+  rotate: true
+  xy: 2, 920
+  size: 65, 124
+  orig: 84, 148
+  offset: 10, 12
+  index: -1
+white
+  rotate: false
+  xy: 314, 640
+  size: 317, 209
+  orig: 319, 211
+  offset: 1, 1
+  index: -1

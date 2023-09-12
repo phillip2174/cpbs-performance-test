@@ -1,0 +1,76 @@
+
+cp-foodtruck.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+00
+  rotate: false
+  xy: 403, 409
+  size: 105, 101
+  orig: 107, 103
+  offset: 1, 1
+  index: -1
+9090
+  rotate: false
+  xy: 476, 302
+  size: 25, 105
+  orig: 25, 105
+  offset: 0, 0
+  index: -1
+CP
+  rotate: false
+  xy: 403, 366
+  size: 71, 41
+  orig: 73, 43
+  offset: 1, 1
+  index: -1
+CPF
+  rotate: false
+  xy: 403, 323
+  size: 71, 41
+  orig: 73, 43
+  offset: 1, 1
+  index: -1
+arm-and-phone
+  rotate: true
+  xy: 428, 306
+  size: 15, 18
+  orig: 17, 21
+  offset: 1, 2
+  index: -1
+body
+  rotate: false
+  xy: 403, 248
+  size: 23, 73
+  orig: 23, 74
+  offset: 0, 1
+  index: -1
+phone-light
+  rotate: false
+  xy: 503, 399
+  size: 7, 8
+  orig: 9, 10
+  offset: 1, 1
+  index: -1
+shadow
+  rotate: false
+  xy: 448, 309
+  size: 19, 12
+  orig: 21, 14
+  offset: 1, 1
+  index: -1
+shadowC
+  rotate: true
+  xy: 275, 246
+  size: 264, 126
+  orig: 267, 129
+  offset: 2, 1
+  index: -1
+truck
+  rotate: false
+  xy: 2, 273
+  size: 271, 237
+  orig: 273, 239
+  offset: 1, 1
+  index: -1

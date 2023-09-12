@@ -14,9 +14,9 @@ export class ObjectPlacementDebugger extends GameObjects.GameObject {
          gameObject.y = pointer.worldY
          console.log(
             'UI Canvas - GameObject Pos: ' +
-               (UIUtil.getCanvasWidth() - gameObject.x) +
+               (this.scene.cameras.main.width - gameObject.x) +
                ':' +
-               (UIUtil.getCanvasHeight() - gameObject.y)
+               (this.scene.cameras.main.height - gameObject.y)
          )
       })
    }

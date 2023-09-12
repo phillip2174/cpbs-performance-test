@@ -133,13 +133,18 @@
          },
          {
             "type": "image",
-            "key": "bg-town",
-            "url": "assets/town/bg-town.png"
+            "key": "city-bg",
+            "url": "assets/town/city-bg.png"
          },
          {
             "type": "image",
-            "key": "city-building",
-            "url": "assets/town/city-building.png"
+            "key": "city-building-day",
+            "url": "assets/town/city-building-day.png"
+         },
+         {
+            "type": "image",
+            "key": "city-building-night",
+            "url": "assets/town/city-building-night.png"
          },
          {
             "type": "image",
@@ -148,8 +153,13 @@
          },
          {
             "type": "image",
-            "key": "ground-town",
-            "url": "assets/town/ground-town.png"
+            "key": "city-floor-day",
+            "url": "assets/town/city-floor-day.png"
+         },
+         {
+            "type": "image",
+            "key": "city-floor-night",
+            "url": "assets/town/city-floor-night.png"
          },
          {
             "type": "image",
@@ -178,48 +188,48 @@
          },
          {
             "type": "image",
-            "key": "billboard-01",
-            "url": "assets/town/billboard1.png"
+            "key": "billboard-01-1",
+            "url": "assets/town/billboard1_1.png"
          },
          {
             "type": "image",
-            "key": "billboard-01-g",
-            "url": "assets/town/billboard1-g.png"
+            "key": "billboard-01-2",
+            "url": "assets/town/billboard1_2.png"
          },
          {
             "type": "image",
-            "key": "billboard-01-b",
-            "url": "assets/town/billboard1-b.png"
+            "key": "billboard-01-3",
+            "url": "assets/town/billboard1_3.png"
          },
          {
             "type": "image",
-            "key": "billboard-02",
-            "url": "assets/town/billboard2.png"
+            "key": "billboard-02-1",
+            "url": "assets/town/billboard2_1.png"
          },
          {
             "type": "image",
-            "key": "billboard-02-g",
-            "url": "assets/town/billboard2-g.png"
+            "key": "billboard-02-2",
+            "url": "assets/town/billboard2_2.png"
          },
          {
             "type": "image",
-            "key": "billboard-02-b",
-            "url": "assets/town/billboard2-b.png"
+            "key": "billboard-02-3",
+            "url": "assets/town/billboard2_3.png"
          },
          {
             "type": "image",
-            "key": "billboard-03",
-            "url": "assets/town/billboard3.png"
+            "key": "billboard-03-1",
+            "url": "assets/town/billboard3_1.png"
          },
          {
             "type": "image",
-            "key": "billboard-03-g",
-            "url": "assets/town/billboard3-g.png"
+            "key": "billboard-03-2",
+            "url": "assets/town/billboard3_2.png"
          },
          {
             "type": "image",
-            "key": "billboard-03-b",
-            "url": "assets/town/billboard3-b.png"
+            "key": "billboard-03-3",
+            "url": "assets/town/billboard3_3.png"
          },
          {
             "type": "image",
@@ -310,6 +320,31 @@
             "type": "image",
             "key": "cp-point-button-icon",
             "url": "assets/town/ui/cp-point-button-icon.png"
+         },
+         {
+            "type": "image",
+            "key": "zoom-circle-button-bg",
+            "url": "assets/town/ui/zoom-circle-button-bg.png"
+         },
+         {
+            "type": "image",
+            "key": "zoom-button-group-bg",
+            "url": "assets/town/ui/zoom-button-group-bg.png"
+         },
+         {
+            "type": "image",
+            "key": "zoom-in-button-icon",
+            "url": "assets/town/ui/zoom-in-button-icon.png"
+         },
+         {
+            "type": "image",
+            "key": "zoom-out-button-icon",
+            "url": "assets/town/ui/zoom-out-button-icon.png"
+         },
+         {
+            "type": "image",
+            "key": "town-ui-menu-bg",
+            "url": "assets/town/ui/town-ui-menu-bg.png"
          }
       ]
    }

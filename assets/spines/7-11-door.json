@@ -1,0 +1,48 @@
+{
+   "skeleton": {
+      "hash": "TRATFndQ56r4NE64lMn5du0Zglw",
+      "spine": "3.8.95",
+      "x": -17.19,
+      "y": -1.43,
+      "width": 36,
+      "height": 102,
+      "fps": 60,
+      "images": "./images/",
+      "audio": "D:/Work/PraNeat/2023/CPBS_GAME3895/CPBS_Q1/Q1/Q1_13"
+   },
+   "bones": [
+      { "name": "root" },
+      { "name": "All", "parent": "root" },
+      { "name": "bone2", "parent": "All", "rotation": -30, "x": -2.33, "y": 10.73 }
+   ],
+   "slots": [{ "name": "13_7-11-door", "bone": "bone2", "attachment": "13_7-11-door" }],
+   "skins": [
+      {
+         "name": "default",
+         "attachments": {
+            "13_7-11-door": { "13_7-11-door": { "x": -16.7, "y": 35.2, "rotation": 30, "width": 36, "height": 102 } }
+         }
+      }
+   ],
+   "animations": {
+      "idle1": {},
+      "idle2": { "bones": { "bone2": { "translate": [{ "x": 23.08, "y": -13.32 }] } } },
+      "interact1": {
+         "bones": {
+            "bone2": {
+               "translate": [
+                  { "curve": 0.25, "c3": 0.75 },
+                  { "time": 1.3333, "x": 23.08, "y": -13.32 }
+               ]
+            }
+         },
+         "drawOrder": [{ "time": 1.5 }]
+      },
+      "interact2": {
+         "bones": {
+            "bone2": { "translate": [{ "x": 23.08, "y": -13.32, "curve": 0.25, "c3": 0.75 }, { "time": 1.3333 }] }
+         },
+         "drawOrder": [{ "time": 1.5 }]
+      }
+   }
+}

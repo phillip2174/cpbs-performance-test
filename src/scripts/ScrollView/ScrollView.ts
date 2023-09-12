@@ -167,4 +167,31 @@ export class ScrollView extends GameObjects.GameObject {
    public getHeight(): number {
       return this.height
    }
+
+   public setInteractable(isInteractable: boolean): void {
+      if (isInteractable) {
+         this.scene.input.on('pointerup', () => {
+            if (this.isDrag) {
+               this.endScroll()
+            }
+         })
+
+         this.scene.input.on('dragend', () => {
+            if (this.isDrag) {
+               this.endScroll()
+            }
+         })
+
+         this.scene.input.on('pointerdown', (pointer) => {
+            if (this.inputArea.active && this.inputArea.getBounds().contains(pointer.x, pointer.y)) {
+               PodProvider.instance.cameraControlPod.setIsHoldingButton(true)
+               this.beginScroll(pointer)
+            }
+         })
+      } else {
+         this.scene.input.off('pointerup')
+         this.scene.input.off('dragend')
+         this.scene.input.off('pointerdown')
+      }
+   }
 }

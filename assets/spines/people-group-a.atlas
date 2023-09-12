@@ -1,0 +1,125 @@
+
+people-group-a.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm-low-l1
+  rotate: true
+  xy: 91, 114
+  size: 12, 13
+  orig: 14, 15
+  offset: 1, 1
+  index: -1
+arm-low-l2
+  rotate: true
+  xy: 74, 115
+  size: 11, 15
+  orig: 13, 17
+  offset: 1, 1
+  index: -1
+arm-low-l3
+  rotate: false
+  xy: 106, 114
+  size: 14, 12
+  orig: 18, 16
+  offset: 2, 2
+  index: -1
+arm-low-r1
+  rotate: false
+  xy: 2, 105
+  size: 13, 13
+  orig: 16, 15
+  offset: 1, 1
+  index: -1
+arm-low-r2
+  rotate: false
+  xy: 19, 118
+  size: 15, 8
+  orig: 17, 10
+  offset: 1, 1
+  index: -1
+arm-low-r3
+  rotate: true
+  xy: 39, 100
+  size: 14, 30
+  orig: 16, 32
+  offset: 1, 1
+  index: -1
+arm-up-l2
+  rotate: true
+  xy: 17, 103
+  size: 13, 20
+  orig: 15, 22
+  offset: 1, 1
+  index: -1
+arm-up-l3
+  rotate: true
+  xy: 2, 120
+  size: 6, 15
+  orig: 8, 17
+  offset: 1, 1
+  index: -1
+arm-up-r1
+  rotate: true
+  xy: 52, 116
+  size: 10, 20
+  orig: 12, 22
+  offset: 1, 1
+  index: -1
+arm-up-r2
+  rotate: true
+  xy: 71, 99
+  size: 14, 17
+  orig: 16, 19
+  offset: 1, 1
+  index: -1
+arm-up-r3
+  rotate: true
+  xy: 36, 118
+  size: 8, 14
+  orig: 11, 16
+  offset: 1, 1
+  index: -1
+body1
+  rotate: true
+  xy: 2, 80
+  size: 18, 61
+  orig: 23, 62
+  offset: 0, 1
+  index: -1
+body2
+  rotate: true
+  xy: 2, 59
+  size: 19, 62
+  orig: 20, 62
+  offset: 0, 0
+  index: -1
+body3
+  rotate: true
+  xy: 2, 36
+  size: 21, 75
+  orig: 21, 75
+  offset: 0, 0
+  index: -1
+head1
+  rotate: true
+  xy: 90, 96
+  size: 16, 18
+  orig: 18, 20
+  offset: 1, 1
+  index: -1
+head2
+  rotate: false
+  xy: 110, 92
+  size: 16, 20
+  orig: 19, 23
+  offset: 1, 2
+  index: -1
+shadow
+  rotate: true
+  xy: 79, 28
+  size: 66, 28
+  orig: 68, 30
+  offset: 1, 1
+  index: -1

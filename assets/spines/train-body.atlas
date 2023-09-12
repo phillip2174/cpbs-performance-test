@@ -1,0 +1,76 @@
+
+train-body.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+door1-left
+  rotate: true
+  xy: 422, 937
+  size: 22, 83
+  orig: 24, 85
+  offset: 1, 1
+  index: -1
+door1-left0
+  rotate: true
+  xy: 507, 937
+  size: 22, 85
+  orig: 24, 85
+  offset: 0, 0
+  index: -1
+door1-right
+  rotate: true
+  xy: 252, 938
+  size: 21, 83
+  orig: 23, 85
+  offset: 1, 1
+  index: -1
+door1-right0
+  rotate: true
+  xy: 2, 944
+  size: 15, 81
+  orig: 23, 85
+  offset: 4, 3
+  index: -1
+door2-lef
+  rotate: true
+  xy: 594, 937
+  size: 22, 83
+  orig: 24, 85
+  offset: 1, 1
+  index: -1
+door2-lef0
+  rotate: true
+  xy: 85, 943
+  size: 16, 81
+  orig: 24, 85
+  offset: 5, 3
+  index: -1
+door2-right
+  rotate: true
+  xy: 337, 938
+  size: 21, 83
+  orig: 23, 85
+  offset: 1, 1
+  index: -1
+door2-right0
+  rotate: true
+  xy: 168, 943
+  size: 16, 82
+  orig: 23, 85
+  offset: 1, 1
+  index: -1
+train-body
+  rotate: false
+  xy: 2, 2
+  size: 727, 486
+  orig: 735, 488
+  offset: 1, 1
+  index: -1
+train-shadow
+  rotate: false
+  xy: 2, 490
+  size: 730, 445
+  orig: 732, 447
+  offset: 1, 1
+  index: -1

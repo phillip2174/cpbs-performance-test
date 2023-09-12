@@ -1,0 +1,54 @@
+{
+   "skeleton": {
+      "hash": "m3OgtPpQGtKlBzHw1x1HTP8NcVI",
+      "spine": "3.8.95",
+      "x": -21.81,
+      "y": -1.75,
+      "width": 44,
+      "height": 39,
+      "fps": 60,
+      "images": "./images/",
+      "audio": "D:/Work/PraNeat/2023/CPBS_GAME3895/CPBS_Q1/Q1/Q1_17"
+   },
+   "bones": [
+      { "name": "root" },
+      { "name": "All", "parent": "root" },
+      { "name": "bone2", "parent": "All", "length": 15.22, "rotation": 90.64, "x": -0.86, "y": 9.23 },
+      { "name": "bone3", "parent": "bone2", "length": 11.48, "rotation": -4.06, "x": 14.44, "y": -8.37 }
+   ],
+   "slots": [
+      { "name": "tail", "bone": "bone3", "attachment": "tail" },
+      { "name": "body", "bone": "bone2", "attachment": "body" }
+   ],
+   "skins": [
+      {
+         "name": "default",
+         "attachments": {
+            "body": { "body": { "x": 4.51, "y": -1.09, "rotation": -90.64, "width": 44, "height": 31 } },
+            "tail": { "tail": { "x": 5.15, "y": -2.53, "rotation": -86.58, "width": 12, "height": 17 } }
+         }
+      }
+   ],
+   "animations": {
+      "animation": {
+         "bones": {
+            "bone2": {
+               "scale": [
+                  { "curve": 0.617, "c2": 1.38, "c3": 0.76, "c4": 1.2 },
+                  { "time": 0.8333, "x": 1.055, "curve": 0.617, "c2": 1.38, "c3": 0.76, "c4": 1.2 },
+                  { "time": 1.6667 }
+               ]
+            },
+            "bone3": {
+               "rotate": [
+                  { "curve": 0.672, "c2": 1.49, "c3": 0.775, "c4": 1.49 },
+                  { "time": 0.4167, "angle": 37.18, "curve": 0.672, "c2": 1.49, "c3": 0.775, "c4": 1.49 },
+                  { "time": 0.8333, "curve": 0.672, "c2": 1.49, "c3": 0.775, "c4": 1.49 },
+                  { "time": 1.25, "angle": 37.18, "curve": 0.672, "c2": 1.49, "c3": 0.775, "c4": 1.49 },
+                  { "time": 1.6667 }
+               ]
+            }
+         }
+      }
+   }
+}

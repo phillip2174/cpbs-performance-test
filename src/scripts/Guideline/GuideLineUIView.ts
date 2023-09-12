@@ -60,7 +60,9 @@ export class GuideLineUIView extends GameObjects.GameObject {
       //Need To Add Condition Checks For When All Found For Login First Time
       this.foundAllIngredientDisposable = PodProvider.instance.guideLineUIManager.isAllFound.subscribe((isAllFound) => {
          if (isAllFound) {
-            timer(600).subscribe((_) => {
+            this.guideLineScrollView?.setInteractable(false)
+            this.currentFoundIngredientCountText.setStyle({ fill: '#29CC6A' })
+            timer(800).subscribe((_) => {
                this.guideLineUI?.destroy()
                this.guideLineScrollView?.destroy()
                this.guideLineScrollView = undefined
@@ -94,15 +96,15 @@ export class GuideLineUIView extends GameObjects.GameObject {
       if (this.currentTimeGuideLineUICellViewList.length > 0) {
          this.guideLineUI = this.scene.add
             .nineslice(
-               UIUtil.getCanvasWidth() / 2,
-               UIUtil.getCanvasHeight() - 65,
+               this.scene.cameras.main.width / 2,
+               this.scene.cameras.main.height - 65,
                'guideline-bg',
                '',
                (this.currentTimeGuideLineUICellViewList.length >= this.getMaxGuidelineUILengthFromDeviceCheck()
                   ? !this.scene.sys.game.device.os.desktop
-                     ? 5.85
-                     : 7.85
-                  : this.currentTimeGuideLineUICellViewList.length + 0.85) * this.gridCellWidth,
+                     ? 5.25
+                     : 7.25
+                  : this.currentTimeGuideLineUICellViewList.length + 0.65) * this.gridCellWidth,
                105,
                35,
                35,
@@ -118,14 +120,14 @@ export class GuideLineUIView extends GameObjects.GameObject {
 
    private setupGuideLineScrollView() {
       if (this.currentTimeGuideLineUICellViewList.length > this.getMaxGuidelineUILengthFromDeviceCheck()) {
-         let scrollViewPosX = this.guideLineUI.x - this.guideLineUI.width / 2 + 20
+         let scrollViewPosX = this.guideLineUI.x - this.guideLineUI.width / 2 + 10
          let scrollViewPosY = this.guideLineUI.y - this.guideLineUI.height / 2 + 20
 
          this.guideLineScrollView = new ScrollView(
             this.scene,
             scrollViewPosX,
             scrollViewPosY,
-            this.guideLineUI.width - 45,
+            this.guideLineUI.width - 20,
             this.guideLineUI.height,
             5,
             this.gridCellWidth,
@@ -133,7 +135,9 @@ export class GuideLineUIView extends GameObjects.GameObject {
             1,
             0,
             this.gridCellWidth *
-               (this.currentTimeGuideLineUICellViewList.length - this.getMaxGuidelineUILengthFromDeviceCheck()),
+               (this.currentTimeGuideLineUICellViewList.length - this.getMaxGuidelineUILengthFromDeviceCheck()) -
+               this.getMaxGuidelineUILengthFromDeviceCheck() -
+               15,
             0
          )
       }
@@ -144,9 +148,9 @@ export class GuideLineUIView extends GameObjects.GameObject {
 
       Actions.GridAlign(this.currentTimeGuideLineUICellViewList, {
          position: Display.Align.LEFT_TOP,
-         cellWidth: this.gridCellWidth,
+         cellWidth: this.guideLineScrollView == undefined ? this.gridCellWidth : this.gridCellWidth - 2.5,
          cellHeight: this.gridCellHeight,
-         x: this.guideLineScrollView == undefined ? this.scene.cameras.main.centerX - this.gridCellOffset : 40,
+         x: this.guideLineScrollView == undefined ? this.scene.cameras.main.centerX - this.gridCellOffset : 32,
          y: this.guideLineScrollView == undefined ? this.guideLineUI.y + 10 : 40,
       })
 
@@ -190,8 +194,8 @@ export class GuideLineUIView extends GameObjects.GameObject {
          .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
          .setText('0')
          .setOrigin(0.5)
-         .setPosition(this.guideLineUI.x + this.guideLineUI.width / 3, this.guideLineUI.y - 38)
-         .setStyle({ fill: '#F19D63', fontSize: 25 })
+         .setPosition(this.guideLineUI.x + this.guideLineUI.width / 2 - 50, this.guideLineUI.y - 35)
+         .setStyle({ fill: '#F19D63', fontSize: 18 })
          .setDepth(4)
 
       this.maxIngredientCountText = TextAdapter.instance
@@ -199,10 +203,10 @@ export class GuideLineUIView extends GameObjects.GameObject {
          .setText('/' + maxIngredientCount)
          .setOrigin(0.5)
          .setPosition(
-            this.currentFoundIngredientCountText.x + (maxIngredientCount <= 9 ? 15 : 20),
+            this.currentFoundIngredientCountText.x + (maxIngredientCount <= 9 ? 12 : 17),
             this.currentFoundIngredientCountText.y
          )
-         .setStyle({ fill: '#A7A7A7', fontSize: 25 })
+         .setStyle({ fill: '#A7A7A7', fontSize: 18 })
          .setDepth(4)
    }
 

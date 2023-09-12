@@ -1,0 +1,104 @@
+
+clown.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm-low-l
+  rotate: true
+  xy: 37, 7
+  size: 15, 9
+  orig: 17, 12
+  offset: 1, 1
+  index: -1
+arm-low-r
+  rotate: false
+  xy: 28, 82
+  size: 13, 14
+  orig: 17, 17
+  offset: 2, 2
+  index: -1
+arm-up-l
+  rotate: false
+  xy: 28, 24
+  size: 9, 17
+  orig: 11, 19
+  offset: 1, 1
+  index: -1
+arm-up-r
+  rotate: false
+  xy: 21, 43
+  size: 13, 17
+  orig: 15, 21
+  offset: 1, 2
+  index: -1
+ball-b
+  rotate: true
+  xy: 22, 2
+  size: 12, 13
+  orig: 14, 15
+  offset: 1, 1
+  index: -1
+ball-r
+  rotate: false
+  xy: 28, 68
+  size: 12, 12
+  orig: 14, 14
+  offset: 1, 1
+  index: -1
+ball-y
+  rotate: false
+  xy: 36, 54
+  size: 12, 12
+  orig: 14, 14
+  offset: 1, 1
+  index: -1
+body
+  rotate: false
+  xy: 2, 92
+  size: 16, 34
+  orig: 18, 34
+  offset: 0, 0
+  index: -1
+head
+  rotate: true
+  xy: 2, 62
+  size: 28, 24
+  orig: 31, 26
+  offset: 1, 1
+  index: -1
+leg-low-l
+  rotate: false
+  xy: 20, 98
+  size: 13, 28
+  orig: 15, 30
+  offset: 1, 1
+  index: -1
+leg-low-r
+  rotate: false
+  xy: 2, 36
+  size: 17, 24
+  orig: 19, 27
+  offset: 1, 1
+  index: -1
+leg-up-l
+  rotate: true
+  xy: 2, 2
+  size: 8, 18
+  orig: 10, 20
+  offset: 1, 1
+  index: -1
+leg-up-r
+  rotate: false
+  xy: 17, 16
+  size: 9, 18
+  orig: 12, 21
+  offset: 2, 2
+  index: -1
+shadow
+  rotate: true
+  xy: 2, 12
+  size: 22, 13
+  orig: 24, 15
+  offset: 1, 1
+  index: -1

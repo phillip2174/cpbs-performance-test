@@ -1,0 +1,41 @@
+
+food-box.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: true
+  xy: 239, 187
+  size: 214, 162
+  orig: 216, 165
+  offset: 1, 2
+  index: -1
+cap-close
+  rotate: false
+  xy: 2, 250
+  size: 235, 151
+  orig: 235, 151
+  offset: 0, 0
+  index: -1
+cap-close copy
+  rotate: true
+  xy: 111, 15
+  size: 233, 101
+  orig: 235, 103
+  offset: 1, 1
+  index: -1
+cap-open
+  rotate: true
+  xy: 2, 15
+  size: 233, 107
+  orig: 235, 110
+  offset: 1, 2
+  index: -1
+cap-open3
+  rotate: false
+  xy: 214, 114
+  size: 187, 71
+  orig: 191, 74
+  offset: 3, 2
+  index: -1

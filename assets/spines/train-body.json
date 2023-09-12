@@ -1,0 +1,100 @@
+{
+   "skeleton": {
+      "hash": "LTE0/ENl3ggfZFU9RlMRe8lt6iA",
+      "spine": "3.8.95",
+      "x": -398.65,
+      "y": -127.74,
+      "width": 735,
+      "height": 498,
+      "fps": 60,
+      "images": "./images/",
+      "audio": "D:/Work/PraNeat/2023/CPBS_GAME3895/CPBS_Q1/Q1_01/Q1_01"
+   },
+   "bones": [
+      { "name": "root" },
+      { "name": "All", "parent": "root" },
+      { "name": "All2", "parent": "All", "rotation": 30, "y": 75.7 },
+      { "name": "bone", "parent": "All2", "length": 15.22, "x": -149.63, "y": 30.91 },
+      { "name": "bone2", "parent": "All2", "length": 15.22, "x": 108.34, "y": 29.74 },
+      { "name": "bone3", "parent": "All2", "length": 15.22, "rotation": 180, "x": -63.27, "y": 31.01 },
+      { "name": "bone4", "parent": "All2", "length": 15.22, "rotation": 180, "x": 193.84, "y": 29.46 }
+   ],
+   "slots": [
+      { "name": "train-shadow", "bone": "All2", "attachment": "train-shadow" },
+      { "name": "train-body", "bone": "All2", "attachment": "train-body" },
+      { "name": "door2-lef0", "bone": "All2", "attachment": "door2-lef0" },
+      { "name": "door2-right0", "bone": "All2", "attachment": "door2-right0" },
+      { "name": "door1-left0", "bone": "All2", "attachment": "door1-left0" },
+      { "name": "door1-right0", "bone": "All2", "attachment": "door1-right0" },
+      { "name": "door1-right", "bone": "bone3", "attachment": "door1-right" },
+      { "name": "door1-left", "bone": "bone", "attachment": "door1-left" },
+      { "name": "door2-right", "bone": "bone4", "attachment": "door2-right" },
+      { "name": "door2-lef", "bone": "bone2", "attachment": "door2-lef" }
+   ],
+   "skins": [
+      {
+         "name": "default",
+         "attachments": {
+            "door1-left": { "door1-left": { "x": 13.55, "y": 2.68, "rotation": -30, "width": 24, "height": 85 } },
+            "door1-left0": { "door1-left0": { "x": -130.74, "y": 32.69, "rotation": -30, "width": 24, "height": 85 } },
+            "door1-right": { "door1-right": { "x": 11.11, "y": -0.45, "rotation": 150, "width": 23, "height": 85 } },
+            "door1-right0": { "door1-right0": { "x": -74.38, "y": 31.46, "rotation": -30, "width": 23, "height": 85 } },
+            "door2-lef": { "door2-lef": { "x": 13.57, "y": 2.71, "rotation": -30, "width": 24, "height": 85 } },
+            "door2-lef0": { "door2-lef0": { "x": 121.32, "y": 31.42, "rotation": -30, "width": 24, "height": 85 } },
+            "door2-right": { "door2-right": { "x": 10.23, "y": -0.86, "rotation": 150, "width": 23, "height": 85 } },
+            "door2-right0": { "door2-right0": { "x": 183.86, "y": 30.74, "rotation": -30, "width": 23, "height": 85 } },
+            "train-body": { "train-body": { "x": -1.69, "y": 59.36, "rotation": -30, "width": 735, "height": 488 } },
+            "train-shadow": {
+               "train-shadow": { "x": -17.38, "y": 33.19, "rotation": -30, "width": 732, "height": 447 }
+            }
+         }
+      }
+   ],
+   "animations": {
+      "close": {
+         "bones": {
+            "bone4": { "translate": [{ "x": -20.71 }] },
+            "bone3": { "translate": [{ "x": -18.2 }] },
+            "bone2": { "translate": [{ "x": 18.57 }] },
+            "bone": { "translate": [{ "x": 20.71 }] }
+         }
+      },
+      "interact": {
+         "slots": {
+            "door1-left0": { "attachment": [{ "time": 1, "name": null }] },
+            "door1-right0": { "attachment": [{ "time": 1, "name": null }] },
+            "door2-lef0": { "attachment": [{ "time": 1, "name": null }] },
+            "door2-right0": { "attachment": [{ "time": 1, "name": null }] }
+         },
+         "bones": {
+            "bone4": { "translate": [{ "x": -20.71 }, { "time": 1.5 }] },
+            "bone3": { "translate": [{ "x": -18.2 }, { "time": 1.5 }] },
+            "bone2": { "translate": [{ "x": 18.57 }, { "time": 1.5 }] },
+            "bone": { "translate": [{ "x": 20.71 }, { "time": 1.5 }] }
+         },
+         "drawOrder": [{ "time": 3 }]
+      },
+      "interact2": {
+         "slots": {
+            "door1-left0": { "attachment": [{ "name": null }, { "time": 1.4167, "name": "door1-left0" }] },
+            "door1-right0": { "attachment": [{ "name": null }, { "time": 1.4167, "name": "door1-right0" }] },
+            "door2-lef0": { "attachment": [{ "name": null }, { "time": 1.4167, "name": "door2-lef0" }] },
+            "door2-right0": { "attachment": [{ "name": null }, { "time": 1.4167, "name": "door2-right0" }] }
+         },
+         "bones": {
+            "bone4": { "translate": [{}, { "time": 1.8333, "x": -20.71 }] },
+            "bone3": { "translate": [{}, { "time": 1.8333, "x": -18.2 }] },
+            "bone2": { "translate": [{}, { "time": 1.8333, "x": 18.57 }] },
+            "bone": { "translate": [{}, { "time": 1.8333, "x": 20.71 }] }
+         }
+      },
+      "open": {
+         "slots": {
+            "door1-left0": { "attachment": [{ "name": null }] },
+            "door1-right0": { "attachment": [{ "name": null }] },
+            "door2-lef0": { "attachment": [{ "name": null }] },
+            "door2-right0": { "attachment": [{ "name": null }] }
+         }
+      }
+   }
+}
