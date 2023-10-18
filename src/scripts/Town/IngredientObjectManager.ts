@@ -43,7 +43,7 @@ export class IngredientObjectManager {
             let resultIngredientObjectView = cloneIngredientObjectViews[randomIndexIngredientObject]
             let resultIngredientObjectNotFoundBean = cloneIngredientNotFounds[randomIngredientObjectNotFound]
 
-            resultIngredientObjectView.setFoundIngredient(resultIngredientObjectNotFoundBean.ingredientID)
+            resultIngredientObjectView.setFoundIngredient(resultIngredientObjectNotFoundBean.id)
 
             cloneIngredientObjectViews.splice(randomIndexIngredientObject, 1)
             cloneIngredientNotFounds.splice(randomIngredientObjectNotFound, 1)

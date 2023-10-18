@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    },
+    {
+        "id": 2,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    },
+    {
+        "id": 3,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    },
+    {
+        "id": 4,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    },
+    {
+        "id": 5,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    },
+    {
+        "id": 6,
+        "amount": 1,
+        "townTimeState": "Night",
+        "isFound": false
+    },
+    {
+        "id": 7,
+        "amount": 1,
+        "townTimeState": "Night",
+        "isFound": false
+    },
+    {
+        "id": 8,
+        "amount": 1,
+        "townTimeState": "Night",
+        "isFound": false
+    }
+]

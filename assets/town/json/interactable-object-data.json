@@ -1,0 +1,237 @@
+[
+    {
+        "id": 104,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "stand",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "move_damage",
+                "animTime": 750
+            },
+            {
+                "stateType": "End",
+                "animKey": "gameover",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 0,
+        "positionY": 700,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": -30,
+        "interactWidth": 50,
+        "interactHeight": 100,
+        "depth": 5,
+        "keyAsset": "Lays"
+    },
+    {
+        "id": 10,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 10800
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 420,
+        "positionY": 405,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": -66,
+        "interactY": -120,
+        "interactWidth": 50,
+        "interactHeight": 50,
+        "depth": 6,
+        "keyAsset": "7-11-cat",
+        "isDisableInteract": true
+    },
+    {
+        "id": 11,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 1666
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 890,
+        "positionY": 468,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 20,
+        "interactY": -40,
+        "interactWidth": 80,
+        "interactHeight": 90,
+        "depth": 5,
+        "keyAsset": "people-group-b"
+    },
+    {
+        "id": 12,
+        "typeAnimation": "Repeat",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 1000
+            },
+            {
+                "stateType": "End",
+                "animKey": "interact",
+                "animTime": 1000
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact",
+                "animTime": 12333
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 185,
+        "positionY": 635,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 5,
+        "interactY": -100,
+        "interactWidth": 275,
+        "interactHeight": 200,
+        "depth": 5,
+        "keyAsset": "cp-foodtruck"
+    },
+    {
+        "id": 13,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact-vending",
+                "animTime": 2000
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "SpriteSheet",
+        "positionX": 810,
+        "positionY": 340,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 80,
+        "interactHeight": 125,
+        "depth": 5,
+        "keyAsset": "vending-machine"
+    },
+    {
+        "id": 18,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 1167
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -490,
+        "positionY": 122,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -250,
+        "interactWidth": 160,
+        "interactHeight": 150,
+        "depth": 3,
+        "keyAsset": "tree"
+    },
+    {
+        "id": 21,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 333
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 333
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 690,
+        "positionY": 727,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 5,
+        "interactY": -45,
+        "interactWidth": 40,
+        "interactHeight": 60,
+        "depth": 4,
+        "keyAsset": "fire-hydrant"
+    }
+]

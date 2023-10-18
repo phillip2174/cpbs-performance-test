@@ -1,0 +1,245 @@
+{
+    "townload": {
+        "files": [
+            {
+                "type": "image",
+                "key": "mock-cp-town",
+                "url": "assets/town/map-cp-mock.jpg"
+            },
+            {
+                "type": "image",
+                "key": "check-mark",
+                "url": "assets/town/check-mark.png"
+            },
+            {
+                "type": "image",
+                "key": "efx_01",
+                "url": "assets/efx/efx_effect_01.png"
+            },
+            {
+                "type": "image",
+                "key": "efx_02",
+                "url": "assets/efx/efx_effect_02.png"
+            },
+            {
+                "type": "image",
+                "key": "city-bg",
+                "url": "assets/town/city-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "city-building",
+                "url": "assets/town/city-building.png"
+            },
+            {
+                "type": "image",
+                "key": "fence-day",
+                "url": "assets/town/fence-day.png"
+            },
+            {
+                "type": "image",
+                "key": "fence-night",
+                "url": "assets/town/fence-night.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-01",
+                "url": "assets/town/cloud-01.png"
+            },
+            {
+                "type": "image",
+                "key": "city-floor-day",
+                "url": "assets/town/city-floor-day.png"
+            },
+            {
+                "type": "image",
+                "key": "city-floor-night",
+                "url": "assets/town/city-floor-night.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-02",
+                "url": "assets/town/cloud-02.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-ham",
+                "url": "assets/town/cloud-ham.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-naruto",
+                "url": "assets/town/cloud-naruto.png"
+            },
+            {
+                "type": "image",
+                "key": "train-body",
+                "url": "assets/town/train-body.png"
+            },
+            {
+                "type": "image",
+                "key": "train-rail",
+                "url": "assets/town/train-rail.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-01-1",
+                "url": "assets/town/billboard1_1.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-01-2",
+                "url": "assets/town/billboard1_2.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-01-3",
+                "url": "assets/town/billboard1_3.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-02-1",
+                "url": "assets/town/billboard2_1.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-02-2",
+                "url": "assets/town/billboard2_2.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-02-3",
+                "url": "assets/town/billboard2_3.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-03-1",
+                "url": "assets/town/billboard3_1.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-03-2",
+                "url": "assets/town/billboard3_2.png"
+            },
+            {
+                "type": "image",
+                "key": "billboard-03-3",
+                "url": "assets/town/billboard3_3.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-01-01",
+                "url": "assets/town/3d_billboard/3d-billboard-01-01.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-01-02",
+                "url": "assets/town/3d_billboard/3d-billboard-01-02.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-01-03",
+                "url": "assets/town/3d_billboard/3d-billboard-01-03.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-01-04",
+                "url": "assets/town/3d_billboard/3d-billboard-01-04.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-01-plate-01",
+                "url": "assets/town/3d_billboard/3d-billboard-01-plate-01.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-02-01",
+                "url": "assets/town/3d_billboard/3d-billboard-02-01.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-02-02",
+                "url": "assets/town/3d_billboard/3d-billboard-02-02.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-02-03",
+                "url": "assets/town/3d_billboard/3d-billboard-02-03.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-02-04",
+                "url": "assets/town/3d_billboard/3d-billboard-02-04.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-02-plate-01",
+                "url": "assets/town/3d_billboard/3d-billboard-02-plate-01.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-03-01",
+                "url": "assets/town/3d_billboard/3d-billboard-02-01.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-03-02",
+                "url": "assets/town/3d_billboard/3d-billboard-02-02.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-03-03",
+                "url": "assets/town/3d_billboard/3d-billboard-02-03.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-03-04",
+                "url": "assets/town/3d_billboard/3d-billboard-02-04.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-03-plate-01",
+                "url": "assets/town/3d_billboard/3d-billboard-02-plate-01.png"
+            },
+            {
+                "type": "image",
+                "key": "3d-billboard-led-cp",
+                "url": "assets/town/3d_billboard/3d-billboard-led-cp.png"
+            },
+            {
+                "type": "image",
+                "key": "people-group-e",
+                "url": "assets/town/people-group-e.png"
+            },
+            {
+                "type": "spritesheet",
+                "key": "nong-som",
+                "url": "assets/town/nong-som.png",
+                "frameConfig": { "frameWidth": 26, "frameHeight": 28 }
+            },
+            {
+                "type": "spritesheet",
+                "key": "vending-machine",
+                "url": "assets/town/vending-machine.png",
+                "frameConfig": { "frameWidth": 60, "frameHeight": 125 }
+            },
+            {
+                "type": "image",
+                "key": "kitchen-bg",
+                "url": "assets/town/kitchen-bg-cropped.png"
+            },
+            {
+                "type": "spritesheet",
+                "key": "loading-cooking",
+                "url": "assets/town/loading-cooking.png",
+                "frameConfig": { "frameWidth": 200, "frameHeight": 200 }
+            },
+            {
+                "type": "spritesheet",
+                "key": "loading-text",
+                "url": "assets/town/loading-text.png",
+                "frameConfig": { "frameWidth": 37, "frameHeight": 20 }
+            }
+        ]
+    }
+}

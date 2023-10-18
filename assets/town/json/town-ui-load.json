@@ -1,0 +1,486 @@
+{
+    "town-ui-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "book-background-desktop",
+                "url": "assets/town/collection/book-background-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "book-background-mobile",
+                "url": "assets/town/collection/book-background-mobile.png"
+            },
+            {
+                "type": "image",
+                "key": "header-background",
+                "url": "assets/town/collection/header-background.png"
+            },
+            {
+                "type": "image",
+                "key": "icon-header",
+                "url": "assets/town/collection/icon-header.png"
+            },
+            {
+                "type": "image",
+                "key": "close-button",
+                "url": "assets/town/collection/close-button.png"
+            },
+            {
+                "type": "image",
+                "key": "scroll-bar-background",
+                "url": "assets/scrollview/scroll-bar-background.png"
+            },
+            {
+                "type": "image",
+                "key": "scroll-bar-content",
+                "url": "assets/scrollview/scroll-bar-content.png"
+            },
+            {
+                "type": "image",
+                "key": "scroll-bar",
+                "url": "assets/scrollview/scroll-bar.png"
+            },
+            {
+                "type": "image",
+                "key": "arrow-icon",
+                "url": "assets/scrollview/arrow-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "circle-button-background",
+                "url": "assets/scrollview/circle-button-background.png"
+            },
+            {
+                "type": "image",
+                "key": "effect-recipe",
+                "url": "assets/town/collection/effect-recipe.png"
+            },
+            {
+                "type": "image",
+                "key": "collection-card",
+                "url": "assets/town/collection/collection-card.png"
+            },
+            {
+                "type": "image",
+                "key": "tag-bg",
+                "url": "assets/town/collection/tag-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "thumbnail-bg",
+                "url": "assets/town/collection/thumbnail-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "secret-tag",
+                "url": "assets/town/collection/secret-tag.png"
+            },
+            {
+                "type": "image",
+                "key": "guideline-bg",
+                "url": "assets/town/ui/guideline-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient-slot",
+                "url": "assets/town/ui/ingredient-slot.png"
+            },
+            {
+                "type": "image",
+                "key": "timer-day",
+                "url": "assets/town/ui/timer-day.png"
+            },
+            {
+                "type": "image",
+                "key": "timer-night",
+                "url": "assets/town/ui/timer-night.png"
+            },
+            {
+                "type": "image",
+                "key": "day-icon",
+                "url": "assets/town/ui/day-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "night-icon",
+                "url": "assets/town/ui/night-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-button-bg-desktop",
+                "url": "assets/town/ui/ui-button-bg-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-button-bg-mobile",
+                "url": "assets/town/ui/ui-button-bg-mobile.png"
+            },
+            {
+                "type": "image",
+                "key": "button-notification",
+                "url": "assets/town/ui/button-notification.png"
+            },
+            {
+                "type": "image",
+                "key": "daily-login-button-icon",
+                "url": "assets/town/ui/daily-login-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-button-icon",
+                "url": "assets/town/ui/minigame-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "cooking-button-icon",
+                "url": "assets/town/ui/cooking-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-button-icon",
+                "url": "assets/town/ui/inventory-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "collections-button-icon",
+                "url": "assets/town/ui/collections-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "menu-group-button-icon",
+                "url": "assets/town/ui/menu-group-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-button-group-bg",
+                "url": "assets/town/ui/ui-button-group-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "setting-button-group-bg",
+                "url": "assets/town/ui/setting-button-group-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "close-button-bg",
+                "url": "assets/town/ui/close-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "close-button-icon",
+                "url": "assets/town/ui/close-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-circle-button-bg",
+                "url": "assets/town/ui/ui-circle-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "user-profile-button-icon",
+                "url": "assets/town/ui/user-profile-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "setting-button-icon",
+                "url": "assets/town/ui/setting-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-logo",
+                "url": "assets/town/ui/cp-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-brandsite-logo",
+                "url": "assets/town/ui/cp-brandsite-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-point-button-bg",
+                "url": "assets/town/ui/cp-point-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-point-hover-button-bg",
+                "url": "assets/town/ui/cp-point-hover-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-point-button-icon",
+                "url": "assets/town/ui/cp-point-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "zoom-circle-button-bg",
+                "url": "assets/town/ui/zoom-circle-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "zoom-button-group-bg",
+                "url": "assets/town/ui/zoom-button-group-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "zoom-in-button-icon",
+                "url": "assets/town/ui/zoom-in-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "zoom-out-button-icon",
+                "url": "assets/town/ui/zoom-out-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "town-ui-menu-bg",
+                "url": "assets/town/ui/town-ui-menu-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "mail-button-icon",
+                "url": "assets/town/ui/settings/mail-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "guide-button-icon",
+                "url": "assets/town/ui/settings/guide-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "sound-effect-on-button-icon",
+                "url": "assets/town/ui/settings/sound-effect-on-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "bg-music-on-button-icon",
+                "url": "assets/town/ui/settings/bg-music-on-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "sound-effect-off-button-icon",
+                "url": "assets/town/ui/settings/sound-effect-off-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "bg-music-off-button-icon",
+                "url": "assets/town/ui/settings/bg-music-off-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-city-button-icon",
+                "url": "assets/town/ui/cp-city-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "filter-bg",
+                "url": "assets/town/collection/filter-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "selected-filter-bg",
+                "url": "assets/town/collection/selected-filter-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "fade-scroll-bg",
+                "url": "assets/town/collection/fade-scroll-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "filter-bg-desktop",
+                "url": "assets/town/collection/filter-bg-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "selected-filter-bg-desktop",
+                "url": "assets/town/collection/selected-filter-bg-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "circle-effect",
+                "url": "assets/town/collection/details/circle-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "effect-bg",
+                "url": "assets/town/collection/details/effect-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "glow-effect",
+                "url": "assets/town/collection/details/glow-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "lid",
+                "url": "assets/town/collection/details/lid.png"
+            },
+            {
+                "type": "image",
+                "key": "plate",
+                "url": "assets/town/collection/details/plate.png"
+            },
+            {
+                "type": "image",
+                "key": "star-effect",
+                "url": "assets/town/collection/details/star-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "count-bg",
+                "url": "assets/town/collection/count-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-bg",
+                "url": "assets/town/inventory/inventory-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-icon-header",
+                "url": "assets/town/inventory/inventory-icon-header.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-scroll-view-bg",
+                "url": "assets/town/inventory/inventory-scroll-view-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "button-white-bg",
+                "url": "assets/town/collection/button-white-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "coin-reward-bg",
+                "url": "assets/town/collection/coin-reward-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "paper-bg",
+                "url": "assets/town/collection/details/paper-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "detail-header-icon",
+                "url": "assets/town/collection/details/detail-header-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "linkout-recipe-icon",
+                "url": "assets/town/collection/details/linkout-recipe-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "share-icon",
+                "url": "assets/town/collection/details/share-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "white-ingredient-bg",
+                "url": "assets/town/collection/white-ingredient-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "detail-cell",
+                "url": "assets/town/collection/details/detail-cell.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-all",
+                "url": "assets/town/inventory/inventory-filter-type-icon-all.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-meat",
+                "url": "assets/town/inventory/inventory-filter-type-icon-meat.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-vegetable",
+                "url": "assets/town/inventory/inventory-filter-type-icon-vegetable.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-freshfood",
+                "url": "assets/town/inventory/inventory-filter-type-icon-freshfood.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-sausage",
+                "url": "assets/town/inventory/inventory-filter-type-icon-sausage.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-condiment",
+                "url": "assets/town/inventory/inventory-filter-type-icon-condiment.png"
+            },
+            {
+                "type": "image",
+                "key": "inventory-filter-type-icon-noodle",
+                "url": "assets/town/inventory/inventory-filter-type-icon-noodle.png"
+            },
+            {
+                "type": "image",
+                "key": "is-cp-logo",
+                "url": "assets/town/collection/details/is-cp-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "cooking-bg-mobile",
+                "url": "assets/town/cooking/cooking-bg-mobile.png"
+            },
+            {
+                "type": "image",
+                "key": "cooking-bg-desktop",
+                "url": "assets/town/cooking/cooking-bg-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "cooking-icon-header",
+                "url": "assets/town/cooking/cooking-icon-header.png"
+            },
+            {
+                "type": "image",
+                "key": "white-bg-count",
+                "url": "assets/town/collection/white-bg-count.png"
+            },
+            {
+                "type": "image",
+                "key": "bonus-tag-bg",
+                "url": "assets/town/collection/details/bonus-tag-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "daily-login-header-icon",
+                "url": "assets/town/daily_login/daily-login-header-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "completed-icon",
+                "url": "assets/town/cooking/completed-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "daily-login-inner-bg",
+                "url": "assets/town/daily_login/daily-login-inner-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "daily-login-stamp",
+                "url": "assets/town/daily_login/daily-login-stamp.png"
+            },
+            {
+                "type": "image",
+                "key": "daily-login-collected-bg",
+                "url": "assets/town/daily_login/daily-login-collected-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "line-completed",
+                "url": "assets/town/cooking/line-completed.png"
+            }
+        ]
+    }
+}

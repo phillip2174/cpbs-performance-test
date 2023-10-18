@@ -51,19 +51,20 @@ export class SuccessIndicatorView extends GameObjects.Container {
             }
         })
 
-        this.setDepth(1000)
+        this.setDepth(100)
     }
 
     private spawnIngredient() {
         this.particle01Circle = this.scene.add.image(0, 0, 'efx_02').setScale(0)
 
-        this.particle02Circle = this.scene.add.image(0, 0, 'efx_01').setScale(0)
+        //this.particle02Circle = this.scene.add.image(0, 0, 'efx_01').setScale(0)
 
         this.ingredientImage = this.scene.add
-            .image(0, 0, SuccessIndicatorView.INGREDIENT_IMAGE_KEY + this.pod.ingredientBean.ingredientID)
-            .setScale(0.4)
+            .image(0, 0, SuccessIndicatorView.INGREDIENT_IMAGE_KEY + this.pod.ingredientBean.id)
+            .setDisplaySize(56, 56)
+            .setSize(56, 56)
 
-        this.add([this.particle01Circle, this.particle02Circle, this.ingredientImage])
+        this.add([this.particle01Circle, this.ingredientImage])
         //this.createMaskImage()
         this.tweenIngredient()
     }
@@ -108,7 +109,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
             duration: SuccessIndicatorView.DRAW_PARTICLE_TIME,
             props: {
                 y: { from: this.particle01Circle.y, to: this.particle01Circle.y - 37 },
-                scale: { from: this.particle01Circle.scale, to: 0.35 },
+                scale: { from: this.particle01Circle.scale, to: 1.5 },
             },
             onComplete: (x) => {
                 this.scene.add.tween({
@@ -123,28 +124,28 @@ export class SuccessIndicatorView extends GameObjects.Container {
             },
         })
 
-        this.scene.add.tween({
-            targets: this.particle02Circle,
-            ease: 'cubic.inout',
-            yoyo: false,
-            repeat: 0,
-            duration: SuccessIndicatorView.DRAW_PARTICLE_TIME,
-            props: {
-                y: { from: this.particle02Circle.y, to: this.particle02Circle.y - 37 },
-                scale: { from: this.particle02Circle.scale, to: 0.4 },
-            },
-            onComplete: (x) => {
-                this.scene.add.tween({
-                    targets: this.particle02Circle,
-                    ease: 'Linear',
-                    yoyo: false,
-                    repeat: 0,
-                    duration: 200,
-                    scale: 0,
-                    alpha: 0,
-                })
-            },
-        })
+        // this.scene.add.tween({
+        //     targets: this.particle02Circle,
+        //     ease: 'cubic.inout',
+        //     yoyo: false,
+        //     repeat: 0,
+        //     duration: SuccessIndicatorView.DRAW_PARTICLE_TIME,
+        //     props: {
+        //         y: { from: this.particle02Circle.y, to: this.particle02Circle.y - 37 },
+        //         scale: { from: this.particle02Circle.scale, to: 1 },
+        //     },
+        //     onComplete: (x) => {
+        //         this.scene.add.tween({
+        //             targets: this.particle02Circle,
+        //             ease: 'Linear',
+        //             yoyo: false,
+        //             repeat: 0,
+        //             duration: 200,
+        //             scale: 0,
+        //             alpha: 0,
+        //         })
+        //     },
+        // })
         //ingredientImage
         //Tween ingredientImage Scale and Move with shake and move down with remove tween Particle
         this.scene.add.tween({
@@ -154,7 +155,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
             repeat: 0,
             duration: SuccessIndicatorView.DRAW_SPAWN_TIME,
             props: {
-                scale: { from: 0, to: 0.5 },
+                scale: { from: 0, to: this.ingredientImage.scale + 0.15 },
                 alpha: { from: 0, to: 1 },
             },
             onComplete: () => {
@@ -177,7 +178,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
                     duration: SuccessIndicatorView.DRAW_SPAWN_MOVE_TIME,
                     props: {
                         y: { from: this.ingredientImage.y, to: this.ingredientImage.y - 37 },
-                        scale: { from: this.ingredientImage.scale, to: 0.6 },
+                        scale: { from: this.ingredientImage.scale + 0.15, to: this.ingredientImage.scale + 0.25 },
                     },
                     onComplete: () => {
                         shakeTween.stop()
@@ -269,7 +270,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
     }
 
     private drawCheckMark() {
-        this.checkmarkImage = this.scene.add.image(0, 0, 'check-mark').setScale(0)
+        this.checkmarkImage = this.scene.add.image(0, 0, 'check-mark')
 
         this.add([this.checkmarkImage])
 
@@ -284,7 +285,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
             repeat: 0,
             duration: SuccessIndicatorView.DRAW_CHECKMARK_TIME,
             props: {
-                scale: { from: 0, to: 0.04 },
+                scale: { from: 0, to: 1.5 },
             },
             onComplete: () => {
                 this.pod.changeState(SuccessIndicatorState.TweenGroupObject)

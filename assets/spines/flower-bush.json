@@ -1,0 +1,140 @@
+{
+    "skeleton": {
+        "hash": "z/9dvabScz1+ChBtyjwKJjnMDlE",
+        "spine": "3.8.95",
+        "x": -31.33,
+        "y": -0.1,
+        "width": 69.32,
+        "height": 64.88,
+        "fps": 60,
+        "images": "./images/",
+        "audio": "D:/Work/PraNeat/2023/CPBS_GAME3895/CPBS_Q1/Q1/Q1_42"
+    },
+    "bones": [
+        { "name": "root" },
+        { "name": "All", "parent": "root" },
+        { "name": "All6", "parent": "All" },
+        { "name": "All7", "parent": "All6", "length": 44.65, "rotation": 90, "y": 2.95 },
+        { "name": "All12", "parent": "All6", "x": 26.94, "y": 39.11 },
+        { "name": "All13", "parent": "All12", "y": 7.38 },
+        { "name": "All16", "parent": "All13" },
+        { "name": "All18", "parent": "All6", "x": -18.82, "y": 47.6 },
+        { "name": "All19", "parent": "All18", "y": 7.38 },
+        { "name": "All20", "parent": "All19" }
+    ],
+    "slots": [
+        { "name": "bush-m5", "bone": "All7", "attachment": "bush-m3" },
+        { "name": "leaf6", "bone": "All16", "attachment": "leaf" },
+        { "name": "leaf8", "bone": "All20", "attachment": "leaf" }
+    ],
+    "skins": [
+        {
+            "name": "default",
+            "attachments": {
+                "bush-m5": { "bush-m3": { "x": 23.95, "y": -0.67, "rotation": -90, "width": 64, "height": 54 } },
+                "leaf6": { "leaf": { "x": 0.86, "y": -0.19, "rotation": 16.79, "width": 18, "height": 11 } },
+                "leaf8": { "leaf": { "x": 0.86, "y": -0.19, "rotation": -40.01, "width": 18, "height": 11 } }
+            }
+        }
+    ],
+    "animations": {
+        "idle": {
+            "slots": {
+                "leaf6": { "color": [{ "color": "ffffff00" }] },
+                "leaf8": { "color": [{ "color": "ffffff00" }] }
+            },
+            "bones": { "All7": { "shear": [{ "x": 2.45 }] } }
+        },
+        "interact": {
+            "slots": {
+                "leaf6": {
+                    "color": [
+                        { "color": "ffffff00", "curve": "stepped" },
+                        { "time": 0.1333, "color": "ffffff00" },
+                        { "time": 0.4333, "color": "ffffffff", "curve": "stepped" },
+                        { "time": 0.8833, "color": "ffffffff" },
+                        { "time": 1.25, "color": "ffffff00" }
+                    ]
+                },
+                "leaf8": {
+                    "color": [
+                        { "color": "ffffff00", "curve": 0.25, "c3": 0.75 },
+                        { "time": 0.25, "color": "ffffffff", "curve": "stepped" },
+                        { "time": 0.6333, "color": "ffffffff" },
+                        { "time": 0.95, "color": "ffffff00" }
+                    ]
+                }
+            },
+            "bones": {
+                "All7": {
+                    "shear": [
+                        { "x": 2.45, "curve": 0.382, "c2": 0.57, "c3": 0.735 },
+                        { "time": 0.05, "x": 3.42, "curve": 0.25, "c3": 0.75 },
+                        { "time": 0.2167, "x": -4.85, "curve": 0.25, "c3": 0.75 },
+                        { "time": 0.3833, "x": 3.42, "curve": 0.25, "c3": 0.75 },
+                        { "time": 0.55, "curve": 0.243, "c3": 0.649, "c4": 0.6 },
+                        { "time": 0.6667, "x": 2.45 }
+                    ]
+                },
+                "All13": {
+                    "translate": [
+                        { "time": 0.1333, "curve": 0.26, "c3": 0.618, "c4": 0.45 },
+                        { "time": 0.55, "y": -14.64, "curve": 0.36, "c2": 0.43, "c3": 0.756 },
+                        { "time": 1.25, "y": -42.8, "curve": "stepped" },
+                        { "time": 1.5 }
+                    ]
+                },
+                "All16": {
+                    "rotate": [
+                        { "time": 0.1333, "curve": 0.26, "c3": 0.618, "c4": 0.45 },
+                        { "time": 0.55, "angle": 25.24, "curve": 0.36, "c2": 0.43, "c3": 0.756 },
+                        { "time": 1.25, "angle": 73.8, "curve": "stepped" },
+                        { "time": 1.5 }
+                    ],
+                    "translate": [
+                        { "time": 0.1333, "curve": 0.26, "c3": 0.618, "c4": 0.45 },
+                        { "time": 0.55, "x": 4.04, "curve": 0.36, "c2": 0.43, "c3": 0.756 },
+                        { "time": 1.25, "x": 11.81, "curve": "stepped" },
+                        { "time": 1.5 }
+                    ]
+                },
+                "All20": {
+                    "rotate": [
+                        { "curve": 0.246, "c3": 0.634, "c4": 0.54 },
+                        { "time": 0.95, "angle": -22.86, "curve": "stepped" },
+                        { "time": 1.1333 }
+                    ],
+                    "translate": [
+                        { "curve": 0.246, "c3": 0.634, "c4": 0.54 },
+                        { "time": 0.55, "x": -11.18, "curve": 0.381, "c2": 0.54, "c3": 0.744 },
+                        { "time": 0.95, "x": -18.45, "curve": "stepped" },
+                        { "time": 1.1333 }
+                    ]
+                },
+                "All19": {
+                    "translate": [
+                        { "curve": 0.246, "c3": 0.634, "c4": 0.54 },
+                        { "time": 0.55, "y": -27.72, "curve": 0.381, "c2": 0.54, "c3": 0.744 },
+                        { "time": 0.95, "y": -45.76, "curve": "stepped" },
+                        { "time": 1.1333 }
+                    ]
+                },
+                "All18": {
+                    "translate": [
+                        { "curve": 0.27, "c2": 0.77, "c3": 0.75 },
+                        { "time": 0.75, "y": 20.46, "curve": 0.27, "c2": 0.77, "c3": 0.75 },
+                        { "time": 1.5 }
+                    ]
+                },
+                "All12": {
+                    "translate": [
+                        { "curve": 0.25, "c3": 0.75 },
+                        { "time": 0.75, "y": 25.74, "curve": 0.25, "c3": 0.75 },
+                        { "time": 1.5 }
+                    ]
+                },
+                "All": { "shear": [{ "time": 1.6667 }] }
+            }
+        }
+    }
+}

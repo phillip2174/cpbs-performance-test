@@ -1,0 +1,243 @@
+{
+    "skeleton": {
+        "hash": "p/A92w3hD7l37aJGaYWFS4aAiFc",
+        "spine": "3.8.95",
+        "x": -135.51,
+        "y": -36.51,
+        "width": 386,
+        "height": 455,
+        "fps": 60,
+        "images": "./images/",
+        "audio": "D:/Work/PraNeat/2023/CPBS_GAME3895/CPBS_Q1/Q1/Q1_30"
+    },
+    "bones": [
+        { "name": "root" },
+        { "name": "All", "parent": "root" },
+        { "name": "All12", "parent": "All", "x": 1.27, "y": 65.22 },
+        { "name": "All2", "parent": "All12", "x": -85.06, "y": 92.88 },
+        { "name": "All3", "parent": "All2", "x": 20.54, "y": 19.04 },
+        { "name": "All4", "parent": "All2", "x": -17.53, "y": -20.54 },
+        { "name": "All5", "parent": "All12", "x": 14.17, "y": 90.09 },
+        { "name": "All6", "parent": "All5", "rotation": 55.67, "x": 41.65, "y": 57.67 },
+        { "name": "All7", "parent": "All5", "rotation": 55.67, "x": -3.2, "y": 41.65 },
+        { "name": "All8", "parent": "All5", "x": -11.77, "y": 92.54 },
+        { "name": "All9", "parent": "All8", "length": 145.78, "rotation": 90 },
+        { "name": "All10", "parent": "All5", "x": -17.38, "y": 92.54 },
+        { "name": "All11", "parent": "All10", "length": 145.78, "rotation": 90 },
+        { "name": "All13", "parent": "All12", "x": -0.83, "y": 45.34 },
+        { "name": "All14", "parent": "All13", "x": 20.54, "y": 19.04 },
+        { "name": "All15", "parent": "All13", "x": -17.53, "y": -20.54 },
+        { "name": "All16", "parent": "All12", "x": 89.25, "y": -8.87 },
+        { "name": "All17", "parent": "All16", "x": 20.54, "y": 19.04 },
+        { "name": "All18", "parent": "All16", "x": -17.53, "y": -20.54 }
+    ],
+    "slots": [
+        { "name": "mirror", "bone": "All12", "attachment": "mirror" },
+        { "name": "light", "bone": "All2", "attachment": "light" },
+        { "name": "light2", "bone": "All13", "attachment": "light" },
+        { "name": "light3", "bone": "All16", "attachment": "light" },
+        { "name": "body", "bone": "All12", "attachment": "body" },
+        { "name": "hotdog4", "bone": "All5", "attachment": "hotdog4" },
+        { "name": "hotdog3", "bone": "All5", "attachment": "hotdog3" },
+        { "name": "hotdog2", "bone": "All5", "attachment": "hotdog2" },
+        { "name": "hotdog1", "bone": "All6", "attachment": "hotdog1" },
+        { "name": "hotdog", "bone": "All7", "attachment": "hotdog" },
+        { "name": "smoke", "bone": "All11", "attachment": "smoke" },
+        { "name": "smoke2", "bone": "All9", "attachment": "smoke2" }
+    ],
+    "skins": [
+        {
+            "name": "default",
+            "attachments": {
+                "body": { "body": { "x": 58.22, "y": 45.27, "width": 380, "height": 294 } },
+                "hotdog": { "hotdog": { "x": 33.02, "y": -35.88, "rotation": -55.67, "width": 284, "height": 127 } },
+                "hotdog1": { "hotdog1": { "x": 6, "y": -7.88, "rotation": -55.67, "width": 219, "height": 170 } },
+                "hotdog2": { "hotdog2": { "x": 13.54, "y": 21.68, "width": 329, "height": 195 } },
+                "hotdog3": { "hotdog3": { "x": 49.55, "y": 52.18, "width": 343, "height": 220 } },
+                "hotdog4": { "hotdog4": { "x": 85.04, "y": 41.68, "width": 300, "height": 225 } },
+                "light": {
+                    "light": {
+                        "type": "mesh",
+                        "uvs": [
+                            1, 0.16757, 1, 0.26557, 0.39395, 1, 0.29128, 1, 0, 0.79683, 0, 0.72978, 0.62261, 0, 0.72578,
+                            0
+                        ],
+                        "triangles": [7, 0, 1, 1, 2, 6, 1, 6, 7, 3, 4, 5, 5, 2, 3, 6, 2, 5],
+                        "vertices": [
+                            1, 4, 12.74, -1.2, 1, 1, 4, 12.74, -6.79, 1, 1, 5, 12.63, -9.07, 1, 1, 5, 6.17, -9.07, 1, 1,
+                            5, -12.18, 2.51, 1, 1, 5, -12.18, 6.33, 1, 1, 4, -11.04, 8.35, 1, 1, 4, -4.54, 8.35, 1
+                        ],
+                        "hull": 8,
+                        "edges": [14, 0, 8, 6, 4, 6, 0, 2, 4, 2, 12, 14, 8, 10, 12, 10],
+                        "width": 63,
+                        "height": 57
+                    }
+                },
+                "light2": {
+                    "light": {
+                        "type": "mesh",
+                        "uvs": [
+                            1, 0.16757, 1, 0.26557, 0.39395, 1, 0.29128, 1, 0, 0.79683, 0, 0.72978, 0.62261, 0, 0.72578,
+                            0
+                        ],
+                        "triangles": [7, 0, 1, 1, 2, 6, 1, 6, 7, 3, 4, 5, 5, 2, 3, 6, 2, 5],
+                        "vertices": [
+                            1, 14, 12.74, -1.2, 1, 1, 14, 12.74, -6.79, 1, 1, 15, 12.63, -9.07, 1, 1, 15, 6.17, -9.07,
+                            1, 1, 15, -12.18, 2.51, 1, 1, 15, -12.18, 6.33, 1, 1, 14, -11.04, 8.35, 1, 1, 14, -4.54,
+                            8.35, 1
+                        ],
+                        "hull": 8,
+                        "edges": [14, 0, 8, 6, 4, 6, 0, 2, 4, 2, 12, 14, 8, 10, 12, 10],
+                        "width": 63,
+                        "height": 57
+                    }
+                },
+                "light3": {
+                    "light": {
+                        "type": "mesh",
+                        "uvs": [
+                            1, 0.16757, 1, 0.26557, 0.39395, 1, 0.29128, 1, 0, 0.79683, 0, 0.72978, 0.62261, 0, 0.72578,
+                            0
+                        ],
+                        "triangles": [7, 0, 1, 1, 2, 6, 1, 6, 7, 3, 4, 5, 5, 2, 3, 6, 2, 5],
+                        "vertices": [
+                            1, 17, 12.74, -1.2, 1, 1, 17, 12.74, -6.79, 1, 1, 18, 12.63, -9.07, 1, 1, 18, 6.17, -9.07,
+                            1, 1, 18, -12.18, 2.51, 1, 1, 18, -12.18, 6.33, 1, 1, 17, -11.04, 8.35, 1, 1, 17, -4.54,
+                            8.35, 1
+                        ],
+                        "hull": 8,
+                        "edges": [14, 0, 8, 6, 4, 6, 0, 2, 4, 2, 12, 14, 8, 10, 12, 10],
+                        "width": 63,
+                        "height": 57
+                    }
+                },
+                "mirror": { "mirror": { "x": 11.22, "y": 36.27, "width": 266, "height": 220 } },
+                "smoke": { "smoke": { "x": 79.64, "y": -1.92, "rotation": -90, "width": 141, "height": 182 } },
+                "smoke2": { "smoke2": { "x": 79.64, "y": 3.68, "rotation": -90, "width": 141, "height": 182 } }
+            }
+        }
+    ],
+    "animations": {
+        "idle": {
+            "slots": {
+                "light": {
+                    "color": [
+                        { "time": 0.3333, "color": "ffffffff" },
+                        { "time": 0.9, "color": "ffffff00", "curve": "stepped" },
+                        { "time": 2.3333, "color": "ffffff00" },
+                        { "time": 3.1667, "color": "ffffffff" }
+                    ]
+                },
+                "light2": {
+                    "color": [
+                        { "color": "ffffff00", "curve": "stepped" },
+                        { "time": 1.3333, "color": "ffffff00" },
+                        { "time": 2.1667, "color": "ffffffff", "curve": "stepped" },
+                        { "time": 3.3333, "color": "ffffffff" },
+                        { "time": 3.9, "color": "ffffff00" }
+                    ]
+                },
+                "light3": {
+                    "color": [
+                        { "color": "ffffff00" },
+                        { "time": 0.8333, "color": "ffffffff", "curve": "stepped" },
+                        { "time": 2, "color": "ffffffff" },
+                        { "time": 2.5667, "color": "ffffff00" }
+                    ]
+                },
+                "smoke": {
+                    "color": [
+                        { "color": "ffffff00" },
+                        { "time": 0.8, "color": "ffffffff", "curve": "stepped" },
+                        { "time": 1.2667, "color": "ffffffff" },
+                        { "time": 2.1667, "color": "ffffff00" }
+                    ]
+                },
+                "smoke2": {
+                    "color": [
+                        { "color": "ffffff2f" },
+                        { "time": 0.1667, "color": "ffffff00", "curve": "stepped" },
+                        { "time": 2, "color": "ffffff00" },
+                        { "time": 2.8, "color": "ffffffff", "curve": "stepped" },
+                        { "time": 3.2667, "color": "ffffffff" },
+                        { "time": 4, "color": "ffffff2f" }
+                    ]
+                }
+            },
+            "bones": {
+                "All2": {
+                    "translate": [
+                        { "x": 3.58, "y": -7.77 },
+                        { "time": 1.5333, "x": -29.19, "y": 15.01, "curve": "stepped" },
+                        { "time": 2.3333, "x": 39.2, "y": -32.53 },
+                        { "time": 4, "x": 3.58, "y": -7.77 }
+                    ]
+                },
+                "All13": {
+                    "translate": [
+                        { "x": -17.79, "y": 7.09 },
+                        { "time": 0.5333, "x": -29.19, "y": 15.01, "curve": "stepped" },
+                        { "time": 1.3333, "x": 39.2, "y": -32.53 },
+                        { "time": 4, "x": -17.79, "y": 7.09 }
+                    ]
+                },
+                "All16": {
+                    "translate": [
+                        { "x": 39.2, "y": -32.53 },
+                        { "time": 3.2, "x": -29.19, "y": 15.01, "curve": "stepped" },
+                        { "time": 4, "x": 39.2, "y": -32.53 }
+                    ]
+                },
+                "All5": {
+                    "scale": [
+                        { "y": 1.039, "curve": 0.301, "c2": 0.21, "c3": 0.756 },
+                        { "time": 0.85, "curve": 0.25, "c3": 0.75 },
+                        { "time": 1.8667, "y": 1.042, "curve": 0.25, "c3": 0.75 },
+                        { "time": 2.85, "curve": 0.25, "c3": 0.75 },
+                        { "time": 3.8667, "y": 1.042, "curve": 0.297, "c3": 0.634, "c4": 0.37 },
+                        { "time": 4, "y": 1.039 }
+                    ],
+                    "shear": [
+                        { "x": 0.48, "curve": 0.364, "c2": 0.45, "c3": 0.755 },
+                        { "time": 0.6, "x": 1.27, "curve": 0.25, "c3": 0.75 },
+                        { "time": 1.5833, "curve": 0.25, "c3": 0.75 },
+                        { "time": 2.6, "x": 1.27, "curve": 0.25, "c3": 0.75 },
+                        { "time": 3.5833, "curve": 0.257, "c3": 0.619, "c4": 0.46 },
+                        { "time": 4, "x": 0.48 }
+                    ]
+                },
+                "All7": {
+                    "scale": [
+                        { "y": 1.018, "curve": 0.333, "c2": 0.33, "c3": 0.758 },
+                        { "time": 0.7, "curve": 0.25, "c3": 0.75 },
+                        { "time": 1.6333, "y": 1.023, "curve": 0.25, "c3": 0.75 },
+                        { "time": 2.7, "curve": 0.25, "c3": 0.75 },
+                        { "time": 3.7667, "y": 1.023, "curve": 0.276, "c3": 0.621, "c4": 0.4 },
+                        { "time": 4, "y": 1.018 }
+                    ]
+                },
+                "All6": {
+                    "scale": [
+                        { "y": 1.017, "curve": 0.344, "c2": 0.37, "c3": 0.757 },
+                        { "time": 0.75, "curve": 0.25, "c3": 0.75 },
+                        { "time": 1.8167, "y": 1.023, "curve": 0.25, "c3": 0.75 },
+                        { "time": 2.75, "curve": 0.25, "c3": 0.75 },
+                        { "time": 3.6833, "y": 1.023, "curve": 0.269, "c3": 0.618, "c4": 0.42 },
+                        { "time": 4, "y": 1.017 }
+                    ]
+                },
+                "All11": {
+                    "scale": [{ "x": 0.699 }, { "time": 2.4333, "curve": "stepped" }, { "time": 4, "x": 0.699 }]
+                },
+                "All9": {
+                    "scale": [
+                        { "x": 0.946 },
+                        { "time": 0.4333, "curve": "stepped" },
+                        { "time": 2, "x": 0.699 },
+                        { "time": 4, "x": 0.946 }
+                    ]
+                }
+            }
+        }
+    }
+}

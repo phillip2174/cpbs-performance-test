@@ -1,0 +1,801 @@
+[
+    {
+        "id": 101,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "stand",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "jump_damage",
+                "animTime": 750
+            },
+            {
+                "stateType": "End",
+                "animKey": "gameover",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 0,
+        "positionY": 200,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": -30,
+        "interactWidth": 50,
+        "interactHeight": 100,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "Lays"
+    },
+    {
+        "id": 102,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "stand",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "jump_damage",
+                "animTime": 750
+            },
+            {
+                "stateType": "End",
+                "animKey": "gameover",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "jump_damage",
+                "animTime": 750
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -200,
+        "positionY": 320,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": -30,
+        "interactWidth": 50,
+        "interactHeight": 100,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "Lays"
+    },
+    {
+        "id": 103,
+        "typeAnimation": "Repeat",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "stand",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "slide_damage",
+                "animTime": 300
+            },
+            {
+                "stateType": "End",
+                "animKey": "jump_damage",
+                "animTime": 750
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "slide_damage",
+                "animTime": 300
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 0,
+        "positionY": 360,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": -30,
+        "interactWidth": 50,
+        "interactHeight": 100,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "Lays"
+    },
+    {
+        "id": 1,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -155,
+        "positionY": -125,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": -15,
+        "interactY": -120,
+        "interactWidth": 300,
+        "interactHeight": 182,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "cloud-ham"
+    },
+    {
+        "id": 2,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": -208,
+        "positionY": 630,
+        "scaleX": 0.3,
+        "scaleY": 0.3,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 30,
+        "interactHeight": 30,
+        "depth": 7,
+        "isRandomizable": true,
+        "keyAsset": ""
+    },
+    {
+        "id": 3,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": 260,
+        "positionY": 370,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 30,
+        "interactHeight": 30,
+        "depth": 4,
+        "isRandomizable": true,
+        "keyAsset": ""
+    },
+    {
+        "id": 4,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": 543,
+        "positionY": 445,
+        "scaleX": 0.25,
+        "scaleY": 0.25,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 30,
+        "interactHeight": 30,
+        "depth": 4,
+        "isRandomizable": true,
+        "keyAsset": ""
+    },
+    {
+        "id": 5,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": 0,
+        "positionY": 680,
+        "scaleX": 0.5,
+        "scaleY": 0.5,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 30,
+        "interactHeight": 30,
+        "depth": 4,
+        "isRandomizable": true,
+        "keyAsset": ""
+    },
+    {
+        "id": 6,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 580
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 1000
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 123,
+        "positionY": -350,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -105,
+        "interactWidth": 85,
+        "interactHeight": 215,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "sauce-bottle"
+    },
+    {
+        "id": 7,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 1000
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 1000
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 530,
+        "positionY": -115,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 5,
+        "interactY": -85,
+        "interactWidth": 200,
+        "interactHeight": 150,
+        "depth": 6,
+        "isRandomizable": false,
+        "keyAsset": "food-box"
+    },
+    {
+        "id": 8,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 1333
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 1333
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 178,
+        "positionY": 335,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 5,
+        "interactY": -50,
+        "interactWidth": 120,
+        "interactHeight": 90,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "makro-door"
+    },
+    {
+        "id": 9,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 1500
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 1500
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 440,
+        "positionY": 490,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 15,
+        "interactY": -40,
+        "interactWidth": 75,
+        "interactHeight": 100,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "7-11-door"
+    },
+    {
+        "id": 14,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": 355,
+        "positionY": 280,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 30,
+        "interactHeight": 30,
+        "depth": 5,
+        "isRandomizable": true,
+        "keyAsset": ""
+    },
+    {
+        "id": 15,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 500
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -615,
+        "positionY": 572,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 5,
+        "interactY": -95,
+        "interactWidth": 90,
+        "interactHeight": 120,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "red-umbrella"
+    },
+    {
+        "id": 16,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle1",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact1",
+                "animTime": 667
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle2",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "interact2",
+                "animTime": 667
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -792,
+        "positionY": 458,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 5,
+        "interactY": -95,
+        "interactWidth": 90,
+        "interactHeight": 120,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "red-umbrella-with-people"
+    },
+    {
+        "id": 17,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 1167
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -825,
+        "positionY": 310,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -200,
+        "interactWidth": 160,
+        "interactHeight": 260,
+        "depth": 3,
+        "isRandomizable": false,
+        "keyAsset": "tree"
+    },
+    {
+        "id": 19,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 1167
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -60,
+        "positionY": 180,
+        "scaleX": 1.15,
+        "scaleY": 1.15,
+        "interactX": -10,
+        "interactY": -230,
+        "interactWidth": 160,
+        "interactHeight": 300,
+        "depth": 3,
+        "isRandomizable": false,
+        "keyAsset": "tree"
+    },
+    {
+        "id": 20,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 1167
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": 790,
+        "positionY": 328,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -200,
+        "interactWidth": 160,
+        "interactHeight": 260,
+        "depth": 3,
+        "isRandomizable": false,
+        "keyAsset": "tree"
+    },
+    {
+        "id": 22,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 400
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -135,
+        "positionY": 280,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -28,
+        "interactWidth": 60,
+        "interactHeight": 55,
+        "depth": 5,
+        "isRandomizable": false,
+        "keyAsset": "flower-bush"
+    },
+    {
+        "id": 23,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 400
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -90,
+        "positionY": 300,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -28,
+        "interactWidth": 60,
+        "interactHeight": 55,
+        "depth": 6,
+        "isRandomizable": false,
+        "keyAsset": "flower-bush"
+    },
+    {
+        "id": 24,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 400
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -50,
+        "positionY": 275,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -28,
+        "interactWidth": 60,
+        "interactHeight": 55,
+        "depth": 5,
+        "isRandomizable": false,
+        "keyAsset": "flower-bush"
+    },
+    {
+        "id": 25,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "idle",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "interact",
+                "animTime": 400
+            },
+            {
+                "stateType": "End",
+                "animKey": "idle",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Spine",
+        "positionX": -10,
+        "positionY": 255,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": -28,
+        "interactWidth": 60,
+        "interactHeight": 55,
+        "depth": 4,
+        "isRandomizable": false,
+        "keyAsset": "flower-bush"
+    },
+    {
+        "id": 99,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": -830,
+        "positionY": -210,
+        "scaleX": 0.3,
+        "scaleY": 0.3,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 40,
+        "interactHeight": 40,
+        "depth": 4,
+        "isRandomizable": true,
+        "keyAsset": ""
+    }
+]

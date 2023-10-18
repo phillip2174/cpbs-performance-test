@@ -1,0 +1,37 @@
+{
+    "recipe-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "secret-recipe",
+                "url": "assets/town/recipe/secret-recipe.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-1",
+                "url": "assets/town/recipe/recipe-1.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-2",
+                "url": "assets/town/recipe/recipe-2.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-3",
+                "url": "assets/town/recipe/recipe-3.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-4",
+                "url": "assets/town/recipe/recipe-4.png"
+            },
+
+            {
+                "type": "image",
+                "key": "recipe-5",
+                "url": "assets/town/recipe/recipe-5.png"
+            }
+        ]
+    }
+}

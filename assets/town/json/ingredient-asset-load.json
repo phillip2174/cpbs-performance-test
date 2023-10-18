@@ -1,0 +1,201 @@
+{
+    "ingredient-asset-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "ingredient_1",
+                "url": "assets/town/ingredient/ingredient_1.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_2",
+                "url": "assets/town/ingredient/ingredient_2.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_3",
+                "url": "assets/town/ingredient/ingredient_3.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_4",
+                "url": "assets/town/ingredient/ingredient_4.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_5",
+                "url": "assets/town/ingredient/ingredient_5.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_6",
+                "url": "assets/town/ingredient/ingredient_6.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_7",
+                "url": "assets/town/ingredient/ingredient_7.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_8",
+                "url": "assets/town/ingredient/ingredient_8.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_9",
+                "url": "assets/town/ingredient/ingredient_9.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_10",
+                "url": "assets/town/ingredient/ingredient_10.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_11",
+                "url": "assets/town/ingredient/ingredient_11.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_12",
+                "url": "assets/town/ingredient/ingredient_12.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_15",
+                "url": "assets/town/ingredient/ingredient_15.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_16",
+                "url": "assets/town/ingredient/ingredient_16.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_19",
+                "url": "assets/town/ingredient/ingredient_19.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_21",
+                "url": "assets/town/ingredient/ingredient_21.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_22",
+                "url": "assets/town/ingredient/ingredient_22.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_26",
+                "url": "assets/town/ingredient/ingredient_26.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_27",
+                "url": "assets/town/ingredient/ingredient_27.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_32",
+                "url": "assets/town/ingredient/ingredient_32.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_33",
+                "url": "assets/town/ingredient/ingredient_33.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_34",
+                "url": "assets/town/ingredient/ingredient_34.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_36",
+                "url": "assets/town/ingredient/ingredient_36.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_37",
+                "url": "assets/town/ingredient/ingredient_37.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_38",
+                "url": "assets/town/ingredient/ingredient_38.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_39",
+                "url": "assets/town/ingredient/ingredient_39.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_40",
+                "url": "assets/town/ingredient/ingredient_40.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_41",
+                "url": "assets/town/ingredient/ingredient_41.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_43",
+                "url": "assets/town/ingredient/ingredient_43.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_45",
+                "url": "assets/town/ingredient/ingredient_45.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_46",
+                "url": "assets/town/ingredient/ingredient_46.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_47",
+                "url": "assets/town/ingredient/ingredient_47.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_48",
+                "url": "assets/town/ingredient/ingredient_48.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_51",
+                "url": "assets/town/ingredient/ingredient_51.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_52",
+                "url": "assets/town/ingredient/ingredient_52.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_54",
+                "url": "assets/town/ingredient/ingredient_54.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_55",
+                "url": "assets/town/ingredient/ingredient_55.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_57",
+                "url": "assets/town/ingredient/ingredient_57.png"
+            },
+            {
+                "type": "image",
+                "key": "ingredient_58",
+                "url": "assets/town/ingredient/ingredient_58.png"
+            }
+        ]
+    }
+}

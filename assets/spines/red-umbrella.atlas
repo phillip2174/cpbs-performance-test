@@ -1,0 +1,34 @@
+
+red-umbrella.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+28_body
+  rotate: true
+  xy: 2, 2
+  size: 129, 134
+  orig: 132, 136
+  offset: 2, 1
+  index: -1
+28_close
+  rotate: false
+  xy: 149, 167
+  size: 24, 80
+  orig: 28, 82
+  offset: 2, 1
+  index: -1
+28_open
+  rotate: true
+  xy: 138, 5
+  size: 126, 79
+  orig: 126, 79
+  offset: 0, 0
+  index: -1
+28_shadow
+  rotate: false
+  xy: 2, 133
+  size: 145, 114
+  orig: 156, 121
+  offset: 5, 4
+  index: -1

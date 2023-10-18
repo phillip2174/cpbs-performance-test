@@ -1,0 +1,83 @@
+
+red-umbrella-with-people.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+2901
+  rotate: false
+  xy: 240, 242
+  size: 6, 10
+  orig: 8, 12
+  offset: 1, 1
+  index: -1
+2902
+  rotate: false
+  xy: 2, 2
+  size: 8, 10
+  orig: 10, 12
+  offset: 1, 1
+  index: -1
+29_c1
+  rotate: true
+  xy: 76, 18
+  size: 37, 51
+  orig: 39, 54
+  offset: 1, 1
+  index: -1
+29_c2
+  rotate: false
+  xy: 156, 73
+  size: 57, 70
+  orig: 59, 73
+  offset: 1, 1
+  index: -1
+29_c3
+  rotate: true
+  xy: 2, 14
+  size: 41, 72
+  orig: 45, 74
+  offset: 2, 1
+  index: -1
+29_close
+  rotate: false
+  xy: 130, 56
+  size: 24, 80
+  orig: 28, 82
+  offset: 2, 1
+  index: -1
+29_open
+  rotate: false
+  xy: 2, 57
+  size: 126, 79
+  orig: 126, 79
+  offset: 0, 0
+  index: -1
+29body
+  rotate: false
+  xy: 149, 145
+  size: 89, 107
+  orig: 91, 109
+  offset: 1, 1
+  index: -1
+29shadow
+  rotate: false
+  xy: 2, 138
+  size: 145, 114
+  orig: 156, 121
+  offset: 5, 4
+  index: -1
+29woman1
+  rotate: true
+  xy: 156, 31
+  size: 40, 73
+  orig: 40, 73
+  offset: 0, 0
+  index: -1
+29woman2
+  rotate: false
+  xy: 215, 74
+  size: 33, 69
+  orig: 37, 70
+  offset: 0, 0
+  index: -1

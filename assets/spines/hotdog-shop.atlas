@@ -1,0 +1,76 @@
+
+hotdog-shop.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: false
+  xy: 2, 669
+  size: 378, 292
+  orig: 380, 294
+  offset: 1, 1
+  index: -1
+hotdog
+  rotate: true
+  xy: 222, 23
+  size: 282, 125
+  orig: 284, 127
+  offset: 1, 1
+  index: -1
+hotdog1
+  rotate: false
+  xy: 363, 164
+  size: 217, 168
+  orig: 219, 170
+  offset: 1, 1
+  index: -1
+hotdog2
+  rotate: true
+  xy: 363, 334
+  size: 327, 193
+  orig: 329, 195
+  offset: 1, 1
+  index: -1
+hotdog3
+  rotate: true
+  xy: 2, 327
+  size: 340, 218
+  orig: 343, 220
+  offset: 1, 1
+  index: -1
+hotdog4
+  rotate: true
+  xy: 382, 663
+  size: 298, 223
+  orig: 300, 225
+  offset: 1, 1
+  index: -1
+light
+  rotate: false
+  xy: 2, 2
+  size: 63, 57
+  orig: 63, 57
+  offset: 0, 0
+  index: -1
+mirror
+  rotate: true
+  xy: 2, 61
+  size: 264, 218
+  orig: 266, 220
+  offset: 1, 1
+  index: -1
+smoke
+  rotate: false
+  xy: 222, 488
+  size: 139, 179
+  orig: 141, 182
+  offset: 1, 1
+  index: -1
+smoke2
+  rotate: false
+  xy: 222, 307
+  size: 139, 179
+  orig: 141, 182
+  offset: 1, 1
+  index: -1

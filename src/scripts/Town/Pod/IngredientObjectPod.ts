@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs'
 import { Pod } from '../../plugins/objects/Pod'
 import { IngredientObjectBean } from '../Bean/IngredientObjectBean'
 import { ObjectAnimationState } from '../Type/ObjectAnimationState'
+import { ObjectAnimationBean } from '../Bean/ObjectAnimationBean'
 
 export class IngredientObjectPod extends Pod {
     public ingredientObjectBean: IngredientObjectBean
@@ -17,5 +18,9 @@ export class IngredientObjectPod extends Pod {
 
     public ChangeAnimationState(animationState: ObjectAnimationState) {
         this.currentAnimationState.next(animationState)
+    }
+
+    public getObjectAnimationBeanWithIndex(index: number): ObjectAnimationBean {
+        return this.ingredientObjectBean.animationWithStateBeans[index]
     }
 }

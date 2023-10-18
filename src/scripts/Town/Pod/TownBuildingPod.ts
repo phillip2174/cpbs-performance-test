@@ -1,13 +1,14 @@
-import { Observable, filter, map, tap } from 'rxjs'
+import { Observable, Subject, map } from 'rxjs'
+import { GameConfig } from '../../GameConfig'
+import { IngredientBean } from '../../Guideline/IngredientBean'
 import { RepositoryProvider } from '../../Repository/RepositoryProvider'
 import { TownBuildingRepository } from '../../Repository/TownBuildingRepository'
 import { IngredientObjectBean } from '../Bean/IngredientObjectBean'
-import { IngredientBean } from '../../Guideline/IngredientBean'
 import { TownTimeState } from '../Type/TownTimeState'
-import { InteractableObjectPickupState } from '../Type/InteractableObjectPickupState'
-import { GameConfig } from '../../GameConfig'
 
 export class TownBuildingPod {
+    public firstInit: Subject<boolean> = new Subject<boolean>()
+
     ingredientObjects: IngredientObjectBean[]
     interactableObjects: IngredientObjectBean[]
     ingredientBeans: IngredientBean[]
@@ -16,6 +17,10 @@ export class TownBuildingPod {
 
     constructor() {
         this.townBuildingRepository = RepositoryProvider.instance.townBuildingRepository
+    }
+
+    setFirstLoad() {
+        this.firstInit.next(true)
     }
 
     getIngredientObjects(): Observable<IngredientObjectBean[]> {
@@ -51,7 +56,7 @@ export class TownBuildingPod {
                 console.log('ingredientBeans Count: ' + this.ingredientBeans.length)
                 console.log(this.ingredientBeans)
 
-                if (GameConfig.IS_MOCK_DATA) {
+                if (GameConfig.IS_MOCK_API) {
                     this.townBuildingRepository.setMockIngredientBeans(this.ingredientBeans)
                 }
 

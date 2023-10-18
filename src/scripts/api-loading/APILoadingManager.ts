@@ -34,29 +34,15 @@ export class APILoadingManager {
     }
 
     private createAPILoadingObject(): void {
-        this.apiLoadingContainer = this.scene.add
-            .container()
-            .setDepth(99)
-            .setInteractive()
+        this.apiLoadingContainer = this.scene.add.container().setDepth(999).setInteractive()
 
         this.background = this.scene.add
-            .rectangle(
-                0,
-                0,
-                this.scene.cameras.main.width,
-                this.scene.cameras.main.height,
-                0x000000,
-                0.5,
-            )
+            .rectangle(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height, 0x000000, 0.5)
             .setOrigin(0)
             .setInteractive()
 
         this.loadingSprite = this.scene.add
-            .image(
-                this.scene.cameras.main.centerX,
-                this.scene.cameras.main.centerY,
-                `loading`,
-            )
+            .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, `loading`)
             .setOrigin(0.5)
 
         this.apiLoadingContainer.add([this.background, this.loadingSprite])

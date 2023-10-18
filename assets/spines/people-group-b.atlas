@@ -12,22 +12,22 @@ arm-low-l1
   offset: 1, 1
   index: -1
 arm-low-l2
-  rotate: true
-  xy: 152, 216
+  rotate: false
+  xy: 170, 212
   size: 13, 17
   orig: 15, 19
   offset: 1, 1
   index: -1
 arm-low-r1
   rotate: true
-  xy: 165, 186
+  xy: 239, 171
   size: 10, 11
   orig: 12, 13
   offset: 1, 1
   index: -1
 arm-low-r2
   rotate: false
-  xy: 171, 211
+  xy: 152, 195
   size: 12, 18
   orig: 14, 20
   offset: 1, 1
@@ -40,15 +40,15 @@ arm-up-l1
   offset: 1, 1
   index: -1
 arm-up-l2
-  rotate: true
-  xy: 202, 191
+  rotate: false
+  xy: 206, 195
   size: 11, 15
   orig: 14, 17
   offset: 2, 1
   index: -1
 arm-up-r1
   rotate: true
-  xy: 185, 199
+  xy: 166, 197
   size: 13, 15
   orig: 16, 17
   offset: 1, 1
@@ -82,15 +82,15 @@ body2
   offset: 0, 0
   index: -1
 hand-l1
-  rotate: false
-  xy: 209, 204
+  rotate: true
+  xy: 231, 179
   size: 7, 6
   orig: 9, 16
   offset: 1, 1
   index: -1
 hand-r1
   rotate: true
-  xy: 202, 206
+  xy: 199, 193
   size: 6, 5
   orig: 9, 7
   offset: 1, 1
@@ -108,6 +108,20 @@ head2
   size: 16, 20
   orig: 18, 22
   offset: 1, 1
+  index: -1
+heart1
+  rotate: true
+  xy: 152, 215
+  size: 14, 16
+  orig: 21, 18
+  offset: 4, 1
+  index: -1
+heart2
+  rotate: false
+  xy: 166, 186
+  size: 11, 9
+  orig: 21, 18
+  offset: 5, 5
   index: -1
 leg-low-l1
   rotate: true
@@ -145,22 +159,22 @@ leg-up-l1
   offset: 2, 1
   index: -1
 leg-up-l2
-  rotate: true
-  xy: 152, 195
+  rotate: false
+  xy: 185, 201
   size: 19, 11
   orig: 21, 13
   offset: 1, 1
   index: -1
 leg-up-r1
   rotate: false
-  xy: 165, 198
+  xy: 183, 188
   size: 14, 11
   orig: 16, 13
   offset: 1, 1
   index: -1
 leg-up-r2
-  rotate: false
-  xy: 181, 186
+  rotate: true
+  xy: 206, 179
   size: 14, 11
   orig: 18, 14
   offset: 2, 1

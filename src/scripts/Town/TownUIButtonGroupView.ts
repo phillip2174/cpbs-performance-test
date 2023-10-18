@@ -1,142 +1,211 @@
-import { Actions, GameObjects, Scene } from 'phaser'
+import { Actions, GameObjects, Scene, Tweens } from 'phaser'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
+import { TownBuildingPod } from './Pod/TownBuildingPod'
+import { TownUIPod } from './Pod/TownUIPod'
 import { TownUIButtonNotificationManager } from './TownUIButtonNotificationManager'
 import { TownUIButtonView } from './TownUIButtonView'
 import { TownUIButtonType } from './Type/TownUIButtonType'
 import { TownUIState } from './Type/TownUIState'
+import { Subscription } from 'rxjs'
+import { AnimationController } from './AnimationController'
+import { DimButton } from '../button/DimButton'
 
 export class TownUIButtonGroupView extends GameObjects.Container {
-   private dimBackground: GameObjects.Rectangle
-   private buttonGroupBackground: GameObjects.Image
-   private dailyLoginButton: TownUIButtonView
-   private minigameButton: TownUIButtonView
-   private cookingButton: TownUIButtonView
-   private inventoryButton: TownUIButtonView
-   private collectionsButton: TownUIButtonView
-   private hideButton: TownUIButtonView
-   private uiButtonList: TownUIButtonView[] = []
-   private townUIButtonNotificationManager: TownUIButtonNotificationManager
+    private dimButton: DimButton
 
-   constructor(scene: Scene) {
-      super(scene)
-      GameObjectConstructor(scene, this)
-   }
+    private buttonGroupUIContainer: GameObjects.Container
+    private buttonGroupBackground: GameObjects.Image
 
-   private setupButtons(): void {
-      this.collectionsButton = new TownUIButtonView(this.scene).setScale(0)
-      this.collectionsButton.doInit(0, 0, 'collections', TownUIButtonType.Collections, 'COLLECTIONS')
-      this.uiButtonList.push(this.collectionsButton)
+    private isFirstInit: boolean = true
 
-      this.inventoryButton = new TownUIButtonView(this.scene).setScale(0)
-      this.inventoryButton.doInit(0, 0, 'inventory', TownUIButtonType.Inventory, 'MY INVENTORY')
-      this.inventoryButton.onClick(() => {
-         this.townUIButtonNotificationManager.setInventoryIsUpdate(false)
-      })
-      this.uiButtonList.push(this.inventoryButton)
+    private dailyLoginButton: TownUIButtonView
+    private minigameButton: TownUIButtonView
+    private cookingButton: TownUIButtonView
+    private inventoryButton: TownUIButtonView
+    private collectionsButton: TownUIButtonView
+    private closeButton: TownUIButtonView
+    private uiButtonList: TownUIButtonView[] = []
 
-      this.cookingButton = new TownUIButtonView(this.scene).setScale(0)
-      this.cookingButton.doInit(0, 0, 'cooking', TownUIButtonType.Cooking, 'COOKING')
-      this.uiButtonList.push(this.cookingButton)
+    private onOpenTween: Tweens.Tween
+    private onOpenTweenChain: Tweens.TweenChain
+    private onOpenButtonGroup: Tweens.Tween
+    private onCloseTween: Tweens.Tween
+    private onCloseScaleTween: Tweens.TweenChain
 
-      this.dailyLoginButton = new TownUIButtonView(this.scene).setScale(0)
-      this.dailyLoginButton.doInit(0, 0, 'daily-login', TownUIButtonType.DailyLogin, 'DAILY LOGIN')
-      this.dailyLoginButton.onClick(() => {
-         this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
-      })
-      this.uiButtonList.push(this.dailyLoginButton)
+    private townUIButtonNotificationManager: TownUIButtonNotificationManager
+    private townBuildingPod: TownBuildingPod
+    private townUIPod: TownUIPod
 
-      this.minigameButton = new TownUIButtonView(this.scene).setScale(0)
-      this.minigameButton.doInit(0, 0, 'minigame', TownUIButtonType.Minigame, 'MINI GAME')
-      this.uiButtonList.push(this.minigameButton)
+    private stateSubscription: Subscription
 
-      this.hideButton = new TownUIButtonView(this.scene).setScale(0)
-      this.hideButton.doInit(0, 0, 'hide', TownUIButtonType.Hide, 'HIDE')
-      this.hideButton.onClick(() => {
-         PodProvider.instance.townUIPod.changeUIState(TownUIState.MainMenu)
-      })
-      this.uiButtonList.push(this.hideButton)
+    constructor(scene: Scene) {
+        super(scene)
+        GameObjectConstructor(scene, this)
+    }
 
-      this.uiButtonList = Actions.GridAlign(this.uiButtonList, {
-         width: 3,
-         height: 2,
-         cellWidth: 110,
-         cellHeight: 115,
-         x: -110,
-         y: -55,
-      })
+    public doInit(): void {
+        this.townUIButtonNotificationManager = PodProvider.instance.townUIButtonNotificationManager
+        this.townBuildingPod = PodProvider.instance.townbuildingPod
+        this.townUIPod = PodProvider.instance.townUIPod
+        this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
+        this.setDepth(202)
+        this.dimButton = new DimButton(this.scene)
+        this.setupButtonGroupUI()
+        this.add([this.dimButton, this.buttonGroupUIContainer])
+        this.setupSubscribe()
+        this.createTween()
+        this.dimButton.onClick(() => {
+            this.townUIPod.setIsShowMenuGroup(false)
+        })
+    }
 
-      this.add(this.uiButtonList)
-      this.uiButtonList.forEach((uiButtonView) => {
-         this.bringToTop(uiButtonView)
-      })
-   }
+    private setupSubscribe(): void {
+        this.stateSubscription = this.townUIPod.isShowMenuGroup.subscribe((isShow) => {
+            if (isShow) {
+                this.onShow()
+                this.townUIPod.setLayerScrollView(1)
+            } else {
+                this.onHide()
+            }
+        })
+    }
 
-   public onShow(): void {
-      this.setActive(true)
-      this.setVisible(true)
+    private setupButtonGroupUI(): void {
+        this.buttonGroupUIContainer = this.scene.add.container()
+        this.buttonGroupBackground = this.scene.add.image(0, 0, 'ui-button-group-bg').setOrigin(0.5)
+        this.setupButtons()
+        this.setupActionButton()
+        this.buttonGroupUIContainer.add(this.buttonGroupBackground)
+        this.buttonGroupUIContainer.add(this.uiButtonList)
+    }
 
-      this.scene.add.tween({
-         targets: this.dimBackground,
-         duration: 300,
-         props: { fillAlpha: { from: 0, to: 0.3 } },
-         ease: 'cubic.inout',
-      })
+    private setupButtons(): void {
+        this.collectionsButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.collectionsButton.doInit(0, 0, 'collections', TownUIButtonType.Collections, 'COLLECTIONS')
+        this.uiButtonList.push(this.collectionsButton)
 
-      this.scene.add.tween({
-         targets: this.buttonGroupBackground,
-         duration: 200,
-         props: { scale: { from: 0, to: 1 } },
-         ease: 'cubic.inout',
-      })
+        this.inventoryButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.inventoryButton.doInit(0, 0, 'inventory', TownUIButtonType.Inventory, 'MY INVENTORY')
+        this.uiButtonList.push(this.inventoryButton)
 
-      this.uiButtonList.forEach((buttonView) => {
-         this.scene.add.tween({
-            targets: buttonView,
-            delay: 50,
-            duration: 300,
-            props: { scale: { from: 0, to: 1 } },
+        this.cookingButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.cookingButton.doInit(0, 0, 'cooking', TownUIButtonType.Cooking, 'COOKING')
+        this.uiButtonList.push(this.cookingButton)
+
+        this.dailyLoginButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.dailyLoginButton.doInit(0, 0, 'daily-login', TownUIButtonType.DailyLogin, 'DAILY LOGIN')
+        this.uiButtonList.push(this.dailyLoginButton)
+
+        this.minigameButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.minigameButton.doInit(0, 0, 'minigame', TownUIButtonType.Minigame, 'MINI GAME')
+        this.uiButtonList.push(this.minigameButton)
+
+        this.closeButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.closeButton.doInit(0, 0, 'close', TownUIButtonType.Close, 'CLOSE')
+        this.uiButtonList.push(this.closeButton)
+
+        this.uiButtonList = Actions.GridAlign(this.uiButtonList, {
+            width: 3,
+            height: 2,
+            cellWidth: 110,
+            cellHeight: 115,
+            x: -110,
+            y: -55,
+        })
+
+        this.add(this.uiButtonList)
+        this.uiButtonList.forEach((uiButtonView) => {
+            this.bringToTop(uiButtonView)
+        })
+    }
+
+    private setupActionButton(): void {
+        this.collectionsButton.onClick(() => {
+            this.townUIPod.changeUIState(TownUIState.Collection)
+            this.townUIPod.setIsShowGuideline(false)
+            this.townUIPod.setIsShowMenuGroup(false)
+        })
+
+        this.inventoryButton.onClick(() => {
+            this.townUIButtonNotificationManager.setInventoryIsUpdate(false)
+            this.townUIPod.changeUIState(TownUIState.Inventory)
+            this.townUIPod.setIsShowGuideline(false)
+            this.townUIPod.setIsShowMenuGroup(false)
+        })
+
+        this.cookingButton.onClick(() => {
+            this.townUIPod.changeUIState(TownUIState.Cooking)
+            this.townUIPod.setIsShowGuideline(false)
+            this.townUIPod.setIsShowMenuGroup(false)
+        })
+
+        this.dailyLoginButton.onClick(() => {
+            this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
+            this.townUIPod.changeUIState(TownUIState.DailyLogin)
+            this.townUIPod.setIsShowMenuGroup(false)
+        })
+
+        this.closeButton.onClick(() => {
+            this.townUIPod.setIsShowMenuGroup(false)
+        })
+    }
+
+    private createTween() {
+        let tweens = AnimationController.instance.tweenOpenContainer(this.scene, this.buttonGroupUIContainer)
+
+        this.onOpenTween = tweens.onOpenTween
+        this.onOpenTweenChain = tweens.onOpenTweenChain
+
+        let tweensClose = AnimationController.instance.tweenCloseContainer(
+            this.scene,
+            this.buttonGroupUIContainer,
+            () => {
+                this.setActive(false)
+                this.setVisible(false)
+            }
+        )
+
+        this.onCloseTween = tweensClose.onCloseTween
+        this.onCloseScaleTween = tweensClose.onCloseTweenChain
+
+        this.onOpenButtonGroup = this.scene.add.tween({
+            targets: this.uiButtonList,
+            delay: 250,
+            duration: 400,
+            alpha: { from: 0, to: 1 },
             ease: 'cubic.inout',
-            onComplete: () => {
-               this.dimBackground.setInteractive().once('pointerdown', () => {
-                  PodProvider.instance.townUIPod.changeUIState(TownUIState.MainMenu)
-               })
-            },
-         })
-      })
-   }
+            persist: true,
+            paused: true,
+        })
+    }
 
-   public onHide(): void {
-      this.dimBackground.fillAlpha = 0
+    private onShow(): void {
+        this.dimButton.setActiveDim(true)
+        this.onCloseTween?.pause()
+        this.onCloseScaleTween?.pause()
+        this.onOpenTween.restart()
+        this.onOpenTweenChain?.restart()
+        this.onOpenButtonGroup?.restart()
 
-      this.scene.add.tween({
-         targets: this,
-         duration: 200,
-         props: { scale: { from: 1, to: 0 } },
-         ease: 'cubic.inout',
-         onComplete: () => {
-            this.dimBackground.removeAllListeners()
+        this.setActive(true)
+        this.setVisible(true)
+    }
+
+    private onHide(): void {
+        if (this.isFirstInit) {
             this.setActive(false)
             this.setVisible(false)
-            this.setScale(1)
-            this.uiButtonList.forEach((buttonView) => {
-               buttonView.setScale(0)
-            })
-         },
-      })
-   }
 
-   public doInit(): void {
-      this.townUIButtonNotificationManager = PodProvider.instance.townUIButtonNotificationManager
-      this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-      this.setDepth(6)
-      this.dimBackground = this.scene.add
-         .rectangle(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height, 0x000000, 0.3)
-         .setOrigin(0.5)
+            this.isFirstInit = false
+        } else {
+            this.onOpenTween?.pause()
+            this.onOpenTweenChain?.pause()
+            this.onOpenButtonGroup?.pause()
 
-      this.buttonGroupBackground = this.scene.add.image(0, 0, 'ui-button-group-bg').setOrigin(0.5)
-
-      this.add([this.dimBackground, this.buttonGroupBackground])
-      this.setupButtons()
-   }
+            this.onCloseTween?.restart()
+            this.onCloseScaleTween?.restart()
+            this.dimButton.setActiveDim(false)
+        }
+    }
 }

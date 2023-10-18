@@ -27,6 +27,23 @@ export class ResourceLoader {
         })
     }
 
+    loadSpriteSheet(imageKey: string, imagePath: string, frameConfig : Phaser.Types.Loader.FileTypes.ImageFrameConfig): Observable<string> {
+        return new Observable((observer: Observer<string>) => {
+            if (this.scene.textures.exists(imageKey)) {
+                observer.next(imageKey)
+                observer.complete()
+            } else {
+                this.scene.load.once('complete', () => {
+                    observer.next(imageKey)
+                    observer.complete()
+                })
+
+                this.scene.load.spritesheet(imageKey, imagePath,frameConfig)
+                this.scene.load.start()
+            }
+        })
+    }
+
     loadPackJson(
         scene: Phaser.Scene,
         jsonName: string,

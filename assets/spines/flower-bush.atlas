@@ -1,0 +1,20 @@
+
+flower-bush.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bush-m3
+  rotate: false
+  xy: 2, 23
+  size: 62, 52
+  orig: 64, 54
+  offset: 1, 1
+  index: -1
+leaf
+  rotate: true
+  xy: 66, 59
+  size: 16, 9
+  orig: 18, 11
+  offset: 1, 1
+  index: -1

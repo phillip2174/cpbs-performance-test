@@ -11,6 +11,13 @@ repeat: none
   orig: 107, 103
   offset: 1, 1
   index: -1
+90
+  rotate: false
+  xy: 403, 218
+  size: 23, 103
+  orig: 25, 105
+  offset: 1, 1
+  index: -1
 9090
   rotate: false
   xy: 476, 302
@@ -34,14 +41,14 @@ CPF
   index: -1
 arm-and-phone
   rotate: true
-  xy: 428, 306
+  xy: 453, 306
   size: 15, 18
   orig: 17, 21
   offset: 1, 2
   index: -1
 body
   rotate: false
-  xy: 403, 248
+  xy: 428, 248
   size: 23, 73
   orig: 23, 74
   offset: 0, 1
@@ -55,7 +62,7 @@ phone-light
   index: -1
 shadow
   rotate: false
-  xy: 448, 309
+  xy: 453, 292
   size: 19, 12
   orig: 21, 14
   offset: 1, 1

@@ -1,0 +1,27 @@
+
+fire-hydrant.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fire hydrant
+  rotate: false
+  xy: 2, 62
+  size: 37, 61
+  orig: 40, 64
+  offset: 1, 1
+  index: -1
+water
+  rotate: false
+  xy: 2, 2
+  size: 25, 16
+  orig: 27, 18
+  offset: 1, 1
+  index: -1
+water1
+  rotate: false
+  xy: 2, 20
+  size: 32, 40
+  orig: 32, 40
+  offset: 0, 0
+  index: -1

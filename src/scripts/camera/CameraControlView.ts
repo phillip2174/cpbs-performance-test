@@ -5,145 +5,186 @@ import { TownUICircleButtonView } from '../Town/TownUICircleButtonView'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
 import { CameraControlPod } from './CameraControlPod'
+import { Subscription, filter, timer } from 'rxjs'
 
 export class CameraControlView extends GameObjects.GameObject {
-   public zoomInButton: TownUICircleButtonView
-   public zoomOutButton: TownUICircleButtonView
-   private gameCamera: Cameras.Scene2D.Camera
-   private dragPoint: Input.Pointer
-   private dragPointOffsetX: number
-   private dragPointOffsetY: number
-   private oldZoom: number
-   private nextZoom: number
-   private cameraControlPod: CameraControlPod
-   private dragEvent: Input.InputPlugin
-   private zoomEvent: Input.InputPlugin
-   private pointerUpEvent: Input.InputPlugin
+    public static readonly VALUE_FIRST_TO_MID: number = 0.35
+    public static readonly VALUE_MID_TO_LAST: number = 0.65
 
-   constructor(scene: Scene) {
-      super(scene, 'gameObject')
-      GameObjectConstructor(scene, this)
-   }
+    private gameCamera: Cameras.Scene2D.Camera
+    private dragPoint: Input.Pointer
+    private dragPointOffsetX: number
+    private dragPointOffsetY: number
+    private oldZoom: number
+    private nextZoom: number
+    private cameraControlPod: CameraControlPod
+    private dragEvent: Input.InputPlugin
+    private zoomEvent: Input.InputPlugin
+    private pointerUpEvent: Input.InputPlugin
 
-   private setDragPointAndOffset(pointer: any): void {
-      this.dragPoint = pointer
-      this.dragPointOffsetX = this.dragPoint.x - this.dragPoint.prevPosition.x
-      this.dragPointOffsetY = this.dragPoint.y - this.dragPoint.prevPosition.y
-   }
+    private zoomValueSubscription: Subscription
+    private cameraInteractSubscription: Subscription
+    private delayMovingSubscription: Subscription
 
-   private dragCamera(): void {
-      this.gameCamera.scrollX -= this.dragPointOffsetX / this.gameCamera.zoom
-      this.gameCamera.scrollY -= this.dragPointOffsetY / this.gameCamera.zoom
-   }
+    constructor(scene: Scene) {
+        super(scene, 'gameObject')
+        GameObjectConstructor(scene, this)
+    }
 
-   private zoomCamera(zoomFactor: number, x: number, y: number): void {
-      this.oldZoom = this.gameCamera.zoom
-      let zoomValue = this.oldZoom + zoomFactor * 0.001
-      if (this.scene.sys.game.device.os.desktop) {
-         zoomValue = Math.Clamp(zoomValue, GameConfig.MIN_DESKTOP_CAMERA_ZOOM, GameConfig.MAX_DESKTOP_CAMERA_ZOOM)
-      } else {
-         zoomValue = Math.Clamp(zoomValue, GameConfig.MIN_MOBILE_CAMERA_ZOOM, GameConfig.MAX_MOBILE_CAMERA_ZOOM)
-      }
+    private setDragPointAndOffset(pointer: any): void {
+        this.dragPoint = pointer
+        this.dragPointOffsetX = this.dragPoint.x - this.dragPoint.prevPosition.x
+        this.dragPointOffsetY = this.dragPoint.y - this.dragPoint.prevPosition.y
+    }
 
-      this.gameCamera.setZoom(zoomValue)
-      this.setupZoomInOutButtonsInteractable()
-      this.nextZoom = this.gameCamera.zoom
-      if (zoomFactor > 0 && this.oldZoom != zoomValue) {
-         this.panCamera(x, y)
-      }
-   }
+    private dragCamera(): void {
+        this.gameCamera.scrollX -= this.dragPointOffsetX / this.gameCamera.zoom
+        this.gameCamera.scrollY -= this.dragPointOffsetY / this.gameCamera.zoom
 
-   private panCamera(x: number, y: number): void {
-      let scaleAdjust = this.nextZoom / this.oldZoom
+        this.cameraControlPod.setIsMovingCamera(true)
+        this.delayMovingSubscription?.unsubscribe()
+        this.delayMovingSubscription = timer(250).subscribe((_) => {
+            this.cameraControlPod.setIsMovingCamera(false)
+        })
+    }
 
-      let adjustX = (x - this.gameCamera.midPoint.x) * (this.nextZoom - this.oldZoom) * scaleAdjust * 4
-      let adjustY = (y - this.gameCamera.midPoint.y) * (this.nextZoom - this.oldZoom) * scaleAdjust * 4
-      let panPositionX = this.gameCamera.midPoint.x + adjustX
-      let panPositionY = this.gameCamera.midPoint.y + adjustY
+    private zoomCamera(zoomFactor: number, x: number, y: number): void {
+        this.oldZoom = this.gameCamera.zoom
+        let zoomValue = this.oldZoom + zoomFactor * 0.001
 
-      this.gameCamera.pan(panPositionX, panPositionY, 200, 'Sine.easeInOut')
-   }
+        zoomValue = Math.Clamp(zoomValue, this.cameraControlPod.minCameraZoom, this.cameraControlPod.maxCameraZoom)
 
-   private checkCameraZoomAndSetButtonInteractable(minCameraZoom: number, maxCameraZoom: number): void {
-      if (this.gameCamera.zoom <= minCameraZoom) {
-         this.zoomOutButton?.setInteractable(false)
-      } else {
-         this.zoomOutButton?.setInteractable(true)
-      }
+        this.gameCamera.setZoom(zoomValue)
 
-      if (this.gameCamera.zoom >= maxCameraZoom) {
-         this.zoomInButton?.setInteractable(false)
-      } else {
-         this.zoomInButton?.setInteractable(true)
-      }
-   }
+        this.nextZoom = this.gameCamera.zoom
+        if (zoomFactor > 0 && this.oldZoom != zoomValue) {
+            this.panCamera(x, y)
+        }
 
-   public setCameraBound(topLeftCoordinate: Vector, width: number, height: number): void {
-      this.gameCamera.setBounds(topLeftCoordinate.x, topLeftCoordinate.y, width, height, true)
-   }
+        this.cameraControlPod.setCurrentZoomValue(this.gameCamera.zoom, false)
+    }
 
-   public setCameraZoom(zoomValue: number): void {
-      this.gameCamera.zoomTo(zoomValue, 250, Math.Easing.Cubic.InOut)
-   }
+    private panCamera(x: number, y: number): void {
+        let scaleAdjust = this.nextZoom / this.oldZoom
 
-   public getCameraZoom(): number {
-      return this.gameCamera.zoom
-   }
+        let adjustX = (x - this.gameCamera.midPoint.x) * (this.nextZoom - this.oldZoom) * scaleAdjust * 4
+        let adjustY = (y - this.gameCamera.midPoint.y) * (this.nextZoom - this.oldZoom) * scaleAdjust * 4
+        let panPositionX = this.gameCamera.midPoint.x + adjustX
+        let panPositionY = this.gameCamera.midPoint.y + adjustY
 
-   public setupZoomInOutButtonsInteractable(): void {
-      this.checkCameraZoomAndSetButtonInteractable(
-         this.cameraControlPod.minCameraZoom,
-         this.cameraControlPod.maxCameraZoom
-      )
-   }
+        this.gameCamera.pan(panPositionX, panPositionY, 200, 'Sine.easeInOut')
+    }
 
-   public enableCameraMovements(): void {
-      if (this.dragEvent == undefined) {
-         this.dragEvent = this.scene.input.on('pointermove', (pointer) => {
-            this.setDragPointAndOffset(pointer)
-            switch (true) {
-               case this.dragPoint.isDown && !this.cameraControlPod.isHoldingButton:
-                  this.dragCamera()
-                  break
+    private setCameraBound(): void {
+        let settingCameraBound = this.cameraControlPod.cameraBoundSetting
+        this.gameCamera.setBounds(
+            settingCameraBound.x,
+            settingCameraBound.y,
+            settingCameraBound.width,
+            settingCameraBound.height,
+            true
+        )
+    }
+
+    private setCameraZoom(zoomValue: number): void {
+        this.gameCamera.zoomTo(zoomValue, 250, Math.Easing.Cubic.InOut, true)
+    }
+
+    public getCameraZoom(): number {
+        return this.gameCamera.zoom
+    }
+
+    public enableCameraMovements(): void {
+        if (this.dragEvent == undefined) {
+            this.dragEvent = this.scene.input.on('pointermove', (pointer) => {
+                this.setDragPointAndOffset(pointer)
+                switch (true) {
+                    case this.dragPoint.isDown && !this.cameraControlPod.isHoldingButton:
+                        this.dragCamera()
+                        break
+                }
+            })
+        }
+
+        if (this.zoomEvent == undefined) {
+            this.zoomEvent = this.scene.input.on('wheel', (pointer) => {
+                this.zoomCamera(pointer.deltaY, pointer.worldX, pointer.worldY)
+            })
+        }
+
+        if (this.pointerUpEvent == undefined) {
+            this.pointerUpEvent = this.scene.input.on('pointerup', () => {
+                this.cameraControlPod.setIsHoldingButton(false)
+            })
+        }
+    }
+
+    public disableCameraMovements(): void {
+        this.dragEvent?.removeAllListeners()
+        this.zoomEvent?.removeAllListeners()
+        this.pointerUpEvent?.removeAllListeners()
+        this.dragEvent = undefined
+        this.zoomEvent = undefined
+        this.pointerUpEvent = undefined
+    }
+
+    public doInit(): void {
+        this.cameraControlPod = PodProvider.instance.cameraControlPod
+        this.dragPoint = this.scene.input.activePointer
+        this.gameCamera = this.scene.cameras.main
+
+        if (this.scene.sys.game.device.os.desktop) {
+            let normalizeHeight = this.normalize(
+                window.innerHeight,
+                GameConfig.MIN_HEIGHT_DESKTOP_SCREEN,
+                GameConfig.MAX_HEIGHT_DESKTOP_SCREEN
+            )
+            let minZoomValue = this.inverseNormalize(
+                normalizeHeight,
+                GameConfig.MIN_SCREEN_DESKTOP_CAMERA_ZOOM,
+                GameConfig.MAXMIN_SCREEN_DESKTOP_CAMERA_ZOOM
+            )
+            this.gameCamera.setZoom(minZoomValue)
+
+            let midZoomDesktop = minZoomValue + CameraControlView.VALUE_FIRST_TO_MID
+            let maxZoomDesktop = midZoomDesktop + CameraControlView.VALUE_MID_TO_LAST
+
+            this.cameraControlPod.setCameraZoomMinMaxValue(minZoomValue, maxZoomDesktop)
+            this.cameraControlPod.setMidZoomValue(midZoomDesktop)
+        } else {
+            this.gameCamera.setZoom(GameConfig.MIN_MOBILE_CAMERA_ZOOM)
+            this.cameraControlPod.setCameraZoomMinMaxValue(
+                GameConfig.MIN_MOBILE_CAMERA_ZOOM,
+                GameConfig.MAX_MOBILE_CAMERA_ZOOM
+            )
+        }
+
+        this.cameraControlPod.setCurrentZoomValue(this.gameCamera.zoom)
+        this.setSubscription()
+    }
+
+    private setSubscription() {
+        this.zoomValueSubscription = this.cameraControlPod.currentZoomValue
+            .pipe(filter((x) => x.propagate))
+            .subscribe((zoomValue) => {
+                this.setCameraZoom(zoomValue.zoomValue)
+            })
+
+        this.cameraInteractSubscription = this.cameraControlPod.isCanInteractCamera.subscribe((isCanInteract) => {
+            if (isCanInteract) {
+                this.enableCameraMovements()
+                this.setCameraBound()
+            } else {
+                this.disableCameraMovements()
             }
-         })
-      }
+        })
+    }
 
-      if (this.zoomEvent == undefined) {
-         this.zoomEvent = this.scene.input.on('wheel', (pointer) => {
-            this.zoomCamera(pointer.deltaY, pointer.worldX, pointer.worldY)
-         })
-      }
+    normalize(val: number, min: number, max: number): number {
+        return Phaser.Math.Clamp(+((val - min) / (max - min)).toFixed(2), 0, 1)
+    }
 
-      if (this.pointerUpEvent == undefined) {
-         this.pointerUpEvent = this.scene.input.on('pointerup', () => {
-            this.cameraControlPod.setIsHoldingButton(false)
-         })
-      }
-   }
-
-   public disableCameraMovements(): void {
-      this.dragEvent.removeAllListeners()
-      this.zoomEvent.removeAllListeners()
-      this.pointerUpEvent.removeAllListeners()
-      this.dragEvent = undefined
-      this.zoomEvent = undefined
-      this.pointerUpEvent = undefined
-   }
-
-   public doInit(): void {
-      this.cameraControlPod = PodProvider.instance.cameraControlPod
-      this.dragPoint = this.scene.input.activePointer
-      this.gameCamera = this.scene.cameras.main
-
-      if (this.scene.sys.game.device.os.desktop) {
-         this.gameCamera.setZoom(GameConfig.MIN_DESKTOP_CAMERA_ZOOM)
-         this.cameraControlPod.setCameraZoom(GameConfig.MIN_DESKTOP_CAMERA_ZOOM, GameConfig.MAX_DESKTOP_CAMERA_ZOOM)
-      } else {
-         this.gameCamera.setZoom(GameConfig.MIN_MOBILE_CAMERA_ZOOM)
-         this.cameraControlPod.setCameraZoom(GameConfig.MIN_MOBILE_CAMERA_ZOOM, GameConfig.MAX_MOBILE_CAMERA_ZOOM)
-      }
-
-      this.enableCameraMovements()
-   }
+    inverseNormalize(normalizeVal: number, min: number, max: number): number {
+        return +(normalizeVal * (max - min) + min).toFixed(2)
+    }
 }

@@ -9,20 +9,20 @@ export class TownBuildingRepository {
 
     getIngredientObjectData(): Observable<IngredientObjectBean[]> {
         return ResourceManager.instance
-            .loadText('ingredientObjectData', 'assets/town/ingredientObjectData.json')
+            .loadText('ingredient-object-data', 'assets/town/json/ingredient-object-data.json')
             .pipe(map((json) => JSON.parse(json)))
     }
 
     getInteractableObjectData(): Observable<IngredientObjectBean[]> {
         return ResourceManager.instance
-            .loadText('interactableObjectData', 'assets/town/interactableObjectData.json')
+            .loadText('interactable-object-data', 'assets/town/json/interactable-object-data.json')
             .pipe(map((json) => JSON.parse(json)))
     }
 
     getIngredientBeanData(): Observable<IngredientBean[]> {
-        if (GameConfig.IS_MOCK_DATA) {
+        if (GameConfig.IS_MOCK_API) {
             return ResourceManager.instance
-                .loadText('ingredientBeanData', 'assets/town/ingredientBeanData.json')
+                .loadText('ingredient-bean-data', 'assets/town/json/ingredient-bean-data.json')
                 .pipe(map((json) => JSON.parse(json)))
         } else {
             let data: IngredientBean[] = []
@@ -31,11 +31,11 @@ export class TownBuildingRepository {
     }
 
     interactObject(id: number): Observable<IngredientBean> {
-        if (GameConfig.IS_MOCK_DATA) {
-            let result = this.mockIngredientBeans.find((x) => x.ingredientID == id)
+        if (GameConfig.IS_MOCK_API) {
+            let result = this.mockIngredientBeans.find((x) => x.id == id)
             return of(result)
         } else {
-            let result = this.mockIngredientBeans.find((x) => x.ingredientID == id)
+            let result = this.mockIngredientBeans.find((x) => x.id == id)
             return of(result)
         }
     }

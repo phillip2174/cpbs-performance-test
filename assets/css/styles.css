@@ -23,6 +23,11 @@
     src: url('../font/DB_HeaventRounded_Bdv3_2.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'DB_HeaventRounded_Med';
+    src: url('../font/DB_HeaventRounded_Med.ttf') format('truetype');
+}
+
 body {
     background-color: black;
     height: 100%;

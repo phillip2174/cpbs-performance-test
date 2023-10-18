@@ -8,7 +8,6 @@ import { IngredientBean } from './IngredientBean'
 
 export class GuideLineUICellView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
-    public static readonly INGREDIENT_IMAGE_NOTFOUND_KEY: string = `ingredient_bw_`
     public ingredientBean: IngredientBean
     private ingredientImage: GameObjects.Image
     private backgroundImage: GameObjects.Image
@@ -28,23 +27,18 @@ export class GuideLineUICellView extends GameObjects.Container {
 
     public doInit(x: number, y: number) {
         this.ingredientImage = this.scene.add
-            .image(x, y, GuideLineUICellView.INGREDIENT_IMAGE_NOTFOUND_KEY + this.ingredientBean.ingredientID)
-            .setScale(0.35)
+            .image(x, y, GuideLineUICellView.INGREDIENT_IMAGE_KEY + this.ingredientBean.id)
+            .setDisplaySize(48, 48)
+            .setSize(48, 48)
             .setDepth(1)
 
         this.stateSubscription = this.pod.guideLineUICellState.subscribe((state) => {
             switch (state) {
                 case GuideLineUICellState.IdleFound:
-                    this.ingredientImage
-                        .setTexture(GuideLineUICellView.INGREDIENT_IMAGE_KEY + this.ingredientBean.ingredientID)
-                        .clearTint()
+                    this.ingredientImage.clearTint()
                     break
                 case GuideLineUICellState.IdleNotFound:
-                    this.ingredientImage
-                        .setTexture(
-                            GuideLineUICellView.INGREDIENT_IMAGE_NOTFOUND_KEY + this.ingredientBean.ingredientID
-                        )
-                        .setTintFill(0x9496a9)
+                    this.ingredientImage.setTintFill(0xaeaec1)
                     break
                 case GuideLineUICellState.TweenToFound:
                     PodProvider.instance.guideLineUIManager.updateCurrentFoundIngredientCount()
@@ -56,9 +50,7 @@ export class GuideLineUICellView extends GameObjects.Container {
     }
 
     private tweenGuideLine() {
-        this.ingredientImage
-            .setTexture(GuideLineUICellView.INGREDIENT_IMAGE_KEY + this.ingredientBean.ingredientID)
-            .clearTint()
+        this.ingredientImage.clearTint()
 
         this.scene.tweens.chain({
             targets: this.ingredientImage,
@@ -67,7 +59,7 @@ export class GuideLineUICellView extends GameObjects.Container {
                     ease: 'Quart.easeInOut',
                     duration: 500,
                     props: {
-                        scale: { from: 0.35, to: 0.5 },
+                        scale: { from: this.ingredientImage.scale, to: this.ingredientImage.scale + 0.15 },
                     },
                 },
                 {
@@ -83,14 +75,14 @@ export class GuideLineUICellView extends GameObjects.Container {
                     ease: 'Quart.easeInOut',
                     duration: 300,
                     props: {
-                        scale: { from: 0.5, to: 0.31 },
+                        scale: { from: this.ingredientImage.scale + 0.15, to: this.ingredientImage.scale - 0.04 },
                     },
                 },
                 {
                     ease: 'Quart.easeInOut',
                     duration: 200,
                     props: {
-                        scale: { from: 0.31, to: 0.35 },
+                        scale: { from: this.ingredientImage.scale - 0.04, to: this.ingredientImage.scale },
                     },
                 },
             ],

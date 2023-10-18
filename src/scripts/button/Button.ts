@@ -5,324 +5,320 @@ import { ButtonStyleConfig } from './button-style/ButtonStyleConfig'
 import { GameObjects, Tweens, Types } from 'phaser'
 
 export class Button extends Phaser.GameObjects.Container {
-   //private static readonly INTERACT_DELAY: number = 1000
+    //private static readonly INTERACT_DELAY: number = 1000
 
-   declare scene: Phaser.Scene
-   background: Phaser.GameObjects.Sprite
-   backgroundSlice: GameObjects.NineSlice
+    declare scene: Phaser.Scene
+    background: Phaser.GameObjects.Sprite
+    backgroundSlice: GameObjects.NineSlice
 
-   label: Phaser.GameObjects.Text
-   labelSize: {}
-   callback: Function
-   callbackOnHold: Function
+    label: Phaser.GameObjects.Text
+    labelSize: {}
+    callback: Function
+    callbackOnHold: Function
+    callbackOnHoldCancel: Function
 
-   private buttonPositionX: number
-   private buttonPositionY: number
-   private buttonWidth: number
-   private buttonHeight: number
-   private intertactDelay: number
+    private buttonPositionX: number
+    private buttonPositionY: number
+    private buttonWidth: number
+    private buttonHeight: number
+    private intertactDelay: number
 
-   private interactScaleDown: number = 0.9
-   private defaultScale: number = 1
+    private interactScaleDown: number = 0.9
+    private defaultScale: number = 1
 
-   private isOnPointerDown: boolean
-   private isCanInteract: boolean = true
-   private isOnInteractDelay: boolean
-   private isButtonTween: boolean
+    private isOnPointerDown: boolean
+    private isCanInteract: boolean = true
+    private isOnInteractDelay: boolean
+    private isButtonTween: boolean
 
-   private onClickDownTweener: Phaser.Tweens.Tween
-   private onClickUpTweener: Phaser.Tweens.Tween
-   private onButtonIdleTweener: Phaser.Tweens.Tween
+    private onClickDownTweener: Phaser.Tweens.Tween
+    private onClickUpTweener: Phaser.Tweens.Tween
+    private onButtonIdleTweener: Phaser.Tweens.Tween
 
-   constructor(
-      scene: Phaser.Scene,
-      x: number,
-      y: number,
-      width: number,
-      height: number,
-      bgKey: string,
-      delay: number = 1000,
-      txt: string = ``
-   ) {
-      super(scene, x, y)
-      this.buttonPositionX = x
-      this.buttonPositionY = y
-      this.buttonWidth = width
-      this.buttonHeight = height
-      this.intertactDelay = delay
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        bgKey: string,
+        delay: number = 1000,
+        txt: string = ``
+    ) {
+        super(scene, x, y)
+        this.buttonPositionX = x
+        this.buttonPositionY = y
+        this.buttonWidth = width
+        this.buttonHeight = height
+        this.intertactDelay = delay
 
-      this.scene = scene
-      this.setSize(width, height)
-      this.scene.add.existing(this)
-      this.setBg(null, bgKey)
-      this.setButtonSize(width, height)
-      this.isButtonTween = true
+        this.scene = scene
+        this.setSize(width, height)
+        this.scene.add.existing(this)
+        this.setBg(null, bgKey)
+        this.setButtonSize(width, height)
+        this.isButtonTween = true
 
-      this.label = TextAdapter.instance
-         .getVectorText(this.scene, 'PSL245pro')
-         .setPosition(0, -10)
-         .setOrigin(0.5)
-         .setText(txt)
-         .setStyle({
-            fontFamily: 'PSL245pro',
-            fill: 'white',
-            fontSize: 50,
-         })
+        this.label = TextAdapter.instance
+            .getVectorText(this.scene, 'PSL245pro')
+            .setPosition(0, 0)
+            .setOrigin(0.5)
+            .setText(txt)
+            .setStyle({
+                fontFamily: 'PSL245pro',
+                fill: 'white',
+                fontSize: 50,
+            })
+            .setPadding(0, 10, 0, 20)
 
-      this.setPosition(x, y)
-      this.add([this.background, this.label])
+        this.setPosition(x, y)
+        this.add([this.background, this.label])
 
-      this.setInteractiveButton()
-      this.createTweener()
-      if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.restart()
-   }
+        this.setInteractiveButton()
+        this.createTweener()
+        if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.restart()
+    }
 
-   private setInteractiveButton() {
-      this.setInteractionOnButtonPointerDown()
-      this.setInteractionOnButtonPointerUp()
-      this.setInteractionOnButtonPointerOut()
-      this.setInteractionOnButtonPointerOutside()
-   }
+    private setInteractiveButton() {
+        this.setInteractionOnButtonPointerDown()
+        this.setInteractionOnButtonPointerUp()
+        this.setInteractionOnButtonPointerOut()
+        this.setInteractionOnButtonPointerOutside()
+    }
 
-   private createTweener(): void {
-      this.onClickDownTweener = this.scene.tweens.add({
-         targets: this,
-         scaleX: {
-            value: this.interactScaleDown,
+    private createTweener(): void {
+        this.onClickDownTweener = this.scene.tweens.add({
+            targets: this,
+            ease: `Quad.easeInOut`,
             duration: 100,
-            yoyo: false,
-            ease: `Quad.easeIn`,
-         },
-         scaleY: {
-            value: this.interactScaleDown,
+            props: {
+                scale: { from: this.scale, to: this.interactScaleDown },
+            },
+            persist: true,
+            paused: true,
+        })
+
+        this.onClickUpTweener = this.scene.tweens.add({
+            targets: this,
+            ease: `Quad.easeInOut`,
             duration: 100,
-            yoyo: false,
-            ease: `Cubic.easeIn`,
-         },
-         persist: true,
-      })
+            props: {
+                scale: { from: this.scale, to: this.defaultScale },
+            },
+            persist: true,
+            paused: true,
+            onComplete: () => {
+                if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.restart()
+            },
+        })
+    }
 
-      this.onClickUpTweener = this.scene.tweens.add({
-         targets: this,
-         scaleX: {
-            value: this.defaultScale,
-            duration: 100,
-            yoyo: false,
-            ease: `Quad.easeIn`,
-         },
-         scaleY: {
-            value: this.defaultScale,
-            duration: 100,
-            yoyo: false,
-            ease: `Cubic.easeIn`,
-         },
-         persist: true,
-         onComplete: () => {
-            if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.restart()
-         },
-      })
-   }
+    public setIdleTween(idleTweenProfile: object): void {
+        this.onButtonIdleTweener = this.scene.tweens.add(idleTweenProfile as Types.Tweens.TweenBuilderConfig)
+    }
 
-   public setIdleTween(idleTweenProfile: object): void {
-      this.onButtonIdleTweener = this.scene.tweens.add(idleTweenProfile as Types.Tweens.TweenBuilderConfig)
-   }
+    private setInteractionOnButtonPointerDown(): void {
+        this.setInteractive().on('pointerdown', () => {
+            if (!this.isCanInteract || this.isOnInteractDelay) return
 
-   private setInteractionOnButtonPointerDown(): void {
-      this.setInteractive().on('pointerdown', () => {
-         if (!this.isCanInteract || this.isOnInteractDelay) return
+            if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.stop()
 
-         if (this.onButtonIdleTweener != undefined) this.onButtonIdleTweener.stop()
-
-         if (this.isButtonTween) {
-            this.onClickDownTweener.restart()
-         }
-         if (this.callbackOnHold != null) {
-            if (!this.isOnInteractDelay) {
-               this.callbackOnHold()
-            }
-         }
-         this.isOnPointerDown = true
-      })
-   }
-
-   private setInteractionOnButtonPointerUp(): void {
-      this.setInteractive().on('pointerup', () => {
-         if (!this.isCanInteract || this.isOnInteractDelay) return
-
-         if (this.isOnPointerDown) {
             if (this.isButtonTween) {
-               this.onClickUpTweener.restart()
+                this.onClickDownTweener.restart()
             }
-            if (this.callback != null) {
-               if (!this.isOnInteractDelay) {
-                  this.callback()
-                  this.isOnInteractDelay = true
-                  timer(this.intertactDelay).subscribe(() => {
-                     this.isOnInteractDelay = false
-                  })
-               }
+            if (this.callbackOnHold != undefined || this.callbackOnHold != null) {
+                if (!this.isOnInteractDelay) {
+                    this.callbackOnHold()
+                }
+            }
+            this.isOnPointerDown = true
+        })
+    }
+
+    private setInteractionOnButtonPointerUp(): void {
+        this.setInteractive().on('pointerup', () => {
+            if (!this.isCanInteract || this.isOnInteractDelay) return
+
+            if (this.isOnPointerDown) {
+                if (this.isButtonTween) {
+                    this.onClickUpTweener.restart()
+                }
+                if (this.callback != undefined || this.callback != null) {
+                    if (!this.isOnInteractDelay) {
+                        this.callback()
+                        this.isOnInteractDelay = true
+                        timer(this.intertactDelay).subscribe(() => {
+                            this.isOnInteractDelay = false
+                        })
+                    }
+                }
+                if (this.callbackOnHoldCancel != undefined || this.callbackOnHoldCancel != null) {
+                    this.callbackOnHoldCancel()
+                }
+                this.isOnPointerDown = false
+            }
+        })
+    }
+
+    private setInteractionOnButtonPointerOut(): void {
+        this.setInteractive().on('pointerout', () => {
+            this.onButtonPointerOutOrOutside()
+        })
+    }
+
+    private setInteractionOnButtonPointerOutside(): void {
+        this.setInteractive().on('pointerupoutside', () => {
+            this.onButtonPointerOutOrOutside()
+        })
+    }
+
+    private onButtonPointerOutOrOutside(): void {
+        if (this.isOnPointerDown) {
+            this.onClickUpTweener.restart()
+            if (this.callbackOnHoldCancel != undefined || this.callbackOnHoldCancel != null) {
+                this.callbackOnHoldCancel()
             }
             this.isOnPointerDown = false
-         }
-      })
-   }
+        }
+    }
 
-   private setInteractionOnButtonPointerOut(): void {
-      this.setInteractive().on('pointerout', () => {
-         this.onButtonPointerOutOrOutside()
-      })
-   }
+    private setBg(bgSpriteKey: string, bgKey: string) {
+        if (bgSpriteKey != null || bgSpriteKey != undefined)
+            this.background = this.scene.add.sprite(0, 0, bgSpriteKey, bgKey).setOrigin(0.5)
+        else this.background = this.scene.add.sprite(0, 0, bgKey).setOrigin(0.5)
+    }
 
-   private setInteractionOnButtonPointerOutside(): void {
-      this.setInteractive().on('pointerupoutside', () => {
-         this.onButtonPointerOutOrOutside()
-      })
-   }
+    setNineSlice(buttonStyleObject: ButtonStyleConfig): void {
+        this.backgroundSlice = this.scene.add
+            .nineslice(
+                0,
+                0,
+                buttonStyleObject.imageKey,
+                '',
+                this.buttonWidth,
+                this.buttonHeight,
+                buttonStyleObject.leftWidth,
+                buttonStyleObject.rightWidth,
+                buttonStyleObject.topHeight,
+                buttonStyleObject.bottomHeight
+            )
+            .setOrigin(0.5)
 
-   private onButtonPointerOutOrOutside(): void {
-      if (this.isOnPointerDown) {
-         this.onClickUpTweener.restart()
-         if (this.callbackOnHold != null) {
-            if (!this.callback != null) {
-               this.callback()
-            }
-         }
-         this.isOnPointerDown = false
-      }
-   }
+        this.background.setVisible(false)
+        this.add([this.backgroundSlice])
+        this.sendToBack(this.backgroundSlice)
+    }
 
-   private setBg(bgSpriteKey: string, bgKey: string) {
-      if (bgSpriteKey != null || bgSpriteKey != undefined)
-         this.background = this.scene.add.sprite(0, 0, bgSpriteKey, bgKey).setOrigin(0.5)
-      else this.background = this.scene.add.sprite(0, 0, bgKey).setOrigin(0.5)
-   }
+    onClick(callback: Function, holdCallback: Function = undefined, holdCallbackCancel: Function = undefined): void {
+        this.callback = callback
+        this.callbackOnHold = holdCallback
+        this.callbackOnHoldCancel = holdCallbackCancel
+    }
 
-   setNineSlice(buttonStyleObject: ButtonStyleConfig): void {
-      // let imageKey = `${buttonStyleObject.imageKey}_slice`
-      // if (this.scene.textures.exists(imageKey)) this.scene.textures.remove(imageKey)
+    setText(txt: string): void {
+        this.label.setText(txt)
+    }
 
-      // this.scene.textures.addImage(
-      //    imageKey,
-      //    this.scene.textures.get(buttonStyleObject.imageKey).getSourceImage() as HTMLImageElement
-      // )
+    setTextSize(size: number) {
+        this.label.setFontSize(size)
+        this.label.setOrigin(0.5, 0.5)
+    }
 
-      this.backgroundSlice = this.scene.add
-         .nineslice(
-            0,
-            0,
-            buttonStyleObject.imageKey,
-            '',
-            this.buttonWidth,
-            this.buttonHeight,
-            buttonStyleObject.offset,
-            buttonStyleObject.offset,
-            buttonStyleObject.offset,
-            buttonStyleObject.offset
-         )
-         .setOrigin(0.5)
+    setButtonSize(widht: number, height: number) {
+        this.background.setSize(widht, height)
+        this.background.setDisplaySize(widht, height)
 
-      this.background.setVisible(false)
-      this.add([this.backgroundSlice])
-      this.sendToBack(this.backgroundSlice)
-   }
+        if (this.backgroundSlice) this.backgroundSlice.setSize(widht, height)
 
-   onClick(callback: Function, holdCallback: Function = null): void {
-      this.callback = callback
-      this.callbackOnHold = holdCallback
-   }
+        this.setSize(widht, height)
+        this.setDisplaySize(widht, height)
 
-   setText(txt: string): void {
-      this.label.setText(txt)
-   }
+        if (this.input) this.input.hitArea.setSize(widht, height)
 
-   setTextSize(size: number) {
-      this.label.setFontSize(size)
-      this.label.setOrigin(0.5, 0.5)
-   }
+        this.buttonWidth = widht
+        this.buttonHeight = height
+    }
 
-   setButtonSize(widht: number, height: number) {
-      this.background.setSize(widht, height)
-      this.background.setDisplaySize(widht, height)
+    setButtonDepth(value: number) {
+        this.setDepth(value)
+    }
 
-      if (this.backgroundSlice) this.backgroundSlice.setSize(widht, height)
+    setInteractScale(value: number) {
+        this.interactScaleDown = value
+    }
 
-      this.setSize(widht, height)
-      this.setDisplaySize(widht, height)
+    setDefaultScale(value: number) {
+        this.defaultScale = value
+    }
 
-      if (this.input) this.input.hitArea.setSize(widht, height)
+    setCanInteract(value: boolean, isAlpha: boolean = true) {
+        this.isCanInteract = value
 
-      this.buttonWidth = widht
-      this.buttonHeight = height
-   }
+        if (value) {
+            this.setInteractive()
+        } else {
+            this.disableInteractive()
+        }
 
-   setButtonDepth(value: number) {
-      this.setDepth(value)
-   }
+        if (isAlpha) this.changeButtonCanInteractGraphic(value)
+    }
 
-   setInteractScale(value: number) {
-      this.interactScaleDown = value
-   }
+    setTextPosition(x: number, y: number) {
+        this.label.setPosition(x, y)
+    }
 
-   setDefaultScale(value: number) {
-      this.defaultScale = value
-   }
+    setTextOrigin(x: number, y: number) {
+        this.label.setOrigin(x, y)
+    }
 
-   setCanInteract(value: boolean, isAlpha: boolean = true) {
-      this.isCanInteract = value
+    setTextStyle(style: object) {
+        this.label.setStyle(style)
+    }
 
-      if (value) {
-         this.setInteractive()
-      } else {
-         this.disableInteractive()
-      }
+    setTintColorBackground(color: number) {
+        this.background.setTint(color)
 
-      if (isAlpha) this.changeButtonCanInteractGraphic(value)
-   }
+        if (this.backgroundSlice) this.backgroundSlice.setTint(color)
+    }
 
-   setTextPosition(x: number, y: number) {
-      this.label.setPosition(x, y)
-   }
+    clearTint() {
+        this.background.clearTint()
+        this.backgroundSlice.clearTint()
+    }
 
-   setTextOrigin(x: number, y: number) {
-      this.label.setOrigin(x, y)
-   }
+    setBackgroundButtonTexture(key: string) {
+        if (this.background.visible) this.background.setTexture(key)
+        else this.backgroundSlice.setTexture(key)
+    }
 
-   setTextStyle(style: object) {
-      this.label.setStyle(style)
-   }
+    setBackgroundButtonTextureWithAtlas(key: string, textureKey: string) {
+        this.background.setTexture(key, textureKey)
+    }
 
-   setBackgroundButtonTexture(key: string) {
-      this.background.setTexture(key)
-   }
+    setBackgroundButtonOrigin(x: number, y: number) {
+        this.background.setOrigin(x, y)
+        if (this.backgroundSlice) this.backgroundSlice.setOrigin(x, y)
+    }
 
-   setBackgroundButtonTextureWithAtlas(key: string, textureKey: string) {
-      this.background.setTexture(key, textureKey)
-   }
+    fitToText(offsetX: number = 0, offsetY: number = 0) {
+        this.setButtonSize(this.label.width + offsetX * 2, this.label.height + offsetY * 2)
+    }
 
-   setBackgroundButtonOrigin(x: number, y: number) {
-      this.background.setOrigin(x, y)
-      if (this.backgroundSlice) this.backgroundSlice.setOrigin(x, y)
-   }
+    setNativeSize() {
+        this.background.setScale(1)
+        this.setButtonSize(this.background.displayWidth, this.background.displayHeight)
+    }
 
-   fitToText(offsetX: number = 0, offsetY: number = 0) {
-      this.setButtonSize(this.label.width + offsetX * 2, this.label.height + offsetY * 2)
-   }
+    horizontalFitToText(offsetX: number) {
+        this.setButtonSize(this.label.width + offsetX * 2, this.background.height)
+    }
 
-   setNativeSize() {
-      this.background.setScale(1, 1)
-      this.setButtonSize(this.background.displayWidth, this.background.displayHeight)
-   }
+    // fitToBorder() {
+    //    TextAdapter.autoSizeTextInBound(this.label, this.background.width)
+    // }
 
-   horizontalFitToText(offsetX: number) {
-      this.setButtonSize(this.label.width + offsetX * 2, this.background.height)
-   }
-
-   // fitToBorder() {
-   //    TextAdapter.autoSizeTextInBound(this.label, this.background.width)
-   // }
-
-   private changeButtonCanInteractGraphic(value: boolean) {
-      if (!value) this.setAlpha(0.5)
-      else this.setAlpha(1)
-   }
+    private changeButtonCanInteractGraphic(value: boolean) {
+        if (!value) this.setAlpha(0.5)
+        else this.setAlpha(1)
+    }
 }

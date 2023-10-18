@@ -1,4 +1,8 @@
 export enum TownUIState {
-   MainMenu,
-   MenuButtonGroup,
+    MainMenu,
+    Settings,
+    Collection,
+    Inventory,
+    Cooking,
+    DailyLogin,
 }

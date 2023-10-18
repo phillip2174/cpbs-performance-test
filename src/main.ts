@@ -5,6 +5,7 @@ import { SplashScene } from './scenes/SplashScene'
 import { TownScene } from './scenes/TownScene'
 import { SplashLoaddingScene } from './scenes/SplashLoaddingScene'
 import { CityUIScene } from './scenes/CityUIScene'
+import { MinigameCPPuzzleScene } from './scenes/MinigameCpPuzzle'
 
 const config: Phaser.Types.Core.GameConfig = {
     title: 'CP Brandsite',
@@ -30,7 +31,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: true,
         },
     },
-    scene: [SplashScene, SplashLoaddingScene, TownScene, CityUIScene],
+    scene: [SplashScene, SplashLoaddingScene, TownScene, CityUIScene, MinigameCPPuzzleScene],
 }
 
 export default new Phaser.Game(config)

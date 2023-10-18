@@ -56,6 +56,16 @@ export class ResourceManager {
         })
     }
 
+    loadSpriteSheet(imageKey: string, imagePath: string, frameConfig: Phaser.Types.Loader.FileTypes.ImageFrameConfig): Observable<string> {
+        return Observable.create((obs: Observer<string>) => {
+            this.loader.loadSpriteSheet(imageKey, imagePath, frameConfig).subscribe((path) => {
+                obs.next(path)
+                obs.complete()
+            })
+        })
+    }
+
+
     loadJson(key: string, path: string): Observable<string> {
         return Observable.create((observer: Observer<string>) => {
             this.loader.loadJson(key, path).subscribe((keyResult: string) => {

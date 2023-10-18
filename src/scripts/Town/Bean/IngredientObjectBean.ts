@@ -11,11 +11,14 @@ export class IngredientObjectBean {
     positionY: number
     scaleX: number
     scaleY: number
+    interactX: number
+    interactY: number
     interactWidth: number
     interactHeight: number
     depth: number
     isRandomizable: boolean
     keyAsset: string
+    isDisableInteract: boolean
 
     constructor(
         id: number,
@@ -26,11 +29,14 @@ export class IngredientObjectBean {
         positionY: number,
         scaleX: number,
         scaleY: number,
+        interactX: number,
+        interactY: number,
         interactWidth: number,
         interactHeight: number,
         depth: number,
         isRandomizable: boolean,
-        keyAsset: string
+        keyAsset: string,
+        isDisableInteract: boolean = false
     ) {
         this.id = id
         this.typeAnimation = typeAnimation
@@ -40,10 +46,13 @@ export class IngredientObjectBean {
         this.positionY = positionY
         this.scaleX = scaleX
         this.scaleY = scaleY
+        this.interactX = interactX
+        this.interactY = interactY
         this.interactWidth = interactWidth
         this.interactHeight = interactHeight
         this.depth = depth
         this.isRandomizable = isRandomizable
         this.keyAsset = keyAsset
+        this.isDisableInteract = isDisableInteract
     }
 }
