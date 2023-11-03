@@ -14,9 +14,11 @@ export class RecipePod {
     public recipeBeans: RecipeBean[]
 
     public totalUnlockedCurrentSelectedFilter: Subject<number> = new Subject<number>()
+    public totalUserCookedCurrentSelectedFilter: Subject<number> = new Subject<number>()
 
-    public totalMasterRecipe: number
-    public totalUnlockedRecipe: number
+    public totalMasterRecipe: number = 0
+    public totalUnlockedRecipe: number = 0
+    public totalUserCookedRecipe: number = 0
 
     private currentFilterRecipeBeans: RecipeBean[]
 
@@ -93,6 +95,23 @@ export class RecipePod {
         }
     }
 
+    public getNotificationTypeWithBean(bean: RecipeBean): RecipeFilterType {
+        if (!bean.secretUnlock) {
+            switch (bean.type) {
+                case RecipeType.Easy:
+                    return RecipeFilterType.Easy
+                case RecipeType.Normal:
+                    return RecipeFilterType.Normal
+                case RecipeType.Hard:
+                    return RecipeFilterType.Hard
+                case RecipeType.Challenge:
+                    return RecipeFilterType.Challenge
+            }
+        } else {
+            return RecipeFilterType.Secret
+        }
+    }
+
     public setTotalMasterRecipe(total: number) {
         this.totalMasterRecipe = total
     }
@@ -102,6 +121,7 @@ export class RecipePod {
             return this.recipeRepository.getUserRecipeData().pipe(
                 map((userRecipes) => {
                     this.userRecipeBeans = userRecipes
+                    this.updateTotalUserRecipe()
                     this.updateTotalUnlockedRecipe()
                     return userRecipes
                 })
@@ -117,6 +137,7 @@ export class RecipePod {
                 this.userRecipeBeans = beans
 
                 this.updateTotalUnlockedRecipe()
+                this.updateTotalUserRecipe()
                 this.setTotalUnlockedCurrentSelectedFilter()
                 this.collectionPod.findCookedUserToPushNotification()
 
@@ -129,6 +150,7 @@ export class RecipePod {
         return this.recipeRepository.cookedRecipeMenu(recipeMenu).pipe(
             map((bean) => {
                 this.addUserRecipeData(bean)
+                this.updateTotalUserRecipe()
                 this.getRecipeBeanWithID(recipeMenu.id).userRecipeBean = bean
                 return bean
             })
@@ -151,6 +173,16 @@ export class RecipePod {
 
     public updateTotalUnlockedRecipe() {
         this.totalUnlockedRecipe = this.userRecipeBeans.filter((x) => x.state == CookState.Unlocked).length
+    }
+
+    public updateTotalUserRecipe() {
+        this.totalUserCookedRecipe = this.userRecipeBeans.length
+    }
+
+    public setTotalUserCookedSelectedFilter() {
+        this.totalUserCookedCurrentSelectedFilter.next(
+            this.currentFilterRecipeBeans.filter((bean) => bean.userRecipeBean != undefined).length
+        )
     }
 
     public setTotalUnlockedCurrentSelectedFilter() {

@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from 'phaser'
+import { GameObjects, Scene, Tweens } from 'phaser'
 import { Button } from '../../button/Button'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../../pod/PodProvider'
@@ -15,6 +15,8 @@ import { UserRecipe } from '../Collection/UserRecipe'
 import { CookState } from '../Collection/type/CookState'
 import { CookingCellState } from './type/CookingCellState'
 import { RecipePod } from '../../pod/RecipePod'
+import { Subscription } from 'rxjs'
+import { AnimationController } from '../AnimationController'
 
 export class CookingRecipeCellView extends GameObjects.Container {
     private recipeBackground: GameObjects.NineSlice
@@ -33,15 +35,24 @@ export class CookingRecipeCellView extends GameObjects.Container {
     private recipeBackgroundWidth: number
     private recipeBackgroundHeight: number
 
+    private cellButton: Button
     private selectButton: Button
 
     private isDesktop: boolean = false
-    public isIngredientAllFull: boolean = false
+    public isReady: boolean = false
+
+    private onClickDownTweener: Tweens.Tween
+    private onClickUpTweener: Tweens.Tween
+    private onHoverButtonIconTween: Tweens.TweenChain
+    private onLeaveButtonIconTween: Tweens.TweenChain
+
+    private onLeaveButtonTextTween: Tweens.Tween
+    private onHoverButtonTextTween: Tweens.Tween
 
     private cookingPod: CookingPod
     private recipePod: RecipePod
 
-    private recipeBean: RecipeBean
+    public recipeBean: RecipeBean
 
     constructor(scene: Scene) {
         super(scene)
@@ -82,23 +93,28 @@ export class CookingRecipeCellView extends GameObjects.Container {
 
         this.isDesktop ? this.setupCellDesktop() : this.setupCellMobile()
 
+        this.cellButton = new Button(
+            this.scene,
+            0,
+            0,
+            this.recipeBackgroundWidth,
+            this.recipeBackgroundHeight,
+            ''
+        ).setAlpha(0.001)
+
         this.selectButton = this.createButton(89, 43, 'button-white-bg', 'SELECT', 0x29cc6a)
         this.selectButton.setPosition(0, this.recipeBackgroundHeight / 2 - 40)
-        this.selectButton.onClick(() => {
-            if (!this.cookingPod.isDragScrollViewCooking && !this.cookingPod.isDragScrollViewFilter) {
-                this.cookingPod.setCurrentRecipeBean(this.recipeBean)
-                this.cookingPod.changeCookingPanelState(CookingPanelState.CookingDetail)
-                this.cookingPod.changeCookingDetailState(CookingDetailState.CookingSelectRecipe)
-            }
-        })
 
+        this.setActionButton()
         this.setCellMasterData()
+        this.createTween()
 
         this.add([
             this.recipeBackground,
             this.recipeNameText,
             this.positionPointAndTagContainer,
             this.recipeAndIngredientContainer,
+            this.cellButton,
             this.selectButton,
         ])
 
@@ -106,29 +122,70 @@ export class CookingRecipeCellView extends GameObjects.Container {
         this.height = this.getBounds().height
     }
 
+    private doOnClickButton() {
+        if (!this.cookingPod.isDragScrollViewCooking && !this.cookingPod.isDragScrollViewFilter) {
+            this.cookingPod.setCurrentRecipeBean(this.recipeBean)
+            this.cookingPod.changeCookingPanelState(CookingPanelState.CookingDetail)
+            this.cookingPod.changeCookingDetailState(CookingDetailState.CookingSelectRecipe)
+        }
+    }
+
     public setCellWithUserRecipe(userRecipe: UserRecipe) {
         let bean: RecipeBean = this.recipeBean
 
         switch (userRecipe.state) {
             case CookState.Cooked:
-                if (!bean.secretUnlock) this.setCellToUnlocked()
+                if (!bean.secretUnlock) this.setCellToCompleted()
                 this.handleButton(CookingCellState.Completed)
                 break
             case CookState.Unlocked:
                 this.handleButton(CookingCellState.Completed)
-                this.setCellToUnlocked()
+                this.setCellToCompleted()
                 break
         }
 
-        this.isIngredientAllFull = false
+        this.setPointAndTagPosition()
+        this.isReady = false
     }
 
-    private setCellToUnlocked() {
+    private setActionButton() {
+        this.cellButton.onClick(
+            () => {
+                if (this.isReady) {
+                    this.doOnClickButton()
+                    this.onClickUpTweener?.restart()
+                }
+            },
+            () => {
+                if (this.isReady) this.onClickDownTweener?.restart()
+            },
+            () => {
+                if (this.isReady) this.onClickUpTweener?.restart()
+            }
+        )
+
+        this.selectButton.onClick(() => {
+            this.doOnClickButton()
+        })
+
+        if (this.scene.sys.game.device.os.desktop) {
+            this.cellButton.on('pointerover', () => {
+                this.onHoverButton()
+            })
+
+            this.cellButton.on('pointerout', () => {
+                this.onLeaveButton()
+            })
+        }
+    }
+
+    private setCellToCompleted() {
         let bean: RecipeBean = this.recipeBean
         this.recipeNameText.setText(this.recipeBean.title)
         this.recipePreview.setRecipePreviewMaster(bean.id)
         this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
         this.recipePreview.setCellWithRecipeType(bean.type)
+        this.rewardPointCellView.setPointRewardCell(bean, 0.5)
     }
 
     public getBean(): RecipeBean {
@@ -144,7 +201,7 @@ export class CookingRecipeCellView extends GameObjects.Container {
         this.tagRarityView.doInit()
 
         this.rewardPointCellView = new RewardPointCellView(this.scene, 0, 0)
-        this.rewardPointCellView.doInit()
+        this.rewardPointCellView.doInit(0.5)
 
         this.positionPointAndTagContainer.add([this.positionPointAndTag, this.tagRarityView, this.rewardPointCellView])
     }
@@ -167,30 +224,34 @@ export class CookingRecipeCellView extends GameObjects.Container {
         let bean = this.recipeBean
 
         if (bean.secretUnlock) {
-            // this.tagRarityView.setSecretTag()
+            this.tagRarityView.setSecretTag(0.643)
             this.recipePreview.setSecretRecipe(0x9bd6f8)
         } else {
             this.recipePreview.setRecipePreviewMaster(bean.id)
+            this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
+            this.rewardPointCellView.setPointRewardCell(bean, 0.5)
         }
 
-        this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
-        this.rewardPointCellView.setPointRewardCell(bean, 0.5)
         this.ingredientPreview.setPreviewView(bean, this.isDesktop ? 0.693 : 0.65, 5, true)
-        this.handleButton(CookingCellState.Uncook)
+        this.handleButton(bean.secretUnlock ? CookingCellState.Secret : CookingCellState.Uncook)
 
-        this.isIngredientAllFull = this.ingredientPreview.updateCellIngredientPreviewUser()
-        if (this.isIngredientAllFull && !bean.secretUnlock) {
+        this.isReady = this.ingredientPreview.updateCellIngredientPreviewUser()
+        if (this.isReady && !bean.secretUnlock) {
             this.recipePreview.setCellWithRecipeType(bean.type)
             this.handleButton(CookingCellState.Ready)
 
-            this.isIngredientAllFull = true
-        } else if (this.isIngredientAllFull && bean.secretUnlock) {
+            this.isReady = true
+        } else if (this.isReady && bean.secretUnlock) {
             if (this.recipePod.totalUnlockedRecipe >= bean.secretUnlock.unlockRecipeAmount) {
                 this.handleButton(CookingCellState.Ready)
 
-                this.isIngredientAllFull = true
+                this.isReady = true
             } else {
-                this.isIngredientAllFull = false
+                this.isReady = false
+            }
+        } else if (!this.isReady && bean.secretUnlock) {
+            if (this.recipePod.totalUnlockedRecipe >= bean.secretUnlock.unlockRecipeAmount) {
+                this.handleButton(CookingCellState.Uncook)
             }
         }
 
@@ -200,23 +261,44 @@ export class CookingRecipeCellView extends GameObjects.Container {
     private handleButton(cookingState: CookingCellState) {
         switch (cookingState) {
             case CookingCellState.Uncook:
-            case CookingCellState.Secret:
                 this.selectButton.setCanInteract(false, false)
                 this.selectButton.clearTint()
                 this.selectButton.setTintColorBackground(0xcecece)
+                this.setButtonTextDefault()
                 break
             case CookingCellState.Ready:
+                this.isReady = true
                 this.selectButton.setCanInteract(true, false)
                 this.selectButton.clearTint()
                 this.selectButton.setTintColorBackground(0x29cc6a)
+                this.setButtonTextDefault()
                 break
             case CookingCellState.Completed:
                 this.selectButton.setCanInteract(false, false)
                 this.selectButton.setBackgroundButtonTexture('completed-icon')
                 this.selectButton.setText('')
+                this.selectButton.setButtonSize(80, 39)
                 this.selectButton.clearTint()
                 break
+            case CookingCellState.Secret:
+                this.selectButton.setCanInteract(false, false)
+                this.selectButton.clearTint()
+                this.selectButton.setTintColorBackground(0xcecece)
+                this.setButtonTextSecret()
+                break
         }
+    }
+
+    private setButtonTextDefault() {
+        this.selectButton.setText('SELECT')
+        this.selectButton.setButtonSize(89, 43)
+    }
+
+    private setButtonTextSecret() {
+        this.selectButton.setText(
+            `COLLECTED ${this.recipePod.totalUnlockedRecipe}/${this.recipeBean.secretUnlock.unlockRecipeAmount}`
+        )
+        this.selectButton.setButtonSize(this.selectButton.getBounds().width + 30, 43)
     }
 
     private setPointAndTagPosition() {
@@ -281,5 +363,75 @@ export class CookingRecipeCellView extends GameObjects.Container {
         button.setTintColorBackground(colorBG)
 
         return button
+    }
+
+    private onHoverButton(): void {
+        this.onHoverButtonIconTween?.restart()
+        this.onHoverButtonTextTween?.restart()
+
+        this.recipePreview?.onHover()
+    }
+
+    private onLeaveButton(): void {
+        this.onLeaveButtonIconTween?.restart()
+        this.onLeaveButtonTextTween?.restart()
+
+        this.recipePreview?.onLeave()
+    }
+
+    private createTween() {
+        this.onClickDownTweener = this.scene.tweens.add({
+            targets: this,
+            duration: 200,
+            ease: `Quad.easeInOut`,
+            props: {
+                scale: { from: this.scale, to: 0.9 },
+            },
+            persist: true,
+            paused: true,
+        })
+
+        this.onClickUpTweener = this.scene.tweens.add({
+            targets: this,
+            ease: 'Cubic.easeInOut',
+            duration: 200,
+            props: {
+                scale: { from: this.scale, to: 1 },
+            },
+            persist: true,
+            paused: true,
+        })
+
+        if (this.scene.sys.game.device.os.desktop) {
+            let tweenOnHover = AnimationController.instance.tweenHoverButton(
+                this.scene,
+                undefined, //Change when have notification tag
+                () => {
+                    this.recipeNameText?.setStyle({ fill: '#EE843C' })
+                }
+            )
+            let tweenOnLeaveHover = AnimationController.instance.tweenLeaveHoverButton(
+                this.scene,
+                undefined, //Change when have notification tag
+                () => {
+                    this.recipeNameText?.setStyle({ fill: '#585858' })
+                }
+            )
+            this.onHoverButtonIconTween = tweenOnHover.onHoverButtonIconTween
+
+            this.onLeaveButtonIconTween = tweenOnLeaveHover.onLeaveHoverButtonIconTween
+
+            this.onHoverButtonTextTween = tweenOnHover.onHoverButtonTextTween
+
+            this.onLeaveButtonTextTween = tweenOnLeaveHover.onLeaveHoverButtonTextTween
+        }
+    }
+
+    destroy(fromScene?: boolean): void {
+        this.onHoverButtonIconTween?.destroy()
+        this.onHoverButtonTextTween?.destroy()
+
+        this.onLeaveButtonIconTween?.destroy()
+        this.onLeaveButtonTextTween?.destroy()
     }
 }

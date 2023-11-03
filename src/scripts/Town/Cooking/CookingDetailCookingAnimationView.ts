@@ -15,7 +15,6 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
     private isDesktop: boolean
 
     private stateSubscription: Subscription
-    private closeTimerSubscription: Subscription
 
     private cookingPod: CookingPod
 
@@ -73,13 +72,10 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
         this.cookingPod.cookingDetailState.subscribe((state) => {
             if (state == CookingDetailState.CookingAnimation) {
                 this.cookingLoadingSprite.play('loading-cooking-loop')
-
                 this.cookingLoadingTextSprite.play('loading-text-loop')
-                this.closeTimerSubscription = timer(10000).subscribe((x) => {
-                    this.cookingPod.changeCookingDetailState(CookingDetailState.CookingComplete)
-                    this.cookingLoadingSprite.stop()
-                    this.cookingLoadingTextSprite.stop()
-                })
+            } else {
+                this.cookingLoadingSprite?.stop()
+                this.cookingLoadingTextSprite?.stop()
             }
         })
     }

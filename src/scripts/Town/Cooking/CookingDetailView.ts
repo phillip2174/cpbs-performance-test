@@ -54,10 +54,12 @@ export class CookingDetailView extends GameObjects.Container {
 
         this.dimButton = new DimButton(this.scene)
         this.dimButton.onClick(() => {
-            if (this.cookingPod.cookingDetailState.value == CookingDetailState.CookingSelectRecipe) {
-                this.setStateAndLayerScrollView(CookingPanelState.CookingList)
-            } else if (this.cookingPod.cookingDetailState.value == CookingDetailState.CookingComplete) {
-                this.setStateAndLayerScrollView(CookingPanelState.CookingListFromComplete)
+            if (
+                this.cookingPod.cookingDetailState.value == CookingDetailState.CookingSelectRecipe ||
+                this.cookingPod.cookingDetailState.value == CookingDetailState.CookingComplete
+            ) {
+                this.townUIPod.setLayerScrollView(CookingDetailView.SCROLL_VIEW_LAYER)
+                this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
             }
         })
 
@@ -65,11 +67,6 @@ export class CookingDetailView extends GameObjects.Container {
         this.setupSubscribe()
         this.add([this.dimButton, this.cookingDetailUIContainer])
         this.createTween()
-    }
-
-    private setStateAndLayerScrollView(state: CookingPanelState) {
-        this.cookingPod.changeCookingPanelState(state)
-        this.townUIPod.setLayerScrollView(CookingDetailView.SCROLL_VIEW_LAYER)
     }
 
     private setupSubscribe(): void {

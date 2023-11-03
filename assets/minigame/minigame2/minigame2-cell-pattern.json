@@ -1,0 +1,12 @@
+[
+    ["green", "red", "orange", "blue", "blue", "orange", "green", "red", "green", "red", "blue", "orange"],
+    ["green", "orange", "blue", "red", "red", "green", "orange", "blue", "blue", "orange", "red", "green"],
+    ["orange", "red", "green", "blue", "green", "blue", "red", "orange", "blue", "green", "orange", "red"],
+    ["orange", "green", "red", "blue", "red", "orange", "blue", "green", "green", "blue", "orange", "red"],
+    ["green", "orange", "red", "blue", "orange", "green", "blue", "red", "red", "blue", "orange", "green"],
+    ["orange", "green", "blue", "red", "red", "blue", "green", "orange", "blue", "red", "orange", "green"],
+    ["blue", "green", "red", "orange", "orange", "red", "blue", "green", "red", "blue", "green", "orange"],
+    ["red", "green", "blue", "orange", "orange", "blue", "red", "green", "blue", "red", "green", "orange"],
+    ["blue", "orange", "green", "red", "green", "red", "blue", "orange", "red", "orange", "green", "blue"],
+    ["orange", "red", "blue", "green", "blue", "green", "red", "orange", "orange", "blue", "green", "red"]
+]

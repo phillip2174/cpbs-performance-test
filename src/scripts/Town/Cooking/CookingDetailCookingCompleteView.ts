@@ -16,11 +16,12 @@ import { RecipeBean } from '../Collection/RecipeBean'
 import { RecipePod } from '../../pod/RecipePod'
 
 export class CookingDetailCookingCompleteView extends GameObjects.Container {
+    public static readonly SCROLL_VIEW_LAYER: number = 1
     private cookingCompleteBackground: GameObjects.NineSlice
 
     private congratText: GameObjects.Text
-    private congratDescText: GameObjects.Text
-    private receiveText: GameObjects.Text
+
+    private congratDescTextContainer: GameObjects.Container
 
     private closeButton: Button
     private viewCollectionButton: Button
@@ -73,22 +74,27 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
         this.setupTexts()
         this.setupButtons()
 
+        this.congratDescTextContainer = this.scene.add.container(0, this.congratText.y + 50)
+
         this.rewardPointCellView = new RewardPointCellView(this.scene, 0, 0)
         this.rewardPointCellView.doInit()
 
-        this.rewardPointCellView.setPosition(0, this.receiveText.y + this.rewardPointCellView.height / 2 + 15)
+        this.rewardPointCellView.setPosition(
+            0,
+            this.congratDescTextContainer.y + this.rewardPointCellView.height / 2 + 15
+        )
 
         this.recipePreview = new RecipePreviewView(this.scene, 0, 0)
         this.recipePreview.doInit()
+        this.recipePreview.setSizeRecipe(170, 170)
 
-        this.recipePreview.setPosition(0, this.rewardPointCellView.y + this.rewardPointCellView.height + 70)
+        this.recipePreview.setPosition(0, 50)
 
         this.cookingCompleteBackground.setInteractive()
         this.add([
             this.cookingCompleteBackground,
             this.congratText,
-            this.congratDescText,
-            this.receiveText,
+            this.congratDescTextContainer,
             this.rewardPointCellView,
             this.recipePreview,
             this.closeButton,
@@ -99,10 +105,16 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
     private setupSubscribe(): void {
         this.currnetRecipeBeanSubscription = this.cookingPod.currentRecipeBean.subscribe((recipeBean) => {
             this.recipeBean = recipeBean
-            this.congratDescText.setText('“' + recipeBean.title + '”' + ' ปรุงเสร็จแล้ว')
-            this.rewardPointCellView.setPointRewardCell(recipeBean)
-            this.recipePreview.setRecipePreviewMaster(recipeBean.id)
-            this.recipePreview.setCellWithRecipeType(recipeBean.type)
+
+            // let testArr = ['ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง', 'ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง']
+
+            this.createTextCongratDesc(this.recipeBean.secretUnlock ? ['เมนูลับมาสเตอร์เชฟ'] : recipeBean.title)
+            this.rewardPointCellView.setDefaultPointCell()
+            if (!this.recipeBean.secretUnlock) {
+                this.rewardPointCellView.setPointRewardCell(recipeBean)
+            }
+
+            this.recipePreview.setSecretRecipe(0, false)
         })
     }
 
@@ -112,21 +124,12 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
             .setOrigin(0.5)
             .setText('ยินดีด้วย!!')
             .setStyle({ fill: '#29CC6A', fontSize: 36 })
-            .setPosition(0, -this.cookingCompleteBackground.height / 2 + 60)
-
-        this.congratDescText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded')
-            .setOrigin(0.5)
-            .setText('“???” ปรุงเสร็จแล้ว')
-            .setStyle({ fill: '#585858', fontSize: 24 })
-            .setPosition(0, this.congratText.y + 45)
-
-        this.receiveText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded')
-            .setOrigin(0.5)
-            .setText('คุณได้รับ')
-            .setStyle({ fill: '#585858', fontSize: 24 })
-            .setPosition(0, this.congratDescText.y + this.congratDescText.height / 2 + 5)
+            .setPosition(
+                0,
+                this.isDesktop
+                    ? -this.cookingCompleteBackground.height / 2 + 50
+                    : -this.cookingCompleteBackground.height / 2 + 40
+            )
     }
 
     private setupButtons(): void {
@@ -145,7 +148,8 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
 
     private setupButtonListeners(): void {
         this.closeButton.onClick(() => {
-            this.cookingPod.changeCookingPanelState(CookingPanelState.CookingListFromComplete)
+            this.townUIPod.setLayerScrollView(CookingDetailCookingCompleteView.SCROLL_VIEW_LAYER)
+            this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
         })
 
         this.viewCollectionButton.onClick(() => {
@@ -192,5 +196,47 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
         button.setTintColorBackground(colorBG)
 
         return button
+    }
+
+    private createTextCongratDesc(arrTitle: string[]) {
+        this.congratDescTextContainer.removeAll(true)
+
+        let mapDesc = arrTitle.map((x) => x)
+        let maxArrIndex = mapDesc.length - 1
+        mapDesc[0] = `"${mapDesc[0]}`
+        mapDesc[maxArrIndex] = `${mapDesc[maxArrIndex]}"`
+        mapDesc.push(`ปรุงเสร็จแล้ว คุณได้รับ`)
+
+        mapDesc.forEach((line) => {
+            let lineGroup: GameObjects.Container = this.scene.add.container()
+            let positionMock = this.scene.add
+                .rectangle(0, 0, this.cookingCompleteBackground.width - (this.isDesktop ? 100 : 80), 24, 0xff0000, 0)
+                .setOrigin(0.5, 0.5)
+
+            let titleText = TextAdapter.instance
+                .getVectorText(this.scene, 'DB_HeaventRounded')
+                .setText(line)
+                .setOrigin(0.5, 0.5)
+                .setPosition(0, -positionMock.height / 2 + 8)
+                .setStyle({ fill: '#585858', fontSize: 24 })
+
+            lineGroup.add([positionMock, titleText])
+
+            lineGroup.width = lineGroup.getBounds().width
+            lineGroup.height = 24
+
+            this.congratDescTextContainer.add(lineGroup)
+        })
+
+        if (mapDesc.length > 1)
+            Phaser.Actions.AlignTo(this.congratDescTextContainer.getAll(), Phaser.Display.Align.BOTTOM_CENTER, 0, 5)
+
+        this.congratDescTextContainer.width = this.congratDescTextContainer.getBounds().width
+        this.congratDescTextContainer.height = this.congratDescTextContainer.getBounds().height
+
+        this.rewardPointCellView.setPosition(
+            0,
+            this.congratDescTextContainer.y + this.congratDescTextContainer.height - 10
+        )
     }
 }

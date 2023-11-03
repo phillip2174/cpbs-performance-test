@@ -70,7 +70,7 @@ export class ScrollView extends GameObjects.GameObject {
             .setInteractive()
             .setDepth(this.depth)
 
-        this.masker = this.scene.make.graphics().setDepth(this.depth)
+        this.masker = this.scene.add.graphics().setDepth(this.depth)
         this.maskShape = new Geom.Rectangle(this.x, this.y, this.width, this.height)
         this.masker.fillRectShape(this.maskShape)
 
@@ -125,28 +125,28 @@ export class ScrollView extends GameObjects.GameObject {
 
     public setInteractable(isInteractable: boolean): void {
         if (isInteractable) {
-            this.scene.input.on('pointerup', () => {
+            this.setInteractive().on('pointerup', () => {
                 if (this.isDrag) {
                     this.endScroll()
                 }
             })
 
-            this.scene.input.on('dragend', () => {
+            this.setInteractive().on('dragend', () => {
                 if (this.isDrag) {
                     this.endScroll()
                 }
             })
 
-            this.scene.input.on('pointerdown', (pointer) => {
+            this.setInteractive().on('pointerdown', (pointer) => {
                 if (this.inputArea.active && this.inputArea.getBounds().contains(pointer.x, pointer.y)) {
                     PodProvider.instance.cameraControlPod.setIsHoldingButton(true)
                     this.beginScroll(pointer)
                 }
             })
         } else {
-            this.scene.input.off('pointerup')
-            this.scene.input.off('dragend')
-            this.scene.input.off('pointerdown')
+            this.setInteractive().off('pointerup')
+            this.setInteractive().off('dragend')
+            this.setInteractive().off('pointerdown')
         }
     }
 

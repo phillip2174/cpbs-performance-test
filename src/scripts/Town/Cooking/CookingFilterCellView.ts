@@ -67,7 +67,7 @@ export class CookingFilterCellView extends GameObjects.Container {
             .setOrigin(0.5)
 
         this.circleNotification = this.scene.add
-            .circle(0, 0, 5, 0xdf2b41)
+            .circle(0, 0, 4, 0xdf2b41)
             .setVisible(false)
             .setPosition(this.filterBackground.width / 2 - 9, -this.filterBackground.height / 2 + 9)
 
@@ -103,6 +103,19 @@ export class CookingFilterCellView extends GameObjects.Container {
         this.buttonFilter?.onClick(() => {
             if (!this.cookingPod.isDragScrollViewFilter) {
                 this.cookingPod.changeCookingFilterState(this.filterType)
+            }
+        })
+
+        this.notificationFilterSubscription = this.cookingPod.notificationFilterCooking.subscribe((arr) => {
+            this.circleNotification.setVisible(false)
+            if (arr.length != 0) {
+                if (this.filterType == RecipeFilterType.All) {
+                    this.circleNotification.setVisible(true)
+                }
+
+                arr.forEach((filter) => {
+                    if (filter == this.filterType) this.circleNotification.setVisible(true)
+                })
             }
         })
     }

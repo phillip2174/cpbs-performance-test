@@ -1,6 +1,9 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
+import { Subscription } from 'rxjs'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
+import { PodProvider } from '../../pod/PodProvider'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
+import { TownUIState } from '../Type/TownUIState'
 import { DailyLoginBean } from './DailyLoginBean'
 import { DailyLoginCollectState } from './DailyLoginCollectState'
 import { DailyLoginRewardPreviewView } from './DailyLoginRewardPreviewView'
@@ -25,6 +28,8 @@ export class DailyLoginCellView extends GameObjects.Container {
     private rewardPreviewPosRect: GameObjects.Rectangle
     private rewardPreviews: DailyLoginRewardPreviewView[] = []
 
+    private skipButton: GameObjects.Rectangle
+
     private collectedStamp: GameObjects.Image
 
     private stampMaxScale: number
@@ -35,6 +40,8 @@ export class DailyLoginCellView extends GameObjects.Container {
     private stampTween: Tweens.TweenChain
 
     private isDesktop: boolean
+
+    private uiStateSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene)
@@ -55,14 +62,27 @@ export class DailyLoginCellView extends GameObjects.Container {
         this.setupUI()
         this.createStampTween()
         this.updateCellByCollectState()
+        this.setupSubscribe()
     }
 
-    public updateCellOnCollecting(): void {
+    public updateCellOnCollecting(skipButton: GameObjects.Rectangle): void {
+        this.skipButton = skipButton
         this.stampTween?.restart()
+    }
+
+    public stopStampTween(): void {
+        this.stampTween?.pause()
+        this.collectedStamp.setVisible(true).setScale(this.stampMinScale)
+        this.dailyLoginBean.collectState = DailyLoginCollectState.Collected
+        this.updateCellCollectedState()
     }
 
     public getCollectState(): DailyLoginCollectState {
         return this.dailyLoginBean.collectState
+    }
+
+    public getIsBigReward(): boolean {
+        return this.dailyLoginBean.isBigReward
     }
 
     private setupUI(): void {
@@ -76,7 +96,11 @@ export class DailyLoginCellView extends GameObjects.Container {
             .setPosition(0, -this.cellBg.height / 2 + (this.isDesktop ? 15 : 10))
             .setOrigin(0.5)
 
-        this.collectedStamp = this.scene.add.image(0, 0, 'daily-login-stamp').setScale(this.stampMinScale)
+        this.collectedStamp = this.scene.add
+            .image(0, 0, 'daily-login-stamp')
+            .setScale(this.stampMinScale)
+            .setVisible(false)
+
         this.setupRewardPreviewsContainer()
         this.add([
             this.cellBg,
@@ -154,6 +178,16 @@ export class DailyLoginCellView extends GameObjects.Container {
         }
     }
 
+    private setupSubscribe(): void {
+        this.uiStateSubscription = PodProvider.instance.townUIPod.townUIState.subscribe((state) => {
+            if (this.dailyLoginBean.collectState == DailyLoginCollectState.Collected) {
+                this.rewardPreviews?.forEach((reward) => {
+                    reward.setIconGrayscale(state == TownUIState.DailyLogin)
+                })
+            }
+        })
+    }
+
     private setupRewardPreviewsContainer(): void {
         this.dailyLoginBean.rewardBeans.forEach((rewardBean) => {
             let dailyLoginRewardPreviewView = new DailyLoginRewardPreviewView(this.scene)
@@ -194,7 +228,12 @@ export class DailyLoginCellView extends GameObjects.Container {
                             to: this.stampMinScale - 0.04,
                         },
                     },
+                    delay: 800,
+                    onStart: () => {
+                        this.collectedStamp.setVisible(true)
+                    },
                     onComplete: () => {
+                        this.skipButton?.removeInteractive()
                         this.dailyLoginBean.collectState = DailyLoginCollectState.Collected
                         this.updateCellCollectedState()
                     },
@@ -217,6 +256,7 @@ export class DailyLoginCellView extends GameObjects.Container {
     }
 
     private updateCellCollectedState(): void {
+        if (this.dailyLoginBean.isBigReward) this.cellBg.clearTint()
         this.cellBg.setTexture('daily-login-collected-bg')
         this.rewardPreviews.forEach((rewardPreview) => {
             this.dayText.setColor('#848A92')
@@ -230,6 +270,7 @@ export class DailyLoginCellView extends GameObjects.Container {
                 this.collectedStamp.setVisible(false)
                 break
             case DailyLoginCollectState.Collected:
+                this.collectedStamp.setVisible(true)
                 this.updateCellCollectedState()
                 break
         }

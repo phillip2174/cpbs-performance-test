@@ -130,6 +130,8 @@ export class InventoryUIPanelView extends GameObjects.Container {
             this.setActive(isActive)
             this.setVisible(isActive)
             this.dimButton.setActiveDim(isActive, false)
+            this.paginationScrollView?.setActiveScrollView(isActive)
+            this.isTween = true
             this.inventoryPod.isAlreadyOpen = false
         }
     }
@@ -278,7 +280,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
     private setupScrollViewMobile(width: number, height: number, inventoryFilterType: InventoryFilterType): void {
         let rowCount = 5
         let columnCount = 4
-        let countGroupPerPage = window.innerWidth >= GameConfig.MAX_SIZE_WIDTH_MOBILE_SCREEN ? 24 : 20
+        let countGroupPerPage = 20
         this.createScrollViewPageAndCellGrid(10, 10, width, height, countGroupPerPage, rowCount, columnCount)
         this.getInventoryItemAndSetCellView(
             10,

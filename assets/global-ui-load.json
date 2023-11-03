@@ -1,0 +1,151 @@
+{
+    "global-ui-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "button-notification-bg",
+                "url": "assets/global_ui/button-notification-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-brandsite-logo",
+                "url": "assets/global_ui/cp-brandsite-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-city-button-icon",
+                "url": "assets/global_ui/cp-city-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-logo",
+                "url": "assets/global_ui/cp-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-point-button-bg",
+                "url": "assets/global_ui/cp-point-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-point-hover-button-bg",
+                "url": "assets/global_ui/cp-point-hover-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-point-button-icon",
+                "url": "assets/global_ui/cp-point-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-button-bg-desktop",
+                "url": "assets/global_ui/ui-button-bg-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-button-bg-mobile",
+                "url": "assets/global_ui/ui-button-bg-mobile.png"
+            },
+            {
+                "type": "image",
+                "key": "button-notification-icon",
+                "url": "assets/global_ui/button-notification-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "setting-button-group-bg",
+                "url": "assets/global_ui/setting-button-group-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "setting-button-icon",
+                "url": "assets/global_ui/setting-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-circle-button-bg",
+                "url": "assets/global_ui/ui-circle-button-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "user-profile-button-icon",
+                "url": "assets/global_ui/user-profile-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "mail-button-icon",
+                "url": "assets/global_ui/settings/mail-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "guide-button-icon",
+                "url": "assets/global_ui/settings/guide-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "sound-effect-on-button-icon",
+                "url": "assets/global_ui/settings/sound-effect-on-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "bg-music-on-button-icon",
+                "url": "assets/global_ui/settings/bg-music-on-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "sound-effect-off-button-icon",
+                "url": "assets/global_ui/settings/sound-effect-off-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "bg-music-off-button-icon",
+                "url": "assets/global_ui/settings/bg-music-off-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "close-button",
+                "url": "assets/global_ui/close-button.png"
+            },
+            {
+                "type": "image",
+                "key": "time-bar-bg",
+                "url": "assets/global_ui/time-bar-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "time-bar",
+                "url": "assets/global_ui/time-bar.png"
+            },
+            {
+                "type": "image",
+                "key": "time-icon",
+                "url": "assets/global_ui/time-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "time-progress-bar-bg",
+                "url": "assets/global_ui/time-progress-bar-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "line-completed",
+                "url": "assets/global_ui/line-completed.png"
+            },
+            {
+                "type": "image",
+                "key": "bonus-coin",
+                "url": "assets/town/ui/bonus-coin.png"
+            },
+            {
+                "type": "image",
+                "key": "white-ingredient-bg",
+                "url": "assets/town/collection/white-ingredient-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-button-icon-play",
+                "url": "assets/global_ui/minigame-button-icon-play.png"
+            }
+        ]
+    }
+}

@@ -49,9 +49,9 @@ export class CollectionView extends GameObjects.Container {
 
     private collectionDetailView: CollectionDetailView
 
-    private collectionCompletedContainer: GameObjects.Container
-    private currentCompletedImage: GameObjects.NineSlice
-    private currentCompletedText: GameObjects.Text
+    private collectionCollectedContainer: GameObjects.Container
+    private currentCollectedImage: GameObjects.NineSlice
+    private currentCollectedText: GameObjects.Text
 
     private stateSubscription: Subscription
     private stateCollectionSubscription: Subscription
@@ -161,7 +161,7 @@ export class CollectionView extends GameObjects.Container {
                 this.onOpenTween.restart()
                 this.onOpenTweenChain?.restart()
 
-                this.collectionCompletedContainer.setVisible(true)
+                this.collectionCollectedContainer.setVisible(true)
                 this.setActive(true)
                 this.setVisible(true)
 
@@ -171,7 +171,7 @@ export class CollectionView extends GameObjects.Container {
                 this.onOpenTweenChain?.pause()
 
                 this.scrollView?.setActiveScrollView(false, this.isTween)
-                this.collectionCompletedContainer.setVisible(false)
+                this.collectionCollectedContainer.setVisible(false)
                 this.collectionPod.isAlreadyOpen = false
 
                 this.onCloseTween?.restart()
@@ -184,6 +184,8 @@ export class CollectionView extends GameObjects.Container {
             this.setActive(isActive)
             this.setVisible(isActive)
             this.dimButton.setActiveDim(isActive, false)
+            this.scrollView?.setActiveScrollView(isActive)
+            this.isTween = true
             this.collectionPod.isAlreadyOpen = false
         }
     }
@@ -455,23 +457,7 @@ export class CollectionView extends GameObjects.Container {
         this.collectionViewContainer = this.scene.add.container(0, -20)
         this.collectionViewContainer.add([this.collectionsDesktopBackground, this.collectionHeaderContainer])
 
-        // let percentSize = this.normalize(
-        //     window.innerWidth,
-        //     GameConfig.MIN_SIZE_DESKTOP_SCREEN,
-        //     GameConfig.MAX_SIZE_DESKTOP_SCREEN
-        // )
-        // let resultScale = this.inverseNormalize(
-        //     percentSize,
-        //     CollectionsView.MIN_SIZE_DESKTOP_PANEL,
-        //     CollectionsView.MAX_SIZE_DESKTOP_PANEL
-        // )
-
-        // this.collectionViewContainer.setScale(resultScale)
-
         this.add(this.collectionViewContainer)
-
-        let test = new ObjectPlacementDebugger(this.scene)
-        // test.debugPlacement(this.collectionHeaderContainer, true, this)
     }
 
     private setupUIMobile() {
@@ -483,8 +469,8 @@ export class CollectionView extends GameObjects.Container {
                 '',
                 this.scene.cameras.main.width - 8,
                 window.innerHeight >= GameConfig.MAX_SIZE_HEIGHT_MOBILE_SCREEN
-                    ? this.scene.cameras.main.height / 1.5
-                    : 555,
+                    ? this.scene.cameras.main.height / 1.4
+                    : 570,
                 1,
                 1,
                 1,
@@ -516,29 +502,16 @@ export class CollectionView extends GameObjects.Container {
         this.collectionViewContainer = this.scene.add.container(0, 30)
         this.collectionViewContainer.add([this.collectionMobileBackground, this.collectionHeaderContainer])
 
-        // let percentSize = this.normalize(
-        //     window.innerWidth,
-        //     GameConfig.MIN_SIZE_WIDTH_MOBILE_SCREEN,
-        //     GameConfig.MAX_SIZE_WIDTH_MOBILE_SCREEN
-        // )
-        // let resultScale = this.inverseNormalize(
-        //     percentSize,
-        //     CollectionView.MIN_SIZE_MOBILE_PANEL,
-        //     CollectionView.MAX_SIZE_MOBILE_PANEL
-        // )
-
-        // this.collectionHeaderContainer.setScale(resultScale)
-
         this.add([this.collectionViewContainer])
     }
 
     private createUICompletedMobile() {
-        this.collectionCompletedContainer = this.scene.add.container(
+        this.collectionCollectedContainer = this.scene.add.container(
             15,
             -this.collectionMobileBackground.height / 3.81 - 30
         )
 
-        this.currentCompletedImage = this.scene.add.nineslice(
+        this.currentCollectedImage = this.scene.add.nineslice(
             0,
             0,
             'white-bg-count',
@@ -551,50 +524,68 @@ export class CollectionView extends GameObjects.Container {
             10
         )
 
-        this.currentCompletedText = TextAdapter.instance
+        this.currentCollectedText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Completed ??/??')
+            .setText('Collected ??/??')
             .setOrigin(0.5, 0.5)
             .setPosition(0, -4)
             .setStyle({ fill: '#0099FF', fontSize: 22 })
 
-        this.collectionCompletedContainer.add([this.currentCompletedImage, this.currentCompletedText])
+        this.collectionCollectedContainer.add([this.currentCollectedImage, this.currentCollectedText])
 
-        this.collectionViewContainer.add(this.collectionCompletedContainer)
+        this.collectionViewContainer.add(this.collectionCollectedContainer)
     }
 
     private createUICompletedDesktop() {
-        this.collectionCompletedContainer = this.scene.add.container(
+        this.collectionCollectedContainer = this.scene.add.container(
             this.collectionsDesktopBackground.width / 2 - 65,
             -this.collectionsDesktopBackground.height / 2 + 75
         )
 
-        this.currentCompletedImage = this.scene.add
+        this.currentCollectedImage = this.scene.add
             .nineslice(10, 0, 'white-bg-count', '', 30, 36, 20, 20, 10, 10)
             .setOrigin(1, 0.5)
 
-        this.currentCompletedText = TextAdapter.instance
+        this.currentCollectedText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Completed ?/??')
+            .setText('Collected ?/??')
             .setOrigin(1, 0.5)
             .setPosition(0, -4)
             .setStyle({ fill: '#0099FF', fontSize: 22 })
 
-        this.currentCompletedImage.width = this.currentCompletedText.getBounds().width + 20
+        this.currentCollectedImage.width = this.currentCollectedText.getBounds().width + 20
 
-        this.collectionCompletedContainer.add([this.currentCompletedImage, this.currentCompletedText])
+        this.collectionCollectedContainer.add([this.currentCollectedImage, this.currentCollectedText])
 
-        this.collectionViewContainer.add(this.collectionCompletedContainer)
+        this.collectionViewContainer.add(this.collectionCollectedContainer)
     }
 
     private setTextCompleted(currentUnlocked: number) {
-        let isSecret = this.collectionPod.collectionFilterState.value == RecipeFilterType.Secret
-        this.currentCompletedText.setText(
-            `Completed ${isSecret ? '??' : currentUnlocked}/${isSecret ? '??' : this.recipePod.totalMasterRecipe}`
-        )
+        this.currentCollectedText.setText(`Collected ${currentUnlocked}/${this.recipePod.totalMasterRecipe}`)
 
         if (this.scene.sys.game.device.os.desktop) {
-            this.currentCompletedImage.width = this.currentCompletedText.width + 20
+            this.currentCollectedImage.width = this.currentCollectedText.width + 20
+        }
+
+        switch (this.collectionPod.collectionFilterState.value) {
+            case RecipeFilterType.All:
+                this.currentCollectedText.setColor('#0099FF')
+                break
+            case RecipeFilterType.Easy:
+                this.currentCollectedText.setColor('#29CC6A')
+                break
+            case RecipeFilterType.Normal:
+                this.currentCollectedText.setColor('#FFBF3C')
+                break
+            case RecipeFilterType.Hard:
+                this.currentCollectedText.setColor('#EE843C')
+                break
+            case RecipeFilterType.Challenge:
+                this.currentCollectedText.setColor('#7B61FF')
+                break
+            case RecipeFilterType.Secret:
+                this.currentCollectedText.setColor('#0060D0')
+                break
         }
     }
 

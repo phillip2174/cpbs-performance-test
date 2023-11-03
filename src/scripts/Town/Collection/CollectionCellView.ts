@@ -14,6 +14,7 @@ import { TagRarityView } from '../Recipe/TagRarityView'
 import { RecipePreviewView } from '../Recipe/RecipePreviewView'
 import { AnimationController } from '../AnimationController'
 import { RecipePod } from '../../pod/RecipePod'
+import { ButtonNotificationView } from '../ButtonNotificationView'
 
 export class CollectionCellView extends GameObjects.Container {
     public static readonly BUTTON_ICON_DEFAULT_SCALE: number = 1
@@ -33,7 +34,7 @@ export class CollectionCellView extends GameObjects.Container {
     private tagRarityView: TagRarityView
     private nameText: GameObjects.Text
 
-    private buttonNotificationIcon: GameObjects.Image
+    private buttonNotificationView: ButtonNotificationView
 
     private onClickDownTweener: Tweens.Tween
     private onClickUpTweener: Tweens.Tween
@@ -97,14 +98,15 @@ export class CollectionCellView extends GameObjects.Container {
         this.tagRarityView = new TagRarityView(this.scene, 0, 63)
         this.tagRarityView.doInit()
 
-        this.buttonNotificationIcon = this.scene.add.image(65, -75, 'button-notification').setVisible(false)
+        this.buttonNotificationView = new ButtonNotificationView(this.scene).setVisible(false)
+        this.buttonNotificationView.doInit(65, -75)
 
         this.add([
             this.cardBackground,
             this.contentContainer,
             this.nameText,
             this.tagRarityView,
-            this.buttonNotificationIcon,
+            this.buttonNotificationView,
         ])
 
         this.setUICellMaster()
@@ -134,7 +136,7 @@ export class CollectionCellView extends GameObjects.Container {
 
         switch (bean.userRecipeBean.state) {
             case CookState.Cooked:
-                this.buttonNotificationIcon.setVisible(true)
+                this.buttonNotificationView.setVisible(true)
                 break
             case CookState.Unlocked:
                 this.setCellToUnlocked()
@@ -144,7 +146,8 @@ export class CollectionCellView extends GameObjects.Container {
 
     public setCellToUnlocked() {
         let bean: RecipeBean = this.pod.recipeBean
-        this.buttonNotificationIcon.setVisible(false)
+        this.buttonNotificationView.setVisible(false)
+        this.nameText.setText(bean.title)
         this.recipePreviewView.setRecipePreviewMaster(bean.id)
         this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
         this.recipePreviewView.setCellWithRecipeType(bean.type)
@@ -225,20 +228,12 @@ export class CollectionCellView extends GameObjects.Container {
         })
 
         if (this.scene.sys.game.device.os.desktop) {
-            let tweenOnHover = AnimationController.instance.tweenHoverButton(
-                this.scene,
-                this.buttonNotificationIcon,
-                () => {
-                    this.nameText?.setStyle({ fill: '#EE843C' })
-                }
-            )
-            let tweenOnLeaveHover = AnimationController.instance.tweenLeaveHoverButton(
-                this.scene,
-                this.buttonNotificationIcon,
-                () => {
-                    this.nameText?.setStyle({ fill: '#585858' })
-                }
-            )
+            let tweenOnHover = AnimationController.instance.tweenHoverButton(this.scene, undefined, () => {
+                this.nameText?.setStyle({ fill: '#EE843C' })
+            })
+            let tweenOnLeaveHover = AnimationController.instance.tweenLeaveHoverButton(this.scene, undefined, () => {
+                this.nameText?.setStyle({ fill: '#585858' })
+            })
             this.onHoverButtonIconTween = tweenOnHover.onHoverButtonIconTween
 
             this.onLeaveButtonIconTween = tweenOnLeaveHover.onLeaveHoverButtonIconTween
@@ -252,6 +247,7 @@ export class CollectionCellView extends GameObjects.Container {
     private onHoverButton(): void {
         this.onHoverButtonIconTween?.restart()
         this.onHoverButtonTextTween?.restart()
+        this.buttonNotificationView?.playOnHoverTweens()
 
         this.recipePreviewView?.onHover()
     }
@@ -259,6 +255,7 @@ export class CollectionCellView extends GameObjects.Container {
     private onLeaveButton(): void {
         this.onLeaveButtonIconTween?.restart()
         this.onLeaveButtonTextTween?.restart()
+        this.buttonNotificationView?.playOnLeaveTweens()
 
         this.recipePreviewView?.onLeave()
     }

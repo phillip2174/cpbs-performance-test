@@ -2,6 +2,7 @@ import { LazyGetter } from 'lazy-get-decorator'
 import { TownBuildingService } from './TownBuildingService'
 import { BillboardObjectService } from './BillboardObjectService'
 import { CollectionService } from './CollectionService'
+import { MinigameService } from './MinigameService'
 
 export class ServiceProvider {
     private static _instance: ServiceProvider
@@ -30,5 +31,10 @@ export class ServiceProvider {
     @LazyGetter()
     get collectionService(): CollectionService {
         return new CollectionService()
+    }
+
+    @LazyGetter()
+    get minigameService(): MinigameService {
+        return new MinigameService()
     }
 }

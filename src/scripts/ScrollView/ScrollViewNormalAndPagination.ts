@@ -7,6 +7,9 @@ import { Button } from '../button/Button'
 import { AnimationController } from '../Town/AnimationController'
 
 export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
+    public static readonly DELAY_TWEEN: number = 400
+    public static readonly DURATION_TWEEN: number = 300
+
     public isDrag: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
     private scrollViewArea: GameObjects.Rectangle
@@ -39,6 +42,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     private barHeight: number
     private barYOffset: number
 
+    private timeConstantScroll: number = 325
     private dragForceX: number = 1
     private dragForceY: number = 1
     private velocityX: number
@@ -53,7 +57,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     private startClickPosition: Phaser.Math.Vector2
     private scrollingDisposable: Subscription
     private isDragDisposable: Subscription
-    private isDragStartDisposable: Subscription
 
     private minBarMoveX: number
     private maxBarMoveX: number
@@ -74,10 +77,18 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
     private percentMove: number
     private percentBarMove: number
+    private percentWheelMove: number = 0
 
     private isCellSpawnCenter: boolean
     private isOpenScrollView: boolean
     private isRoundedMask: boolean = false
+
+    private timestamp: number
+    private elapsed: number
+    private amplitudeX: number = 0
+    private amplitudeY: number = 0
+    private autoScrollX: boolean = false
+    private autoScrollY: boolean = false
 
     private onOpenTween: Tweens.Tween
     private onChangeTween: Tweens.Tween
@@ -165,6 +176,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         // this.addChildIntoContainer(test10)
         // this.addChildIntoContainer(test11)
         // this.addChildIntoContainer(test12)
+
+        this.scene.events.addListener('update', this.onUpdate, this)
     }
 
     public openDebugCheck() {
@@ -383,8 +396,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     private createTween() {
         this.onOpenTween = this.scene.add.tween({
             targets: this.contentContainer,
-            delay: 400,
-            duration: 400,
+            delay: ScrollViewNormalAndPagination.DELAY_TWEEN,
+            duration: ScrollViewNormalAndPagination.DURATION_TWEEN,
             props: {
                 alpha: { from: 0, to: 1 },
             },
@@ -398,7 +411,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
         this.onChangeTween = this.scene.add.tween({
             targets: this.contentContainer,
-            duration: 400,
+            duration: ScrollViewNormalAndPagination.DURATION_TWEEN,
             props: {
                 alpha: { from: 0, to: 1 },
             },
@@ -433,8 +446,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         if (this.isHaveScrollBar) {
             this.onOpenScrollBarTween = this.scene.add.tween({
                 targets: this.scrollbarContainer,
-                delay: 400,
-                duration: 400,
+                delay: ScrollViewNormalAndPagination.DELAY_TWEEN,
+                duration: ScrollViewNormalAndPagination.DURATION_TWEEN,
                 props: {
                     alpha: { from: 0, to: 1 },
                 },
@@ -446,7 +459,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
             this.onChangeScrollBarTween = this.scene.add.tween({
                 targets: this.scrollbarContainer,
-                duration: 400,
+                duration: ScrollViewNormalAndPagination.DURATION_TWEEN,
                 props: {
                     alpha: { from: 0, to: 1 },
                 },
@@ -500,7 +513,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
         this.isDrag.next(false)
         this.isDragDisposable?.unsubscribe()
-        this.isDragStartDisposable?.unsubscribe()
     }
 
     private setActiveScrollBar(isActive: boolean, isTween: boolean = false) {
@@ -510,6 +522,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         this.scrollContentContainer?.setActive(isActive)
 
         if (isActive) {
+            this.scene.events.addListener('update', this.onUpdate, this)
             if (isTween) {
                 if (this.isOpenScrollView) {
                     this.onChangeScrollBarTween?.restart()
@@ -518,6 +531,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 }
             }
         } else {
+            this.scene.events.removeListener('update', this.onUpdate, this)
+
             if (isTween) {
                 this.onOpenScrollBarTween?.pause()
                 this.onChangeScrollBarTween?.pause()
@@ -886,6 +901,15 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 this.beginScroll(pointer, true)
             }
         })
+
+        if (this.scene.sys.game.device.os.desktop) {
+            this.scene.input.on('wheel', (pointer) => {
+                if (this.scrollViewArea.active && this.scrollViewArea.getBounds().contains(pointer.x, pointer.y)) {
+                    if (this.currentScrollViewLayer != this.layerScrollView) return
+                    this.scrollWithWheel(pointer)
+                }
+            })
+        }
     }
 
     private beginScroll(pointer: Input.Pointer, isScroll: boolean): void {
@@ -897,19 +921,14 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             if (this.contentContainer.getBounds().height < this.heightScroll) return
         }
 
-        this.isDragStartDisposable?.unsubscribe()
-        this.isDragStartDisposable = timer(100).subscribe((_) => {
-            this.startClickPosition = new Phaser.Math.Vector2(pointer.x, pointer.y)
-            if (isScroll) {
-                this.isDragView = true
-                this.scrollingDisposable = interval(10).subscribe((_) => this.scroll(this.scene.input.activePointer))
-            } else {
-                this.isDragBar = true
-                this.scrollingDisposable = interval(10).subscribe((_) =>
-                    this.scrollBarMove(this.scene.input.activePointer)
-                )
-            }
-        })
+        this.startClickPosition = new Phaser.Math.Vector2(pointer.x, pointer.y)
+        if (isScroll) {
+            this.isDragView = true
+            this.scrollingDisposable = interval(10).subscribe((_) => this.scroll(this.scene.input.activePointer))
+        } else {
+            this.isDragBar = true
+            this.scrollingDisposable = interval(10).subscribe((_) => this.scrollBarMove(this.scene.input.activePointer))
+        }
     }
 
     private endScrollView() {
@@ -920,11 +939,50 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             this.snapCellScroll()
         }
 
-        this.isDragStartDisposable?.unsubscribe()
+        this.autoScrollX = false
+        this.autoScrollY = false
+
+        if (!this.isSnap) {
+            if (this.velocityX > 0 || this.velocityX < 0) {
+                this.amplitudeX = 0.8 * this.velocityX
+                this.autoScrollX = true
+            }
+
+            if (this.velocityY > 0 || this.velocityY < 0) {
+                this.amplitudeY = 0.8 * this.velocityY
+                this.autoScrollY = true
+            }
+
+            this.timestamp = this.scene.sys.game.loop.time
+        }
+
         this.isDragDisposable?.unsubscribe()
         this.isDragDisposable = timer(100).subscribe((x) => {
             this.isDrag.next(false)
         })
+    }
+
+    private endScrollViewWithWheel() {
+        this.scrollingDisposable?.unsubscribe()
+        this.isDragView = false
+
+        if (this.isSnap) {
+            if (this.percentWheelMove == 1 || this.percentWheelMove == 0) {
+                this.snapCellScrollWheel()
+            } else if (this.percentWheelMove > 0.55 && this.currentCellIndex < this.totalCell) {
+                this.positionMoveTo = this.positionMoveTo - this.getCellSize()
+                this.currentCellIndex++
+                this.tweenMoveTo()
+            } else if (this.percentWheelMove < 0.55 && this.currentCellIndex > 1) {
+                this.positionMoveTo = this.positionMoveTo + this.getCellSize()
+                this.currentCellIndex--
+                this.tweenMoveTo()
+            } else {
+                this.tweenMoveTo()
+            }
+        }
+
+        this.isDrag.next(false)
     }
 
     private endScrollBar() {
@@ -935,7 +993,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             this.snapCellScrollBar()
         }
 
-        this.isDragStartDisposable?.unsubscribe()
         this.isDragDisposable?.unsubscribe()
         this.isDragDisposable = timer(100).subscribe((x) => {
             this.isDrag.next(false)
@@ -956,12 +1013,22 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         this.moveToWithIndex(moveToIndex)
     }
 
+    private snapCellScrollWheel() {
+        let moveToIndex = Math.ceil(this.totalCell * this.percentMove)
+
+        if (moveToIndex == 0) {
+            moveToIndex = 1
+        }
+
+        this.moveToWithIndex(moveToIndex)
+    }
+
     private snapCellScroll() {
-        if (this.percentMove > 0.8 && this.currentCellIndex < this.totalCell) {
+        if (this.percentMove > 0.55 && this.currentCellIndex < this.totalCell) {
             this.positionMoveTo = this.positionMoveTo - this.getCellSize()
             this.currentCellIndex++
             this.tweenMoveTo()
-        } else if (this.percentMove < 0.3 && this.currentCellIndex > 1) {
+        } else if (this.percentMove < 0.55 && this.currentCellIndex > 1) {
             this.positionMoveTo = this.positionMoveTo + this.getCellSize()
             this.currentCellIndex--
 
@@ -1039,7 +1106,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             return
         }
 
-        this.isDragStartDisposable?.unsubscribe()
         this.isDragDisposable?.unsubscribe()
 
         let xDiff = pointer.x - this.startClickPosition.x
@@ -1072,7 +1138,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         )
 
         if (this.isHorizontal) {
-            this.percentBarMove = this.normalize(this.contentContainer.x, this.firstPosition, this.lastPosition)
             if (this.velocityX != 0) {
                 if (resultView < this.maxMoveX) {
                     resultView = this.maxMoveX
@@ -1081,8 +1146,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 }
             }
             this.contentContainer.x = resultView
+            this.percentBarMove = this.normalize(this.contentContainer.x, this.firstPosition, this.lastPosition)
         } else {
-            this.percentBarMove = this.normalize(this.contentContainer.y, this.firstPosition, this.lastPosition)
             if (this.velocityY != 0) {
                 if (resultView < this.maxMoveY) {
                     resultView = this.maxMoveY
@@ -1091,6 +1156,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 }
             }
             this.contentContainer.y = resultView
+            this.percentBarMove = this.normalize(this.contentContainer.y, this.firstPosition, this.lastPosition)
         }
     }
 
@@ -1100,7 +1166,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             return
         }
 
-        this.isDragStartDisposable?.unsubscribe()
         this.isDragDisposable?.unsubscribe()
 
         let xDiff = pointer.x - this.startClickPosition.x
@@ -1190,6 +1255,168 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             }
         }
     }
+
+    private scrollWithWheel(pointer: Input.Pointer): void {
+        this.isDragDisposable?.unsubscribe()
+
+        let xDiff = this.scrollViewArea.x
+        let yDiff = this.scrollViewArea.y
+
+        if (this.isHorizontal) {
+            this.velocityX = -((xDiff * pointer.deltaX) / 500) * this.dragForceX
+            this.velocityY = yDiff
+        } else {
+            this.velocityX = xDiff
+            this.velocityY = -((yDiff * pointer.deltaY) / 1000) * this.dragForceY
+        }
+
+        let resultX = this.contentContainer.x + this.velocityX
+        let resultY = this.contentContainer.y + this.velocityY
+
+        if (!this.isSnap) {
+            let minPositionX = this.isHorizontal ? this.firstPosition : this.xPosition
+            let minPositionY = this.isHorizontal ? this.yPosition : this.firstPosition
+            if (this.velocityX != 0) {
+                if (resultX < this.maxMoveX) {
+                    resultX = this.maxMoveX
+                } else if (resultX > minPositionX) {
+                    resultX = minPositionX
+                }
+            }
+
+            if (this.velocityY != 0) {
+                if (resultY < this.maxMoveY) {
+                    resultY = this.maxMoveY
+                } else if (resultY > minPositionY) {
+                    resultY = minPositionY
+                }
+            }
+        } else {
+            let nextValue = this.positionMoveTo - this.getCellSize()
+            let previous = this.positionMoveTo + this.getCellSize()
+
+            let minPositionX = this.isHorizontal ? this.firstPosition : this.xPosition
+
+            if (this.isHorizontal) {
+                if (this.velocityX != 0) {
+                    if (resultX < this.maxMoveX) {
+                        resultX = this.maxMoveX
+                    } else if (resultX > minPositionX) {
+                        resultX = minPositionX
+                    }
+                }
+
+                if (this.velocityY != 0) {
+                    if (resultY < this.maxMoveY) {
+                        resultY = this.maxMoveY
+                    } else if (resultY > this.yPosition) {
+                        resultY = this.yPosition
+                    }
+                }
+
+                this.percentWheelMove = this.normalize(this.contentContainer.x, previous, nextValue)
+            } else {
+                let minPositionY = this.isHorizontal ? this.yPosition : this.firstPosition
+                if (this.velocityX != 0) {
+                    if (resultX < this.maxMoveX) {
+                        resultX = this.maxMoveX
+                    } else if (resultX > this.xPosition) {
+                        resultX = this.xPosition
+                    }
+                }
+
+                if (this.velocityY != 0) {
+                    if (resultY < this.maxMoveY) {
+                        resultY = this.maxMoveY
+                    } else if (resultY > minPositionY) {
+                        resultY = minPositionY
+                    }
+                }
+
+                this.percentWheelMove = this.normalize(this.contentContainer.y, previous, nextValue)
+            }
+        }
+
+        this.contentContainer.setPosition(resultX, resultY)
+        this.percentMove = this.normalize(this.contentContainer.x, this.firstPosition, this.lastPosition)
+
+        if (this.isHaveScrollBar) {
+            let percentMove = this.normalize(
+                this.isHorizontal ? resultX : resultY,
+                this.firstPosition,
+                this.isHorizontal ? this.maxMoveX : this.maxMoveY
+            )
+
+            if (percentMove >= 0 && percentMove <= 1) {
+                let resultBarX = this.inverseNormalize(percentMove, this.minBarMoveX, this.maxBarMoveX)
+
+                if (this.velocityX != 0) {
+                    if (resultBarX > this.maxBarMoveX) {
+                        resultBarX = this.maxBarMoveX
+                    } else if (resultBarX < this.minBarMoveX) {
+                        resultBarX = this.minBarMoveX
+                    }
+                }
+
+                this.scrollbar.x = resultBarX
+            }
+        }
+
+        if (this.isSnap) {
+            this.isDragDisposable?.unsubscribe()
+            this.isDragDisposable = timer(50).subscribe((x) => {
+                this.endScrollViewWithWheel()
+            })
+        }
+    }
+
+    public onUpdate() {
+        if (!this.scrollViewArea.visible) return
+
+        this.elapsed = this.scene.sys.game.loop.time - this.timestamp
+        if (this.autoScrollY && this.amplitudeY !== 0) {
+            let delta = 0
+            delta = this.amplitudeY * Math.exp(-this.elapsed / this.timeConstantScroll)
+
+            if (delta > 0.5 || delta < -0.5) {
+                var resultY = this.contentContainer.y + delta
+                let minPositionY = this.isHorizontal ? this.yPosition : this.firstPosition
+
+                if (resultY < this.maxMoveY) {
+                    this.autoScrollY = false
+                    resultY = this.maxMoveY
+                } else if (resultY > minPositionY) {
+                    this.autoScrollY = false
+                    resultY = minPositionY
+                }
+
+                this.contentContainer.y = resultY
+            } else {
+                this.autoScrollY = false
+            }
+        }
+
+        if (this.autoScrollX && this.amplitudeX !== 0) {
+            let delta = 0
+            delta = this.amplitudeX * Math.exp(-this.elapsed / this.timeConstantScroll)
+
+            if (delta > 0.5 || delta < -0.5) {
+                var resultX = this.contentContainer.x + delta
+                let minPositionX = this.isHorizontal ? this.firstPosition : this.xPosition
+
+                if (resultX < this.maxMoveX) {
+                    resultX = this.maxMoveX
+                } else if (resultX > minPositionX) {
+                    resultX = minPositionX
+                }
+
+                this.contentContainer.x = resultX
+            } else {
+                this.autoScrollX = false
+            }
+        }
+    }
+
     normalize(val: number, min: number, max: number): number {
         return Phaser.Math.Clamp(+((val - min) / (max - min)).toFixed(2), 0, 1)
     }

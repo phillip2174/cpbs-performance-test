@@ -18,6 +18,10 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     public static readonly WIDTH_SIZE_BG_DESKTOP: number = 480
     public static readonly HEIGHT_FIRST_MIN_BG: number = 250
     public static readonly HEIGHT_SECOND_MIN_BG: number = 65
+
+    public static readonly TEXT_OFFSET_MOBILE: number = 16
+    public static readonly TEXT_OFFSET_DESKTOP: number = 20
+
     private firstContainer: GameObjects.Container
     private firstDetailCellBG: GameObjects.NineSlice
     private recipePreview: RecipePreviewView
@@ -90,7 +94,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
             .setText('????????????')
             .setOrigin(0, 0.5)
-            .setPosition(-this.firstDetailCellBG.width / 2 + 12, 225)
+            .setPosition(0, 225)
             .setStyle({ fill: '#2B2B2B', fontSize: 22 })
 
         this.recipeNameText.width = this.recipeNameText.getBounds().width
@@ -100,8 +104,14 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
             .getVectorText(this.scene, 'DB_HeaventRounded')
             .setText('????????????')
             .setOrigin(0, 0)
-            .setPosition(-this.firstDetailCellBG.width / 2 + 12, 230)
+            .setPosition(0, 230)
             .setStyle({ fill: '#585858', fontSize: 18 })
+
+        const positionXText = this.scene.sys.game.device.os.desktop
+            ? -this.firstDetailCellBG.width / 2 + CollectionDetailCellGroupView.TEXT_OFFSET_DESKTOP
+            : -this.firstDetailCellBG.width / 2 + CollectionDetailCellGroupView.TEXT_OFFSET_MOBILE
+        this.recipeNameText.setPosition(positionXText, 225)
+        this.recipeDescText.setPosition(positionXText, 230)
 
         this.firstContainer.add([
             this.firstDetailCellBG,
@@ -131,8 +141,13 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
             .setText('ส่วนผสม')
             .setOrigin(0.5, 0.5)
-            .setPosition(-this.secondDetailCellBG.width / 2 + 42, 25)
+            .setPosition(0, 25)
             .setStyle({ fill: '#2B2B2B', fontSize: 24 })
+
+        const offsetText = this.scene.sys.game.device.os.desktop
+            ? CollectionDetailCellGroupView.TEXT_OFFSET_DESKTOP
+            : CollectionDetailCellGroupView.TEXT_OFFSET_MOBILE
+        this.headerText.setPosition(-this.secondDetailCellBG.width / 2 + this.headerText.width / 2 + offsetText, 25)
 
         this.ingredientDescContainer = this.scene.add.container(0, 60)
 

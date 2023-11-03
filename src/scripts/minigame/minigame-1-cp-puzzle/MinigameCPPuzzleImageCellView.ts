@@ -80,8 +80,8 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
         this.stroke = this.scene.add.graphics().lineStyle(6, 0xEE843C).strokeRoundedRect(-this.cellWidth / 2, - this.cellHeight / 2, this.cellWidth - 2, this.cellHeight - 2, 20);
         this.add(this.stroke);
         this.stroke.setVisible(false);
-        this.textDebug = this.scene.add.text(0, 0, this.index.toString() + ":" + this.indexPosition.toString()).setColor("green");
-        this.add(this.textDebug);
+        //this.textDebug = this.scene.add.text(0, 0, this.index.toString() + ":" + this.indexPosition.toString()).setColor("green");
+        //this.add(this.textDebug);
         this.image.setMask(this.masker.createGeometryMask());
         // var debug1 = this.scene.add.rectangle(0,0, 50, 50, 0xff00ff).setOrigin(0.5).setDepth(1002);
         // this.add(debug1);
@@ -101,7 +101,7 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
     public onUpdate() {
         const transfrom = this.image.getWorldTransformMatrix();
         this.masker.setPosition(transfrom.tx, transfrom.ty).setScale(transfrom.scaleX, transfrom.scaleY);
-        this.textDebug.setText(this.index.toString() + ":" + this.indexPosition.toString())
+        //this.textDebug.setText(this.index.toString() + ":" + this.indexPosition.toString())
     }
 
     moveToIndex(secondImageIndex: number, moveTo: Math.Vector2) {

@@ -26,7 +26,7 @@ export class AccessibilityButtonGroupView extends GameObjects.Container {
             -this.scene.cameras.main.width / 2 + 35,
             -this.scene.cameras.main.height / 2 + 39,
             'cp-city',
-            TownUIButtonType.CPCity
+            TownUIButtonType.MainMenu
         )
 
         this.menuGroupButton = new TownUICircleButtonView(this.scene)

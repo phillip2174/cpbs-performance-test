@@ -1,5 +1,5 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
-import { Observable, tap, timer } from 'rxjs'
+import { Observable, Subscription, tap, timer } from 'rxjs'
 import { ObjectPlacementDebugger } from '../plugins/ObjectPlacementDebugger'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
@@ -14,6 +14,10 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
 
     private tweenMoveIn: Tweens.Tween
     private tweenMoveOut: Tweens.Tween
+    private tweenMoveInOut: Tweens.Tween
+
+    private timerSubscription: Subscription
+    private timerTweenSubscription: Subscription
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
@@ -55,7 +59,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
 
     private tweenTrainAnimation(fadeInOutFx: Phaser.FX.Wipe) {
         let isFade: boolean
-        timer(0, 20000).subscribe((_) => {
+        this.timerSubscription = timer(0, 20000).subscribe((_) => {
             this.tweenMoveIn?.stop()
             this.tweenMoveOut?.stop()
 
@@ -70,7 +74,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
                 onUpdate: (tween) => {
                     if (tween.progress >= 0.35 && !isFade) {
                         isFade = true
-                        this.scene.tweens.add({
+                        this.tweenMoveInOut = this.scene.tweens.add({
                             targets: fadeInOutFx,
                             progress: 1,
                             duration: 2000,
@@ -83,7 +87,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
                 onComplete: () => {
                     isFade = false
                     this.trainObjectSpine.play('interact')
-                    timer(3000).subscribe((_) => {
+                    this.timerTweenSubscription = timer(3000).subscribe((_) => {
                         this.trainObjectSpine.play('interact2')
                     })
                     this.tweenMoveOut = this.scene.add.tween({
@@ -98,7 +102,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
                         onUpdate: (tween) => {
                             if (tween.progress >= 0.6 && !isFade) {
                                 isFade = true
-                                this.scene.tweens.add({
+                                this.tweenMoveInOut = this.scene.tweens.add({
                                     targets: fadeInOutFx,
                                     progress: 0,
                                     duration: 2500,
@@ -117,4 +121,13 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
             })
         })
     }
+
+    // destroy(fromScene?: boolean): void {
+    //     this.timerSubscription?.unsubscribe()
+    //     this.timerTweenSubscription?.unsubscribe()
+    //     this.tweenMoveIn?.destroy()
+    //     this.tweenMoveInOut?.destroy()
+    //     this.tweenMoveOut?.destroy()
+    //     this.trainObjectSpine?.destroy()
+    // }
 }

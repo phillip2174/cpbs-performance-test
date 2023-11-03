@@ -36,8 +36,8 @@ export class TownUICircleButtonView extends GameObjects.Container {
         } else {
             if (buttonType == TownUIButtonType.MenuGroup) {
                 this.buttonIcon.setPosition(0, -2).setScale(0.65)
-            } else if (buttonType == TownUIButtonType.CPCity) {
-                this.buttonIcon.setPosition(0, -2).setScale(0.45)
+            } else if (buttonType == TownUIButtonType.MainMenu) {
+                this.buttonIcon.setPosition(0, -2).setDisplaySize(38, 38)
             }
 
             this.backgroundButton = new Button(this.scene, 0, 0, 48, 48, 'ui-circle-button-bg')

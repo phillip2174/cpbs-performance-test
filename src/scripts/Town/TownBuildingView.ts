@@ -19,6 +19,7 @@ export class TownBuildingView extends GameObjects.GameObject {
     private townGroundImage: GameObjects.Image
     private fenceImage: GameObjects.Image
     private buildingImage: GameObjects.Image
+    private buildingRoofImage: GameObjects.Image
     private trainTrailImage: GameObjects.Image
 
     private mockingTown: GameObjects.Image
@@ -152,6 +153,10 @@ export class TownBuildingView extends GameObjects.GameObject {
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building')
             .setScale(1)
             .setDepth(3)
+
+        this.buildingRoofImage = this.scene.add
+            .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building-roof')
+            .setDepth(5)
 
         this.trainTrailImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'train-rail')

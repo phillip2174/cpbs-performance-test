@@ -33,6 +33,11 @@
             },
             {
                 "type": "image",
+                "key": "city-building-roof",
+                "url": "assets/town/city-building-roof.png"
+            },
+            {
+                "type": "image",
                 "key": "fence-day",
                 "url": "assets/town/fence-day.png"
             },
@@ -179,27 +184,27 @@
             {
                 "type": "image",
                 "key": "3d-billboard-03-01",
-                "url": "assets/town/3d_billboard/3d-billboard-02-01.png"
+                "url": "assets/town/3d_billboard/3d-billboard-03-01.png"
             },
             {
                 "type": "image",
                 "key": "3d-billboard-03-02",
-                "url": "assets/town/3d_billboard/3d-billboard-02-02.png"
+                "url": "assets/town/3d_billboard/3d-billboard-03-02.png"
             },
             {
                 "type": "image",
                 "key": "3d-billboard-03-03",
-                "url": "assets/town/3d_billboard/3d-billboard-02-03.png"
+                "url": "assets/town/3d_billboard/3d-billboard-03-03.png"
             },
             {
                 "type": "image",
                 "key": "3d-billboard-03-04",
-                "url": "assets/town/3d_billboard/3d-billboard-02-04.png"
+                "url": "assets/town/3d_billboard/3d-billboard-03-04.png"
             },
             {
                 "type": "image",
                 "key": "3d-billboard-03-plate-01",
-                "url": "assets/town/3d_billboard/3d-billboard-02-plate-01.png"
+                "url": "assets/town/3d_billboard/3d-billboard-03-plate-01.png"
             },
             {
                 "type": "image",

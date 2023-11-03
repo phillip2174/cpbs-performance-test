@@ -72,6 +72,7 @@ export class CookingUIPanelView extends GameObjects.Container {
 
     private stateSubscription: Subscription
     private stateFilterSubscription: Subscription
+    private stateCookingDetailSubscription: Subscription
     private scrollViewLayerSubscription: Subscription
     private currentUnlockedSelectedSubscription: Subscription
     private currentReadySelectedSubscription: Subscription
@@ -116,8 +117,10 @@ export class CookingUIPanelView extends GameObjects.Container {
             }
         })
 
-        this.cookingPod.cookingPanelState.subscribe((subState) => {
-            if (subState == CookingPanelState.CookingListFromComplete) {
+        this.stateCookingDetailSubscription = this.cookingPod.cookingDetailState.subscribe((detailState) => {
+            if (detailState == CookingDetailState.CookingComplete) {
+                this.scrollViewCreateCellWithFilter(RecipeFilterType.All)
+                this.findNotificationReadyCell()
                 this.scrollViewCreateCellWithFilter(this.cookingPod.cookingFilterState.value)
             }
         })
@@ -135,9 +138,9 @@ export class CookingUIPanelView extends GameObjects.Container {
             this.cookingPod.isDragScrollViewCooking = x
         })
 
-        this.currentUnlockedSelectedSubscription = this.recipePod.totalUnlockedCurrentSelectedFilter.subscribe(
-            (totalCompletedSelected) => {
-                this.setTextCompleted(totalCompletedSelected)
+        this.currentUnlockedSelectedSubscription = this.recipePod.totalUserCookedCurrentSelectedFilter.subscribe(
+            (totalUserCookedSelected) => {
+                this.setTextCompleted(totalUserCookedSelected)
             }
         )
 
@@ -171,7 +174,7 @@ export class CookingUIPanelView extends GameObjects.Container {
             this.scrollView.doInit(
                 this.scene.cameras.main.centerX,
                 this.scene.cameras.main.centerY + 7,
-                this.cookingBackground.displayWidth / 1.06,
+                this.cookingBackground.displayWidth / 1.068,
                 this.cookingBackground.displayHeight / 1.25,
                 this.depth + 1,
                 10,
@@ -182,6 +185,7 @@ export class CookingUIPanelView extends GameObjects.Container {
             )
             this.scrollView.setInitPosXOffset(10)
             this.scrollView.setOffsetMaxMove(10)
+            this.scrollView.setMaskRounded(15)
 
             this.createUICompletedDesktop()
         } else {
@@ -254,7 +258,7 @@ export class CookingUIPanelView extends GameObjects.Container {
         this.completedAndReadyUIContainer = this.scene.add.container(0, -this.cookingBackground.height / 2.78)
 
         this.currentCompletedImage = this.scene.add
-            .nineslice(0, 0, 'white-bg-count', '', this.cookingBackground.displayWidth / 1.05, 32, 20, 20, 10, 10)
+            .nineslice(0, 0, 'white-bg-count', '', this.cookingBackground.displayWidth / 1.08, 32, 20, 20, 10, 10)
             .setTint(0xedf0f5)
 
         this.positionTextRect = this.scene.add.rectangle(0, 0, 30, 15, 0xff00ff, 0)
@@ -390,6 +394,8 @@ export class CookingUIPanelView extends GameObjects.Container {
             this.setActive(isActive)
             this.setVisible(isActive)
             this.dimButton.setActiveDim(isActive, false)
+            this.scrollView?.setActiveScrollView(isActive)
+            this.isTween = true
             this.cookingPod.isAlreadyOpen = false
         }
     }
@@ -413,6 +419,7 @@ export class CookingUIPanelView extends GameObjects.Container {
                 tap(() => {
                     this.setCellCookingWithUser()
                     this.setReadyAndCompletedText()
+                    if (!this.cookingPod.isAlreadyOpen) this.findNotificationReadyCell()
 
                     this.scrollView?.setActiveScrollView(true, this.isTween)
                     this.isTween = true
@@ -426,7 +433,7 @@ export class CookingUIPanelView extends GameObjects.Container {
         let { width, height } = this.scrollView.getWidthAndHeightScroll()
 
         let columnCount = this.isDesktop ? 5 : 2
-        let offset = this.isDesktop ? 5 : 0
+        let offset = this.isDesktop ? 0 : 0
         let spacing = this.isDesktop ? 10 : 6
 
         let groupPage = this.recipePod.groupByPerCount(recipeBean, columnCount)
@@ -469,24 +476,38 @@ export class CookingUIPanelView extends GameObjects.Container {
         })
 
         this.recipePod.setTotalUnlockedCurrentSelectedFilter()
+        this.recipePod.setTotalUserCookedSelectedFilter()
     }
 
     private setReadyAndCompletedText() {
-        this.cookingPod.updateTotalReady(this.cookingRecipeCellViews.filter((cell) => cell.isIngredientAllFull).length)
+        this.cookingPod.updateTotalReady(this.cookingRecipeCellViews.filter((cell) => cell.isReady).length)
+    }
+
+    private findNotificationReadyCell() {
+        let filterNotifications: RecipeFilterType[] = []
+        this.cookingPod.changeNotificationCooking(filterNotifications)
+
+        this.cookingRecipeCellViews
+            .filter((cell) => cell.isReady)
+            .forEach((userRecipe) => {
+                let bean = userRecipe.recipeBean
+                let notificationValue = this.cookingPod.notificationFilterCooking.value
+                if (bean != undefined) {
+                    let notificationType = this.recipePod.getNotificationTypeWithBean(bean)
+                    if (!notificationValue.includes(notificationType)) filterNotifications.push(notificationType)
+                }
+            })
+        this.cookingPod.changeNotificationCooking(filterNotifications)
     }
 
     private setTextCompleted(currentUnlocked: number) {
-        let isSecret = this.cookingPod.cookingFilterState.value == RecipeFilterType.Secret
-        this.currentCompletedText.setText(
-            `Completed ${isSecret ? '??' : currentUnlocked}/${isSecret ? '??' : this.recipePod.totalMasterRecipe}`
-        )
+        this.currentCompletedText.setText(`Completed ${currentUnlocked}/${this.recipePod.totalMasterRecipe}`)
 
         this.updateCellSpacingAlign()
     }
 
     private setTextReady(currentReady: number) {
-        let isSecret = this.cookingPod.cookingFilterState.value == RecipeFilterType.Secret
-        this.currentReadyText.setText(`Ready ${isSecret ? '??' : currentReady}`)
+        this.currentReadyText.setText(`Ready ${currentReady}`)
 
         this.updateCellSpacingAlign()
     }

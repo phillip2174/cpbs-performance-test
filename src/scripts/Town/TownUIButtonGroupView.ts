@@ -10,6 +10,7 @@ import { TownUIState } from './Type/TownUIState'
 import { Subscription } from 'rxjs'
 import { AnimationController } from './AnimationController'
 import { DimButton } from '../button/DimButton'
+import { SceneState } from '../../scenes/SceneState'
 
 export class TownUIButtonGroupView extends GameObjects.Container {
     private dimButton: DimButton
@@ -23,7 +24,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
     private minigameButton: TownUIButtonView
     private cookingButton: TownUIButtonView
     private inventoryButton: TownUIButtonView
-    private collectionsButton: TownUIButtonView
+    private collectionButton: TownUIButtonView
     private closeButton: TownUIButtonView
     private uiButtonList: TownUIButtonView[] = []
 
@@ -81,9 +82,9 @@ export class TownUIButtonGroupView extends GameObjects.Container {
     }
 
     private setupButtons(): void {
-        this.collectionsButton = new TownUIButtonView(this.scene).setAlpha(0)
-        this.collectionsButton.doInit(0, 0, 'collections', TownUIButtonType.Collections, 'COLLECTIONS')
-        this.uiButtonList.push(this.collectionsButton)
+        this.collectionButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.collectionButton.doInit(0, 0, 'collections', TownUIButtonType.Collection, 'COLLECTIONS')
+        this.uiButtonList.push(this.collectionButton)
 
         this.inventoryButton = new TownUIButtonView(this.scene).setAlpha(0)
         this.inventoryButton.doInit(0, 0, 'inventory', TownUIButtonType.Inventory, 'MY INVENTORY')
@@ -93,13 +94,13 @@ export class TownUIButtonGroupView extends GameObjects.Container {
         this.cookingButton.doInit(0, 0, 'cooking', TownUIButtonType.Cooking, 'COOKING')
         this.uiButtonList.push(this.cookingButton)
 
-        this.dailyLoginButton = new TownUIButtonView(this.scene).setAlpha(0)
-        this.dailyLoginButton.doInit(0, 0, 'daily-login', TownUIButtonType.DailyLogin, 'DAILY LOGIN')
-        this.uiButtonList.push(this.dailyLoginButton)
-
         this.minigameButton = new TownUIButtonView(this.scene).setAlpha(0)
         this.minigameButton.doInit(0, 0, 'minigame', TownUIButtonType.Minigame, 'MINI GAME')
         this.uiButtonList.push(this.minigameButton)
+
+        this.dailyLoginButton = new TownUIButtonView(this.scene).setAlpha(0)
+        this.dailyLoginButton.doInit(0, 0, 'daily-login', TownUIButtonType.DailyLogin, 'DAILY LOGIN')
+        this.uiButtonList.push(this.dailyLoginButton)
 
         this.closeButton = new TownUIButtonView(this.scene).setAlpha(0)
         this.closeButton.doInit(0, 0, 'close', TownUIButtonType.Close, 'CLOSE')
@@ -121,7 +122,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
     }
 
     private setupActionButton(): void {
-        this.collectionsButton.onClick(() => {
+        this.collectionButton.onClick(() => {
             this.townUIPod.changeUIState(TownUIState.Collection)
             this.townUIPod.setIsShowGuideline(false)
             this.townUIPod.setIsShowMenuGroup(false)
@@ -144,6 +145,13 @@ export class TownUIButtonGroupView extends GameObjects.Container {
             this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
             this.townUIPod.changeUIState(TownUIState.DailyLogin)
             this.townUIPod.setIsShowMenuGroup(false)
+        })
+
+        this.minigameButton.onClick(() => {
+            //TODO Get Pod In Minigame select to set scene to launchScene
+            console.log('go to mini scene')
+            PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPPuzzle)
+            this.scene.scene.start(`SplashLoaddingScene`)
         })
 
         this.closeButton.onClick(() => {

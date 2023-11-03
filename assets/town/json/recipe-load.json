@@ -26,11 +26,245 @@
                 "key": "recipe-4",
                 "url": "assets/town/recipe/recipe-4.png"
             },
-
             {
                 "type": "image",
                 "key": "recipe-5",
                 "url": "assets/town/recipe/recipe-5.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-6",
+                "url": "assets/town/recipe/recipe-6.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-7",
+                "url": "assets/town/recipe/recipe-7.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-8",
+                "url": "assets/town/recipe/recipe-8.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-9",
+                "url": "assets/town/recipe/recipe-9.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-10",
+                "url": "assets/town/recipe/recipe-10.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-11",
+                "url": "assets/town/recipe/recipe-11.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-12",
+                "url": "assets/town/recipe/recipe-12.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-13",
+                "url": "assets/town/recipe/recipe-13.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-14",
+                "url": "assets/town/recipe/recipe-14.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-15",
+                "url": "assets/town/recipe/recipe-15.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-16",
+                "url": "assets/town/recipe/recipe-16.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-17",
+                "url": "assets/town/recipe/recipe-17.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-18",
+                "url": "assets/town/recipe/recipe-18.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-19",
+                "url": "assets/town/recipe/recipe-19.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-20",
+                "url": "assets/town/recipe/recipe-20.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-21",
+                "url": "assets/town/recipe/recipe-21.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-22",
+                "url": "assets/town/recipe/recipe-22.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-23",
+                "url": "assets/town/recipe/recipe-23.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-24",
+                "url": "assets/town/recipe/recipe-24.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-25",
+                "url": "assets/town/recipe/recipe-25.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-26",
+                "url": "assets/town/recipe/recipe-26.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-27",
+                "url": "assets/town/recipe/recipe-27.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-28",
+                "url": "assets/town/recipe/recipe-28.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-29",
+                "url": "assets/town/recipe/recipe-29.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-30",
+                "url": "assets/town/recipe/recipe-30.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-31",
+                "url": "assets/town/recipe/recipe-31.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-32",
+                "url": "assets/town/recipe/recipe-32.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-33",
+                "url": "assets/town/recipe/recipe-33.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-34",
+                "url": "assets/town/recipe/recipe-34.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-35",
+                "url": "assets/town/recipe/recipe-35.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-36",
+                "url": "assets/town/recipe/recipe-36.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-37",
+                "url": "assets/town/recipe/recipe-37.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-38",
+                "url": "assets/town/recipe/recipe-38.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-39",
+                "url": "assets/town/recipe/recipe-39.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-40",
+                "url": "assets/town/recipe/recipe-40.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-41",
+                "url": "assets/town/recipe/recipe-41.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-42",
+                "url": "assets/town/recipe/recipe-42.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-43",
+                "url": "assets/town/recipe/recipe-43.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-44",
+                "url": "assets/town/recipe/recipe-44.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-45",
+                "url": "assets/town/recipe/recipe-45.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-46",
+                "url": "assets/town/recipe/recipe-46.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-47",
+                "url": "assets/town/recipe/recipe-47.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-48",
+                "url": "assets/town/recipe/recipe-48.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-49",
+                "url": "assets/town/recipe/recipe-49.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-50",
+                "url": "assets/town/recipe/recipe-50.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-51",
+                "url": "assets/town/recipe/recipe-51.png"
+            },
+            {
+                "type": "image",
+                "key": "recipe-52",
+                "url": "assets/town/recipe/recipe-52.png"
             }
         ]
     }

@@ -1,34 +1,37 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
-import { Subscription, timer } from 'rxjs'
+import { Subscription } from 'rxjs'
 import { Button } from '../button/Button'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
 import { TextAdapter } from '../text-adapter/TextAdapter'
+import { TownUIPod } from './Pod/TownUIPod'
 import { TownUIButtonNotificationManager } from './TownUIButtonNotificationManager'
+import { ButtonNotificationView } from './ButtonNotificationView'
 import { TownUIButtonType } from './Type/TownUIButtonType'
 
 export class TownUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
-    public static readonly BUTTON_ICON_DEFAULT_SCALE: number = 1
-    public static readonly BUTTON_ICON_MAX_SCALE: number = 1.3
+    public static readonly BUTTON_ICON_TWEEN_EASE: string = 'linear'
+    public static readonly BUTTON_ICON_MAX_SCALE: number = 1.15
     public static readonly BUTTON_ICON_MIN_SCALE: number = 0.7
+    public static readonly BUTTON_ICON_ROTATE_DEGREE: number = 8
     public static readonly BUTTON_TEXT_DEFAULT_SIZE: number = 16
     public static readonly BUTTON_TEXT_MAX_SIZE: number = 18
     public static readonly BUTTON_TEXT_MIN_SIZE: number = 14
 
     private backgroundButton: Button
+
     private buttonIcon: GameObjects.Image
-    private buttonNotificationIcon: GameObjects.Image
+    private buttonNotification: ButtonNotificationView
+
     private buttonText: GameObjects.Text
 
     private buttonType: TownUIButtonType
 
-    private onHoverButtonIconTween: Tweens.Tween
+    private onHoverButtonIconTween: Tweens.TweenChain
     private onHoverButtonTextTween: Tweens.Tween
-    private onLeaveButtonIconTween: Tweens.Tween
+    private onLeaveButtonIconTween: Tweens.TweenChain
     private onLeaveButtonTextTween: Tweens.Tween
-    private onClickDownButtonIconTween: Tweens.Tween
-    private onClickDownButtonTextTween: Tweens.Tween
     private onClickUpButtonIconTween: Tweens.Tween
     private onClickUpButtonTextTween: Tweens.Tween
     private onHoverNotificationIconTween: Tweens.Tween
@@ -39,10 +42,14 @@ export class TownUIButtonView extends GameObjects.Container {
 
     private clickDelay: number
 
+    private isUseMobileBg: boolean = false
     private isOnClickDelay: boolean = false
     private isClick: boolean = false
+    private isSelected: boolean = false
+    private isActiveSelectedState: boolean = false
 
     private townUIButtonNotificationManager: TownUIButtonNotificationManager
+    private townUIPod: TownUIPod
 
     private menuGroupNotificationDisposable: Subscription
     private dailyLoginNotificationDisposable: Subscription
@@ -51,6 +58,7 @@ export class TownUIButtonView extends GameObjects.Container {
     private inventoryNotificationDisposable: Subscription
     private collectionsNotificationDisposable: Subscription
     private notificationNotificationDisposable: Subscription
+    private uiStateDisposable: Subscription
 
     constructor(scene: Scene) {
         super(scene)
@@ -64,18 +72,22 @@ export class TownUIButtonView extends GameObjects.Container {
         buttonType: TownUIButtonType,
         buttonText?: string,
         clickDelay: number = 1000,
-        isUseMobileBg: boolean = false
+        isUseMobileBg: boolean = false,
+        isActiveSelectedState: boolean = true
     ): void {
+        this.townUIPod = PodProvider.instance.townUIPod
         this.townUIButtonNotificationManager = PodProvider.instance.townUIButtonNotificationManager
         this.buttonType = buttonType
         this.clickDelay = clickDelay
+        this.isUseMobileBg = isUseMobileBg
+        this.isActiveSelectedState = isActiveSelectedState
 
         if (this.isButtonTypeWithoutText()) {
-            this.setupButtonWithoutText(iconKey, isUseMobileBg)
+            this.setupButtonWithoutText(iconKey)
         } else if (this.buttonType == TownUIButtonType.Close) {
             this.setupCloseButton(iconKey, buttonText)
         } else {
-            this.setupButtonWithText(iconKey, buttonText, isUseMobileBg)
+            this.setupButtonWithText(iconKey, buttonText)
         }
 
         this.setPosition(x, y)
@@ -96,13 +108,11 @@ export class TownUIButtonView extends GameObjects.Container {
     }
 
     public showNotification(): void {
-        this.buttonNotificationIcon.setActive(true)
-        this.buttonNotificationIcon.setVisible(true)
+        this.buttonNotification?.setNotificationActive(true)
     }
 
     public hideNotification(): void {
-        this.buttonNotificationIcon.setActive(false)
-        this.buttonNotificationIcon.setVisible(false)
+        this.buttonNotification?.setNotificationActive(false)
     }
 
     public setButtonIcon(iconKey: string): void {
@@ -129,58 +139,160 @@ export class TownUIButtonView extends GameObjects.Container {
     }
 
     private createHoverLeaveTweens(): void {
-        this.onHoverButtonIconTween = this.scene.add.tween({
+        this.onHoverButtonIconTween = this.scene.tweens.chain({
             targets: this.buttonIcon,
-            duration: 300,
-            ease: 'cubic.inout',
-            props: {
-                scale: {
-                    from: TownUIButtonView.BUTTON_ICON_DEFAULT_SCALE,
-                    to: TownUIButtonView.BUTTON_ICON_MAX_SCALE,
+            tweens: [
+                {
+                    duration: 150,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale,
+                            to: this.buttonIcon.scale + 0.15,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle,
+                            to: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE,
+                        },
+                    },
                 },
-            },
+                {
+                    duration: 200,
+                    delay: 50,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.15,
+                            to: this.buttonIcon.scale + 0.075,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE,
+                            to: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE - 5,
+                        },
+                    },
+                },
+                {
+                    duration: 120,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.075,
+                            to: this.buttonIcon.scale + 0.15,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE - 5,
+                            to: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE,
+                        },
+                    },
+                },
+                {
+                    duration: 120,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.15,
+                            to: this.buttonIcon.scale + 0.13,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE,
+                            to: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE - 2.5,
+                        },
+                    },
+                },
+                {
+                    duration: 100,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.13,
+                            to: this.buttonIcon.scale + 0.15,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE - 2.5,
+                            to: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE,
+                        },
+                    },
+                },
+            ],
             persist: true,
             paused: true,
         })
 
-        this.onLeaveButtonIconTween = this.scene.add.tween({
+        this.onLeaveButtonIconTween = this.scene.tweens.chain({
             targets: this.buttonIcon,
-            duration: 300,
-            ease: 'cubic.inout',
-            props: {
-                scale: {
-                    from: this.buttonIcon.scale,
-                    to: this.buttonIcon.scale,
+            tweens: [
+                {
+                    duration: 150,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.15,
+                            to: this.buttonIcon.scale,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + TownUIButtonView.BUTTON_ICON_ROTATE_DEGREE,
+                            to: this.buttonIcon.angle,
+                        },
+                    },
                 },
-            },
-            persist: true,
-            paused: true,
-        })
-
-        this.onHoverNotificationIconTween = this.scene.add.tween({
-            targets: this.buttonNotificationIcon,
-            duration: 300,
-            ease: 'cubic.inout',
-            props: {
-                scale: {
-                    from: this.buttonNotificationIcon.scale,
-                    to: TownUIButtonView.BUTTON_ICON_MAX_SCALE,
+                {
+                    duration: 200,
+                    delay: 50,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale,
+                            to: this.buttonIcon.scale + 0.075,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle,
+                            to: this.buttonIcon.angle + 5,
+                        },
+                    },
                 },
-            },
-            persist: true,
-            paused: true,
-        })
-
-        this.onLeaveNotificationIconTween = this.scene.add.tween({
-            targets: this.buttonNotificationIcon,
-            duration: 300,
-            ease: 'cubic.inout',
-            props: {
-                scale: {
-                    from: this.buttonNotificationIcon.scale,
-                    to: this.buttonNotificationIcon.scale,
+                {
+                    duration: 120,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.075,
+                            to: this.buttonIcon.scale,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + 5,
+                            to: this.buttonIcon.angle,
+                        },
+                    },
                 },
-            },
+                {
+                    duration: 120,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale,
+                            to: this.buttonIcon.scale + 0.02,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle,
+                            to: this.buttonIcon.angle + 2.5,
+                        },
+                    },
+                },
+                {
+                    duration: 100,
+                    ease: TownUIButtonView.BUTTON_ICON_TWEEN_EASE,
+                    props: {
+                        scale: {
+                            from: this.buttonIcon.scale + 0.02,
+                            to: this.buttonIcon.scale,
+                        },
+                        angle: {
+                            from: this.buttonIcon.angle + 2.5,
+                            to: this.buttonIcon.angle,
+                        },
+                    },
+                },
+            ],
             persist: true,
             paused: true,
         })
@@ -203,7 +315,10 @@ export class TownUIButtonView extends GameObjects.Container {
                 duration: 300,
                 ease: 'cubic.inout',
                 onUpdate: (tween) => {
-                    this.buttonText.setStyle({ fill: '#585858', fontSize: tween.getValue() })
+                    if (!this.isSelected) {
+                        this.buttonText.setColor('#585858')
+                    }
+                    this.buttonText.setStyle({ fontSize: tween.getValue() })
                 },
                 persist: true,
             })
@@ -211,44 +326,26 @@ export class TownUIButtonView extends GameObjects.Container {
     }
 
     private onHoverButton(): void {
+        this.onLeaveButtonIconTween?.pause()
+        this.onLeaveButtonTextTween?.pause()
         this.onHoverButtonIconTween?.restart()
-        this.onHoverNotificationIconTween?.restart()
         this.onHoverButtonTextTween?.restart()
+        this.buttonNotification?.playOnHoverTweens()
         this.isClick = false
     }
 
     private onLeaveButton(): void {
+        this.onHoverButtonIconTween?.pause()
+        this.onHoverButtonTextTween?.pause()
         this.onLeaveButtonIconTween?.restart()
-        this.onLeaveNotificationIconTween?.restart()
         if (!this.isClick) this.onLeaveButtonTextTween?.restart()
+        this.buttonNotification?.playOnLeaveTweens()
     }
 
     private createButtonClickTweens(): void {
-        this.onClickDownButtonIconTween = this.scene.tweens.add({
-            targets:
-                this.buttonNotificationIcon == undefined
-                    ? this.buttonIcon
-                    : [this.buttonIcon, this.buttonNotificationIcon],
-            duration: 300,
-            ease: 'cubic.inout',
-            repeat: 0,
-            yoyo: false,
-            props: {
-                scale: {
-                    from: this.scene.sys.game.device.os.desktop
-                        ? TownUIButtonView.BUTTON_ICON_MAX_SCALE
-                        : TownUIButtonView.BUTTON_ICON_DEFAULT_SCALE,
-                    to: TownUIButtonView.BUTTON_ICON_MIN_SCALE,
-                },
-            },
-            persist: true,
-        })
-
         this.onClickUpButtonIconTween = this.scene.tweens.add({
             targets:
-                this.buttonNotificationIcon == undefined
-                    ? this.buttonIcon
-                    : [this.buttonIcon, this.buttonNotificationIcon],
+                this.buttonNotification == undefined ? this.buttonIcon : [this.buttonIcon, this.buttonNotification],
             duration: 300,
             ease: 'cubic.inout',
             repeat: 0,
@@ -256,33 +353,20 @@ export class TownUIButtonView extends GameObjects.Container {
             props: {
                 scale: {
                     from: TownUIButtonView.BUTTON_ICON_MIN_SCALE,
-                    to: TownUIButtonView.BUTTON_ICON_DEFAULT_SCALE,
+                    to: this.buttonIcon.scale,
                 },
             },
             persist: true,
         })
 
         if (this.buttonText) {
-            this.onClickDownButtonTextTween = this.scene.tweens.addCounter({
-                from: this.scene.sys.game.device.os.desktop
-                    ? TownUIButtonView.BUTTON_TEXT_MAX_SIZE
-                    : TownUIButtonView.BUTTON_ICON_DEFAULT_SCALE,
-                to: TownUIButtonView.BUTTON_TEXT_MIN_SIZE,
-                duration: 300,
-                ease: 'cubic.inout',
-                onUpdate: (tween) => {
-                    this.buttonText?.setStyle({ fill: '#EE843C', fontSize: tween.getValue() })
-                },
-                persist: true,
-            })
-
             this.onClickUpButtonTextTween = this.scene.tweens.addCounter({
                 from: TownUIButtonView.BUTTON_TEXT_MIN_SIZE,
                 to: TownUIButtonView.BUTTON_TEXT_DEFAULT_SIZE,
                 duration: 300,
                 ease: 'cubic.inout',
                 onUpdate: (tween) => {
-                    this.buttonText?.setStyle({ fill: '#585858', fontSize: tween.getValue() })
+                    this.buttonText?.setStyle({ fontSize: tween.getValue() })
                 },
                 persist: true,
             })
@@ -345,7 +429,7 @@ export class TownUIButtonView extends GameObjects.Container {
                     }
                 )
                 break
-            case TownUIButtonType.Collections:
+            case TownUIButtonType.Collection:
                 this.collectionsNotificationDisposable =
                     this.townUIButtonNotificationManager.collectionsIsUpdate.subscribe((isUpdate) => {
                         this.checkButtonIsUpdate(isUpdate)
@@ -358,6 +442,30 @@ export class TownUIButtonView extends GameObjects.Container {
                     })
                 break
         }
+        if (this.isActiveSelectedState) {
+            this.uiStateDisposable = this.townUIPod.townUIState.subscribe((state) => {
+                if (
+                    !this.buttonText ||
+                    this.buttonType == TownUIButtonType.Close ||
+                    this.buttonType == TownUIButtonType.MenuGroup
+                )
+                    return
+                this.setButtonSelectState(state.toString() == this.buttonType.toString())
+            })
+        }
+    }
+
+    private setButtonSelectState(isSelected: boolean): void {
+        this.isSelected = isSelected
+        if (this.isSelected) {
+            this.backgroundButton?.setBackgroundButtonTexture('ui-button-selected-bg')
+            this.buttonText.setColor('#EE843C')
+        } else {
+            this.backgroundButton?.setBackgroundButtonTexture(
+                this.isUseMobileBg ? 'ui-button-bg-mobile' : 'ui-button-bg-desktop'
+            )
+            this.buttonText.setColor('#585858')
+        }
     }
 
     private setupMenuGroupButtonSubscribe(): void {
@@ -368,28 +476,28 @@ export class TownUIButtonView extends GameObjects.Container {
         )
     }
 
-    private setupButtonWithText(iconKey: string, buttonText: string, isUseMobileBg?: boolean): void {
-        this.buttonNotificationIcon = this.scene.add.image(0, 0, 'button-notification').setOrigin(0.5)
+    private setupButtonWithText(iconKey: string, buttonText: string): void {
+        this.buttonNotification = new ButtonNotificationView(this.scene)
         this.buttonIcon = this.scene.add.image(0, 0, iconKey + TownUIButtonView.ICON_IMAGE_KEY).setOrigin(0.5)
         this.buttonText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
             .setText(buttonText)
             .setOrigin(0.5)
 
-        if (isUseMobileBg) {
+        if (this.isUseMobileBg) {
             this.backgroundButton = new Button(this.scene, 0, 0, 64, 64, 'ui-button-bg-mobile', this.clickDelay)
-            this.buttonNotificationIcon.setPosition(20, -20)
-            this.buttonIcon.setPosition(-1.5, -17)
+            this.buttonNotification.doInit(20, -20)
+            this.buttonIcon.setPosition(0, -17)
             this.buttonText.setPosition(-0.5, 13).setStyle({ fill: '#585858', fontSize: 13 })
         } else {
             this.backgroundButton = new Button(this.scene, 0, 0, 101, 92, 'ui-button-bg-desktop', this.clickDelay)
-            this.buttonNotificationIcon.setPosition(35, -34)
-            this.buttonIcon.setPosition(-1.5, -27)
+            this.buttonNotification.doInit(35, -34)
+            this.buttonIcon.setPosition(0, -27)
             this.buttonText.setPosition(-0.5, 23).setStyle({ fill: '#585858', fontSize: 16 })
             this.setDepth(202)
         }
 
-        this.add([this.backgroundButton, this.buttonIcon, this.buttonText, this.buttonNotificationIcon])
+        this.add([this.backgroundButton, this.buttonIcon, this.buttonText, this.buttonNotification])
     }
 
     private setupCloseButton(iconKey: string, buttonText: string): void {
@@ -404,20 +512,22 @@ export class TownUIButtonView extends GameObjects.Container {
         this.add([this.backgroundButton, this.buttonIcon, this.buttonText])
     }
 
-    private setupButtonWithoutText(iconKey: string, isUseMobileBg: boolean): void {
-        if (isUseMobileBg) {
+    private setupButtonWithoutText(iconKey: string): void {
+        this.buttonNotification = new ButtonNotificationView(this.scene)
+
+        if (this.isUseMobileBg) {
             this.backgroundButton = new Button(this.scene, 0, 0, 64, 64, 'ui-button-bg-mobile', this.clickDelay)
-            this.buttonNotificationIcon = this.scene.add.image(20, -20, 'button-notification').setOrigin(0.5)
+            this.buttonNotification.doInit(20, -20)
         } else {
             this.backgroundButton = new Button(this.scene, 0, 0, 101, 92, 'ui-button-bg-desktop', this.clickDelay)
-            this.buttonNotificationIcon = this.scene.add.image(35, -34, 'button-notification').setOrigin(0.5)
+            this.buttonNotification.doInit(35, -34)
         }
 
         this.buttonIcon = this.scene.add
             .image(this.x, this.y - 2, iconKey + TownUIButtonView.ICON_IMAGE_KEY)
             .setOrigin(0.5)
 
-        this.add([this.backgroundButton, this.buttonIcon, this.buttonNotificationIcon])
+        this.add([this.backgroundButton, this.buttonIcon, this.buttonNotification])
         this.setupMenuGroupButtonSubscribe()
     }
 }

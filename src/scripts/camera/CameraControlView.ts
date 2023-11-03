@@ -144,6 +144,7 @@ export class CameraControlView extends GameObjects.GameObject {
                 GameConfig.MIN_SCREEN_DESKTOP_CAMERA_ZOOM,
                 GameConfig.MAXMIN_SCREEN_DESKTOP_CAMERA_ZOOM
             )
+
             this.gameCamera.setZoom(minZoomValue)
 
             let midZoomDesktop = minZoomValue + CameraControlView.VALUE_FIRST_TO_MID

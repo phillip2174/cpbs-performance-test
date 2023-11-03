@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser'
-import { Subscription } from 'rxjs'
+import { Subscription, delay, tap, timer } from 'rxjs'
 import { Button } from '../../button/Button'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../../pod/PodProvider'
@@ -13,8 +13,10 @@ import { RecipePreviewView } from '../Recipe/RecipePreviewView'
 import { IngredientPreviewView } from '../Recipe/IngredientPreviewView'
 import { RecipeBean } from '../Collection/RecipeBean'
 import { RecipePod } from '../../pod/RecipePod'
+import { TownUIPod } from '../Pod/TownUIPod'
 
 export class CookingDetailSelectRecipeView extends GameObjects.Container {
+    public static readonly SCROLL_VIEW_LAYER: number = 1
     private cookingRecipeBackground: GameObjects.NineSlice
     private cookingRecipeNameText: GameObjects.Text
 
@@ -39,9 +41,11 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
     private isIngredientAllFull: boolean = false
 
     private currnetRecipeBeanSubscription: Subscription
+    private closeTimerSubscription: Subscription
 
     private recipeBean: RecipeBean
     private recipePod: RecipePod
+    private townUIPod: TownUIPod
 
     constructor(scene: Scene) {
         super(scene)
@@ -51,6 +55,7 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
     public doInit(): void {
         this.cookingPod = PodProvider.instance.cookingPod
         this.recipePod = PodProvider.instance.recipePod
+        this.townUIPod = PodProvider.instance.townUIPod
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
         this.setupCookingRecipeUI()
         this.setupSubscribe()
@@ -80,8 +85,8 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
         this.add([
             this.cookingRecipeBackground,
             this.cookingRecipeNameText,
-            this.positionPointAndTagContainer,
             this.recipeAndIngredientContainer,
+            this.positionPointAndTagContainer,
             this.positionButtonRect,
             this.buttonContainer,
         ])
@@ -90,6 +95,15 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
     private setupSubscribe(): void {
         this.currnetRecipeBeanSubscription = this.cookingPod.currentRecipeBean.subscribe((recipeBean) => {
             this.cookingRecipeNameText.setText(recipeBean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : recipeBean.title)
+            this.positionPointAndTagContainer.setPosition(
+                0,
+                this.cookingRecipeNameText.y +
+                    this.cookingRecipeNameText.height / 2 +
+                    this.cookingRecipeNameText.height / 2 +
+                    15
+            )
+
+            console.log(this.cookingRecipeNameText.height)
             this.setCellMasterData(recipeBean)
             this.recipeBean = recipeBean
         })
@@ -98,14 +112,20 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
     private setupTexts(): void {
         this.cookingRecipeNameText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setOrigin(0.5)
-            .setText('???')
+            .setOrigin(0.5, 0)
+            .setText('?????????????????')
             .setStyle({ fill: '#585858', fontSize: 28 })
-            .setPosition(0, -this.cookingRecipeBackground.height / 2 + 35)
+            .setPosition(0, -this.cookingRecipeBackground.height / 2 + 10)
     }
 
     private createPointAndTag() {
-        this.positionPointAndTagContainer = this.scene.add.container(0, this.cookingRecipeNameText.y + 48)
+        this.positionPointAndTagContainer = this.scene.add.container(
+            0,
+            this.cookingRecipeNameText.y +
+                this.cookingRecipeNameText.height / 2 +
+                this.cookingRecipeNameText.height / 2 +
+                15
+        )
 
         this.positionPointAndTag = this.scene.add.rectangle(0, 0, 0, 0, 0xff00ff, 0)
 
@@ -133,14 +153,15 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
     private setCellMasterData(recipeBean: RecipeBean) {
         let bean = recipeBean
         if (bean.secretUnlock) {
-            // this.tagRarityView.setSecretTag()
+            this.tagRarityView.setSecretTag()
             this.recipePreview.setSecretRecipe(0x9bd6f8)
+            this.rewardPointCellView.setDefaultPointCell(0.778)
         } else {
             this.recipePreview.setRecipePreviewMaster(bean.id)
+            this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
+            this.rewardPointCellView.setPointRewardCell(bean, 0.778)
         }
 
-        this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
-        this.rewardPointCellView.setPointRewardCell(bean, 0.778)
         this.ingredientPreview.setPreviewView(bean, 1, 5, true, 50)
         this.isIngredientAllFull = this.ingredientPreview.updateCellIngredientPreviewUser()
         this.recipePreview.setCellWithRecipeType(bean.type)
@@ -201,13 +222,22 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
 
     private setupButtonListeners(): void {
         this.cancelButton.onClick(() => {
+            this.townUIPod.setLayerScrollView(CookingDetailSelectRecipeView.SCROLL_VIEW_LAYER)
             this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
         })
 
         this.letsCookButton.onClick(() => {
             this.cookingPod.changeCookingDetailState(CookingDetailState.CookingAnimation)
 
-            this.recipePod.cookedRecipeMenu(this.recipeBean).subscribe()
+            this.recipePod
+                .cookedRecipeMenu(this.recipeBean)
+                .pipe(
+                    delay(4000),
+                    tap((_) => {
+                        this.cookingPod.changeCookingDetailState(CookingDetailState.CookingComplete)
+                    })
+                )
+                .subscribe()
         })
     }
 

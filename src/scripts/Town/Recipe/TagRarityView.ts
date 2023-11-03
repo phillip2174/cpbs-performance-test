@@ -6,6 +6,7 @@ import { RecipeType } from '../Collection/type/RecipeType'
 export class TagRarityView extends GameObjects.Container {
     private tagContainer: GameObjects.Container
     private typeTagBackground: GameObjects.NineSlice
+    private typeTagSecretImage: GameObjects.Image
     private typeText: GameObjects.Text
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
@@ -20,7 +21,7 @@ export class TagRarityView extends GameObjects.Container {
             .getVectorText(this.scene, 'DB_HeaventRounded')
             .setText(`???`)
             .setOrigin(0.5)
-            .setPosition(0, -3)
+            .setPosition(0, -4)
             .setStyle({ fill: '#FFFFFF', fontSize: 16 })
 
         this.tagContainer.add([this.typeTagBackground, this.typeText])
@@ -47,9 +48,10 @@ export class TagRarityView extends GameObjects.Container {
 
     public setSecretTag(scale: number = 1) {
         this.setScale(1)
-        this.typeTagBackground.setTexture('secret-tag')
-        this.typeTagBackground.setDisplaySize(67, 28)
-        this.typeTagBackground.setAlpha(1)
+        this.typeTagBackground.setVisible(false)
+        this.typeTagSecretImage = this.scene.add.image(0, 0, 'secret-tag')
+        this.tagContainer.add([this.typeTagSecretImage])
+
         this.typeText.setTint(0x0099ff)
         this.typeText.setText('SECRET')
         this.typeText.setFontSize(scale == 1 ? 16 : 16 / scale / 1.3)
@@ -59,8 +61,9 @@ export class TagRarityView extends GameObjects.Container {
 
     private setColorTagAndText(colorTypeAndText: number, typeString: string, scale: number = 1) {
         this.setScale(1)
-        this.typeTagBackground.setTexture('tag-bg')
-        this.typeTagBackground.setAlpha(0.2)
+        this.typeTagSecretImage?.setVisible(false)
+        this.typeTagBackground.setVisible(true)
+
         this.typeTagBackground.setTint(colorTypeAndText)
         this.typeText.setTint(colorTypeAndText)
         this.typeText.setText(typeString)

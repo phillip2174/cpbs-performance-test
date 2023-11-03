@@ -59,6 +59,10 @@ export class DailyLoginRewardPreviewView extends GameObjects.Container {
         this.amountText.setColor('#C5CBD3')
     }
 
+    public setIconGrayscale(isActive: boolean) {
+        isActive ? this.rewardIcon.setPipeline('Grayscale') : this.rewardIcon.resetPipeline()
+    }
+
     private setupPreviewUIContainer(): void {
         this.previewUIContainer = this.scene.add.container()
         this.previewBg = this.scene.add

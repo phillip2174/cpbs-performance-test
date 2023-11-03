@@ -95,6 +95,7 @@ export class CookingFilterView extends GameObjects.Container {
     private createFilterCellsMobile(widthBG: number): void {
         this.filterScrollView = new ScrollViewNormalAndPagination(this.scene)
         this.filterScrollView.doInit(this.x, this.y - 5, widthBG / 1.045, 50, this.depth + 1, 3, true, false, 1, false)
+        this.filterScrollView.setInitPosXOffset(5)
 
         let cookingFilterAllButton = new CookingFilterCellView(this.scene)
         cookingFilterAllButton.doInit(RecipeFilterType.All, 0x0099ff)

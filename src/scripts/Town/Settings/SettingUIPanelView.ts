@@ -49,6 +49,7 @@ export class SettingUIPanelView extends GameObjects.Container {
 
         this.add([this.dimButton, this.settingsUIContainer])
         this.setupSubscribe()
+        
     }
 
     private setupSubscribe(): void {

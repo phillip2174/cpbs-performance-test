@@ -7,7 +7,7 @@ import { IngredientBean } from '../../Guideline/IngredientBean'
 
 export class RecipeBean {
     public id: number
-    public title: string
+    public title: string[]
     public description: string[]
     public type: RecipeType
     public secretUnlock: SecretRecipeBean
@@ -19,7 +19,7 @@ export class RecipeBean {
 
     constructor(
         id: number,
-        title: string,
+        title: string[],
         description: string[],
         type: RecipeType,
         secretUnlock: SecretRecipeBean,

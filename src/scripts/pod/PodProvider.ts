@@ -13,6 +13,10 @@ import { InventoryPod } from './../Town/Inventory/InventoryPod'
 import { CookingPod } from '../Town/Pod/CookingPod'
 import { RecipePod } from './RecipePod'
 import { DailyLoginPod } from './DailyLoginPod'
+import { UserPod } from '../Town/Pod/UserPod'
+import { SplashPod } from './SplashPod'
+import { MinigameCPOrderPod } from '../minigame/minigame-2-cp-order/MinigameCPOrderPod'
+import { MinigameScenePod } from './../minigame/MinigameScenePod'
 
 export class PodProvider {
     private static _instance: PodProvider
@@ -96,5 +100,25 @@ export class PodProvider {
     @LazyGetter()
     get dailyLoginPod(): DailyLoginPod {
         return new DailyLoginPod()
+    }
+
+    @LazyGetter()
+    get userPod(): UserPod {
+        return new UserPod()
+    }
+
+    @LazyGetter()
+    get splashPod(): SplashPod {
+        return new SplashPod()
+    }
+
+    @LazyGetter()
+    get minigameScenePod(): MinigameScenePod {
+        return new MinigameScenePod()
+    }
+
+    @LazyGetter()
+    get minigameCPOrderPod(): MinigameCPOrderPod {
+        return new MinigameCPOrderPod()
     }
 }

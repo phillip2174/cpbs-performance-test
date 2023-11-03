@@ -27,7 +27,11 @@ export class ResourceLoader {
         })
     }
 
-    loadSpriteSheet(imageKey: string, imagePath: string, frameConfig : Phaser.Types.Loader.FileTypes.ImageFrameConfig): Observable<string> {
+    loadSpriteSheet(
+        imageKey: string,
+        imagePath: string,
+        frameConfig: Phaser.Types.Loader.FileTypes.ImageFrameConfig
+    ): Observable<string> {
         return new Observable((observer: Observer<string>) => {
             if (this.scene.textures.exists(imageKey)) {
                 observer.next(imageKey)
@@ -38,25 +42,26 @@ export class ResourceLoader {
                     observer.complete()
                 })
 
-                this.scene.load.spritesheet(imageKey, imagePath,frameConfig)
+                this.scene.load.spritesheet(imageKey, imagePath, frameConfig)
                 this.scene.load.start()
             }
         })
     }
 
-    loadPackJson(
-        scene: Phaser.Scene,
-        jsonName: string,
-        jsonPath: string,
-    ): Observable<string> {
+    loadPackJson(scene: Phaser.Scene, jsonName: string, jsonPath: string): Observable<string> {
         return new Observable((observer: Observer<string>) => {
-            this.scene.load.once('complete', () => {
+            if (this.scene.cache.json.has(jsonName)) {
                 observer.next(jsonName)
                 observer.complete()
-            })
-            scene.load.pack(jsonName, jsonPath, jsonName)
-            scene.load.json(jsonName, jsonPath)
-            this.scene.load.start()
+            } else {
+                this.scene.load.once('complete', () => {
+                    observer.next(jsonName)
+                    observer.complete()
+                })
+                scene.load.pack(jsonName, jsonPath, jsonName)
+                scene.load.json(jsonName, jsonPath)
+                this.scene.load.start()
+            }
         })
     }
 
@@ -105,12 +110,7 @@ export class ResourceLoader {
                 this.scene.load.setPath(spinePath)
 
                 // @ts-ignore
-                this.scene.load.spine(
-                    spineKey,
-                    spineKey + '.json',
-                    spineKey + '.atlas',
-                    true,
-                )
+                this.scene.load.spine(spineKey, spineKey + '.json', spineKey + '.atlas', true)
 
                 this.scene.load.start()
             }

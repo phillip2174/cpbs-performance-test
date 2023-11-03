@@ -1,0 +1,56 @@
+{
+    "minigame2-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "minigame-start-button",
+                "url": "assets/minigame/minigame1/button-cta-game.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-menu-cell-bg-white",
+                "url": "assets/minigame/minigame2/menu-cell-bg-white.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-menu-cell-bg-red",
+                "url": "assets/minigame/minigame2/menu-cell-bg-red.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-menu-cell-bg-green",
+                "url": "assets/minigame/minigame2/menu-cell-bg-green.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-menu-cell-bg-blue",
+                "url": "assets/minigame/minigame2/menu-cell-bg-blue.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-menu-cell-bg-orange",
+                "url": "assets/minigame/minigame2/menu-cell-bg-orange.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-menu-cell-icon-secret",
+                "url": "assets/town/recipe/secret-recipe.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-bg",
+                "url": "assets/minigame/minigame2/minigame-2-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-success-indicator",
+                "url": "assets/minigame/minigame2/minigame-success-indicator.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-fail-indicator",
+                "url": "assets/minigame/minigame2/minigame-fail-indicator.png"
+            }
+        ]
+    }
+}

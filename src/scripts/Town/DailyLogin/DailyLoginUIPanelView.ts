@@ -1,4 +1,4 @@
-import { Actions, Display, GameObjects, Scene, Tweens } from 'phaser'
+import { GameObjects, Scene, Tweens } from 'phaser'
 import { Subscription, skip } from 'rxjs'
 import { Button } from '../../button/Button'
 import { DimButton } from '../../button/DimButton'
@@ -19,10 +19,13 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
     public static readonly BG_HEIGHT_MOBILE: number = 548
 
     private dimButton: DimButton
+    private skipButton: GameObjects.Rectangle
+
     private dailyLoginPanelBg: GameObjects.NineSlice
 
     private dailyLoginUIContainer: GameObjects.Container
     private dailyLoginHeaderContainer: GameObjects.Container
+    private dailyLoginCellContainer: GameObjects.Container
 
     private dailyLoginHeaderBg: GameObjects.Image
     private dailyLoginHeaderIcon: GameObjects.Image
@@ -32,6 +35,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
     private dailyLoginText: GameObjects.Text
 
     private dailyLoginCellViews: DailyLoginCellView[] = []
+    private dailyLoginCellToStamp: DailyLoginCellView
 
     private confirmButton: Button
 
@@ -90,6 +94,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
 
     private setupDailyLoginUIContainer(): void {
         this.dailyLoginUIContainer = this.scene.add.container()
+        this.dailyLoginCellContainer = this.scene.add.container()
         this.dailyLoginText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
             .setText('Come back daily and collect awesome rewards!')
@@ -100,29 +105,84 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
         this.setupDailyLoginHeaderContainer()
 
         this.dailyLoginPod.getDailyLoginData().subscribe((dailyLoginBeans) => {
+            this.setupSkipButton()
             dailyLoginBeans.forEach((bean) => {
                 let dailyLoginCellView = new DailyLoginCellView(this.scene)
                 dailyLoginCellView.doInit(bean)
-                dailyLoginCellView.setPosition(
-                    this.isDesktop ? -this.dailyLoginInnerBg.width / 2 + 75 : -this.dailyLoginPanelBg.width / 2 + 50,
-                    -this.dailyLoginPanelBg.height / 2 + (this.isDesktop ? 155 : 125)
-                )
                 this.dailyLoginCellViews.push(dailyLoginCellView)
-                this.dailyLoginUIContainer.add([dailyLoginCellView])
             })
 
-            this.dailyLoginCellViews = Actions.AlignTo(
-                this.dailyLoginCellViews,
-                Display.Align.RIGHT_CENTER,
-                this.isDesktop ? 10 : 5
-            )
+            this.setupDailyLoginCells(0)
+            this.setupDailyLoginCellContainer()
 
             if (this.townUIPod.townUIState.value == TownUIState.DailyLogin) {
-                this.dailyLoginCellViews
-                    .find((cellView) => cellView.getCollectState() == DailyLoginCollectState.Collecting)
-                    ?.updateCellOnCollecting()
+                this.updateCellForCollecting()
             }
         })
+    }
+
+    private setupDailyLoginCells(index: number): void {
+        if (index + 1 > this.dailyLoginCellViews.length - 1) return
+
+        let cellCount = 0
+        let offset = this.isDesktop ? 10 : 8
+        let spacing = this.isDesktop ? 10 : 5
+
+        let rowContainer = this.scene.add.container()
+        let rowPage = this.scene.add.rectangle(
+            0,
+            0,
+            this.dailyLoginPanelBg.width / 1.05,
+            this.dailyLoginCellViews[0].height - 15,
+            0xff0000,
+            0
+        )
+
+        rowContainer.add(rowPage)
+        rowContainer.width = rowContainer.getBounds().width
+        rowContainer.height = rowContainer.getBounds().height
+
+        let containerGroupCell = this.scene.add.container(0, 0)
+
+        for (let i = index; i < this.dailyLoginCellViews.length; i++) {
+            this.dailyLoginCellViews[i].getIsBigReward() ? (cellCount += 2) : (cellCount += 1)
+
+            containerGroupCell.add(this.dailyLoginCellViews[i])
+            if (cellCount >= 4) {
+                this.setupCellRowContainer(containerGroupCell, rowContainer, offset, spacing)
+                this.setupDailyLoginCells(i + 1)
+                break
+            }
+        }
+    }
+
+    private setupDailyLoginCellContainer(): void {
+        this.dailyLoginCellContainer.setPosition(
+            this.isDesktop ? -this.dailyLoginInnerBg.width / 2 + 295 : 0,
+            this.isDesktop ? -this.dailyLoginInnerBg.height / 2 + 80 : -this.dailyLoginPanelBg.height / 2 + 118
+        )
+        Phaser.Actions.AlignTo(
+            this.dailyLoginCellContainer.getAll(),
+            Phaser.Display.Align.BOTTOM_CENTER,
+            0,
+            this.isDesktop ? 12 : -1
+        )
+        this.dailyLoginUIContainer.add([this.dailyLoginCellContainer])
+    }
+
+    private setupCellRowContainer(
+        containerGroupCell: GameObjects.Container,
+        rowContainer: GameObjects.Container,
+        offset: number,
+        spacing: number
+    ): void {
+        containerGroupCell.width = containerGroupCell.getBounds().width
+        containerGroupCell.height = containerGroupCell.getBounds().height
+        let cellGroup = containerGroupCell.getAll()[0] as GameObjects.Container
+        containerGroupCell.setPosition(-rowContainer.width / 2 + cellGroup.width / 2 + offset, 0)
+        rowContainer.add(containerGroupCell)
+        Phaser.Actions.AlignTo(containerGroupCell.getAll(), Phaser.Display.Align.RIGHT_CENTER, spacing)
+        this.dailyLoginCellContainer.add([rowContainer])
     }
 
     private setupDailyLoginUIDesktop(): void {
@@ -147,11 +207,11 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
             .setTint(0xdfe5ed)
             .setOrigin(0.5)
 
-        this.dailyLoginText
-            .setFontSize(24)
-            .setPosition(this.dailyLoginInnerBg.x, -this.dailyLoginInnerBg.height / 2 + 5)
+        this.dailyLoginText.setFontSize(24).setPosition(this.dailyLoginInnerBg.x, -this.dailyLoginInnerBg.height / 2)
 
         this.confirmButton.setPosition(this.dailyLoginPanelBg.x, this.dailyLoginPanelBg.height / 2 - 50)
+        this.dailyLoginPanelBg.setInteractive()
+
         this.dailyLoginUIContainer.add([
             this.dailyLoginPanelBg,
             this.dailyLoginInnerBg,
@@ -182,6 +242,8 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
             .setPosition(this.dailyLoginPanelBg.x, -this.dailyLoginPanelBg.height / 2 + 45)
 
         this.confirmButton.setPosition(this.dailyLoginPanelBg.x, this.dailyLoginPanelBg.height / 2 - 35)
+
+        this.dailyLoginPanelBg.setInteractive()
         this.dailyLoginUIContainer.add([this.dailyLoginPanelBg, this.dailyLoginText, this.confirmButton])
     }
 
@@ -210,6 +272,8 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
             this.dailyLoginHeaderIcon,
             this.dailyLoginHeaderText,
         ])
+
+        this.dailyLoginUIContainer.add([this.dailyLoginHeaderContainer])
     }
 
     private setupButtonListeners(): void {
@@ -289,9 +353,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
 
     private createTweens(): void {
         let openTweens = AnimationController.instance.tweenOpenContainer(this.scene, this.dailyLoginUIContainer, () => {
-            this.dailyLoginCellViews
-                .find((cellView) => cellView.getCollectState() == DailyLoginCollectState.Collecting)
-                ?.updateCellOnCollecting()
+            this.updateCellForCollecting()
         })
         this.onOpenTween = openTweens.onOpenTween
         this.onOpenTweenChain = openTweens.onOpenTweenChain
@@ -306,5 +368,31 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
         )
         this.onCloseTween = closeTweens.onCloseTween
         this.onCloseTweenChain = closeTweens.onCloseTweenChain
+    }
+
+    private updateCellForCollecting(): void {
+        this.dailyLoginCellToStamp = this.dailyLoginCellViews.find(
+            (cellView) => cellView.getCollectState() == DailyLoginCollectState.Collecting
+        )
+        this.dailyLoginCellToStamp?.updateCellOnCollecting(this.skipButton)
+        this.dailyLoginCellToStamp?.parentContainer.bringToTop(this.dailyLoginCellToStamp)
+    }
+
+    private setupSkipButton(): void {
+        this.skipButton = this.scene.add.rectangle(
+            0,
+            0,
+            this.scene.cameras.main.width,
+            this.scene.cameras.main.height + 100,
+            0xffffff,
+            0.01
+        )
+
+        this.skipButton.setInteractive().on('pointerdown', () => {
+            this.dailyLoginCellToStamp?.stopStampTween()
+            this.skipButton.removeInteractive()
+        })
+
+        this.dailyLoginUIContainer.add([this.skipButton])
     }
 }

@@ -55,7 +55,7 @@ export class CollectionFilterCellView extends GameObjects.Container {
                 isDesktop ? height / 2 : 0,
                 isDesktop ? 'filter-bg-desktop' : 'filter-bg',
                 '',
-                isDesktop ? this.filterText.width + 27 : this.filterText.width + 19,
+                isDesktop ? this.filterText.width + 29 : this.filterText.width + 19,
                 height,
                 10,
                 10,
@@ -81,7 +81,7 @@ export class CollectionFilterCellView extends GameObjects.Container {
             )
             .setOrigin(0.5, isDesktop ? 1 : 0.5)
 
-        this.circleNotification = this.scene.add.circle(0, 0, 5, 0xdf2b41).setVisible(false)
+        this.circleNotification = this.scene.add.circle(0, 0, 4, 0xdf2b41).setVisible(false)
 
         if (isDesktop) {
             this.circleNotification.setPosition(

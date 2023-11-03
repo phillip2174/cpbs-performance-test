@@ -19,6 +19,8 @@ export class CookingPod {
 
     public currentRecipeBean: Subject<RecipeBean> = new Subject<RecipeBean>()
 
+    public notificationFilterCooking: BehaviorSubject<RecipeFilterType[]> = new BehaviorSubject<RecipeFilterType[]>([])
+
     public isAlreadyOpen: boolean
     public isDragScrollViewCooking: boolean
     public isDragScrollViewFilter: boolean
@@ -41,5 +43,9 @@ export class CookingPod {
 
     public updateTotalReady(totalReady: number) {
         this.totalReadyCurrentSelectedFilter.next(totalReady)
+    }
+
+    public changeNotificationCooking(arrNotificationFilterCooking: RecipeFilterType[]) {
+        this.notificationFilterCooking.next(arrNotificationFilterCooking)
     }
 }

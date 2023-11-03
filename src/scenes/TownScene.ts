@@ -24,7 +24,7 @@ export class TownScene extends Scene {
         this.cameraControlView = new CameraControlView(this)
         this.cameraControlView.doInit()
 
-        this.scene.launch('CityUIScene', { cameraControlView: this.cameraControlView })
+        this.scene.launch('CityUIScene')
 
         this.townBuildingView = new TownBuildingView(this)
         this.townBuildingView.doInit()

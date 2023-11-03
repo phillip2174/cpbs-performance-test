@@ -37,7 +37,7 @@ export class RewardPointCellView extends GameObjects.Container {
         this.height = this.getBounds().height
     }
 
-    private setDefaultPointCell(scale: number = 1) {
+    public setDefaultPointCell(scale: number = 1) {
         this.setScale(1)
         this.textReward.setText(`+??`)
 

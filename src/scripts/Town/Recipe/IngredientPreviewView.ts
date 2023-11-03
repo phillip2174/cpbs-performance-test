@@ -74,22 +74,29 @@ export class IngredientPreviewView extends GameObjects.Container {
         Phaser.Actions.AlignTo(this.ingredientContainer.getAll(), Phaser.Display.Align.RIGHT_CENTER, spacingOffset)
 
         if (isOpenBG) {
-            this.backgroundIngredientPreview = this.scene.add
-                .nineslice(
-                    0,
-                    7,
-                    'white-ingredient-bg',
-                    '',
-                    this.ingredientContainer.getBounds().width + 10 + moreOffset,
-                    cellHeight,
-                    10,
-                    10,
-                    10,
-                    10
-                )
-                .setTint(IngredientPreviewView.NOT_READY_COLOR_CODE)
+            if (this.backgroundIngredientPreview == undefined) {
+                this.backgroundIngredientPreview = this.scene.add
+                    .nineslice(
+                        0,
+                        7,
+                        'white-ingredient-bg',
+                        '',
+                        this.ingredientContainer.getBounds().width + 10 + moreOffset,
+                        cellHeight,
+                        10,
+                        10,
+                        10,
+                        10
+                    )
+                    .setTint(IngredientPreviewView.NOT_READY_COLOR_CODE)
 
-            this.add(this.backgroundIngredientPreview).sendToBack(this.backgroundIngredientPreview)
+                this.add(this.backgroundIngredientPreview).sendToBack(this.backgroundIngredientPreview)
+            } else {
+                this.backgroundIngredientPreview.setSize(
+                    this.ingredientContainer.getBounds().width + 10 + moreOffset,
+                    cellHeight
+                )
+            }
         }
     }
 

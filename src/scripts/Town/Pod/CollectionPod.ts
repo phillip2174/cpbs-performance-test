@@ -68,29 +68,9 @@ export class CollectionPod {
             .forEach((userRecipe) => {
                 let bean = PodProvider.instance.recipePod.getRecipeBeanWithID(userRecipe.id)
                 if (bean != undefined) {
-                    if (!bean.secretUnlock) {
-                        switch (bean.type) {
-                            case RecipeType.Easy:
-                                if (!this.notificationFilterCollection.value.includes(RecipeFilterType.Easy))
-                                    filterNotifications.push(RecipeFilterType.Easy)
-                                break
-                            case RecipeType.Normal:
-                                if (!this.notificationFilterCollection.value.includes(RecipeFilterType.Normal))
-                                    filterNotifications.push(RecipeFilterType.Normal)
-                                break
-                            case RecipeType.Hard:
-                                if (!this.notificationFilterCollection.value.includes(RecipeFilterType.Hard))
-                                    filterNotifications.push(RecipeFilterType.Hard)
-                                break
-                            case RecipeType.Challenge:
-                                if (!this.notificationFilterCollection.value.includes(RecipeFilterType.Challenge))
-                                    filterNotifications.push(RecipeFilterType.Challenge)
-                                break
-                        }
-                    } else {
-                        if (!this.notificationFilterCollection.value.includes(RecipeFilterType.Secret))
-                            filterNotifications.push(RecipeFilterType.Secret)
-                    }
+                    let notificationType = PodProvider.instance.recipePod.getNotificationTypeWithBean(bean)
+                    if (!this.notificationFilterCollection.value.includes(notificationType))
+                        filterNotifications.push(notificationType)
                 }
             })
 

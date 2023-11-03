@@ -160,7 +160,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
             ResourceManager.instance.loadSpine(this.scene, burgerShrimpConfig).pipe(
                 tap((spine) => {
                     this.burgerShrimp = spine
-                    this.burgerShrimp.setDepth(5)
+                    this.burgerShrimp.setDepth(9)
                 })
             )
         )
@@ -178,7 +178,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
             ResourceManager.instance.loadSpine(this.scene, bushesConfig).pipe(
                 tap((spine) => {
                     this.bushes = spine
-                    this.bushes.setDepth(3)
+                    this.bushes.setDepth(6)
                 })
             )
         )

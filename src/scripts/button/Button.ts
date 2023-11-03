@@ -228,7 +228,10 @@ export class Button extends Phaser.GameObjects.Container {
         this.background.setSize(widht, height)
         this.background.setDisplaySize(widht, height)
 
-        if (this.backgroundSlice) this.backgroundSlice.setSize(widht, height)
+        if (this.backgroundSlice) {
+            this.backgroundSlice.setSize(widht, height)
+            this.backgroundSlice.setDisplaySize(widht, height)
+        }
 
         this.setSize(widht, height)
         this.setDisplaySize(widht, height)

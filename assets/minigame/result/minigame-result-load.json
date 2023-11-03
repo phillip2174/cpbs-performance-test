@@ -1,0 +1,60 @@
+{
+    "minigame-result-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "minigame-result-back",
+                "url": "assets/minigame/result/minigame-result-back.png"
+            },   {
+                "type": "image",
+                "key": "minigame-result-bg",
+                "url": "assets/minigame/result/minigame-result-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-complete",
+                "url": "assets/minigame/result/minigame-result-complete.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-fail",
+                "url": "assets/minigame/result/minigame-result-fail.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-no-reward",
+                "url": "assets/minigame/result/minigame-result-no-reward.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-play-again",
+                "url": "assets/minigame/result/minigame-result-play-again.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-reward-bg",
+                "url": "assets/minigame/result/minigame-result-reward-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-star-bg",
+                "url": "assets/minigame/result/minigame-result-star-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-star-effect",
+                "url": "assets/minigame/result/minigame-result-star-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-star",
+                "url": "assets/minigame/result/minigame-result-star.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-time",
+                "url": "assets/minigame/result/minigame-result-time.png"
+            }
+        ]
+    }
+}

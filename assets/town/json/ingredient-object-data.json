@@ -1,114 +1,5 @@
 [
     {
-        "id": 101,
-        "typeAnimation": "OneTime",
-        "animationWithStateBeans": [
-            {
-                "stateType": "Idle",
-                "animKey": "stand",
-                "animTime": -1
-            },
-            {
-                "stateType": "Transition1",
-                "animKey": "jump_damage",
-                "animTime": 750
-            },
-            {
-                "stateType": "End",
-                "animKey": "gameover",
-                "animTime": -1
-            }
-        ],
-        "typeAsset": "Spine",
-        "positionX": 0,
-        "positionY": 200,
-        "scaleX": 0.2,
-        "scaleY": 0.2,
-        "interactX": 0,
-        "interactY": -30,
-        "interactWidth": 50,
-        "interactHeight": 100,
-        "depth": 4,
-        "isRandomizable": false,
-        "keyAsset": "Lays"
-    },
-    {
-        "id": 102,
-        "typeAnimation": "Toggle",
-        "animationWithStateBeans": [
-            {
-                "stateType": "Idle",
-                "animKey": "stand",
-                "animTime": -1
-            },
-            {
-                "stateType": "Transition1",
-                "animKey": "jump_damage",
-                "animTime": 750
-            },
-            {
-                "stateType": "End",
-                "animKey": "gameover",
-                "animTime": -1
-            },
-            {
-                "stateType": "Transition2",
-                "animKey": "jump_damage",
-                "animTime": 750
-            }
-        ],
-        "typeAsset": "Spine",
-        "positionX": -200,
-        "positionY": 320,
-        "scaleX": 0.2,
-        "scaleY": 0.2,
-        "interactX": 0,
-        "interactY": -30,
-        "interactWidth": 50,
-        "interactHeight": 100,
-        "depth": 4,
-        "isRandomizable": false,
-        "keyAsset": "Lays"
-    },
-    {
-        "id": 103,
-        "typeAnimation": "Repeat",
-        "animationWithStateBeans": [
-            {
-                "stateType": "Idle",
-                "animKey": "stand",
-                "animTime": -1
-            },
-            {
-                "stateType": "Transition1",
-                "animKey": "slide_damage",
-                "animTime": 300
-            },
-            {
-                "stateType": "End",
-                "animKey": "jump_damage",
-                "animTime": 750
-            },
-            {
-                "stateType": "Transition2",
-                "animKey": "slide_damage",
-                "animTime": 300
-            }
-        ],
-        "typeAsset": "Spine",
-        "positionX": 0,
-        "positionY": 360,
-        "scaleX": 0.2,
-        "scaleY": 0.2,
-        "interactX": 0,
-        "interactY": -30,
-        "interactWidth": 50,
-        "interactHeight": 100,
-        "depth": 4,
-        "isRandomizable": false,
-        "keyAsset": "Lays"
-    },
-    {
         "id": 1,
         "typeAnimation": "OneTime",
         "animationWithStateBeans": [
@@ -261,10 +152,10 @@
             }
         ],
         "typeAsset": "Sprite",
-        "positionX": 0,
-        "positionY": 680,
-        "scaleX": 0.5,
-        "scaleY": 0.5,
+        "positionX": -345,
+        "positionY": -12,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
         "interactX": 0,
         "interactY": 0,
         "interactWidth": 30,
@@ -307,7 +198,7 @@
         "interactY": -105,
         "interactWidth": 85,
         "interactHeight": 215,
-        "depth": 4,
+        "depth": 8,
         "isRandomizable": false,
         "keyAsset": "sauce-bottle"
     },
@@ -345,7 +236,7 @@
         "interactY": -85,
         "interactWidth": 200,
         "interactHeight": 150,
-        "depth": 6,
+        "depth": 10,
         "isRandomizable": false,
         "keyAsset": "food-box"
     },
@@ -764,6 +655,39 @@
         "depth": 4,
         "isRandomizable": false,
         "keyAsset": "flower-bush"
+    },
+    {
+        "id": 26,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": -310,
+        "positionY": 245,
+        "scaleX": 0.2,
+        "scaleY": 0.2,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 30,
+        "interactHeight": 30,
+        "depth": 7,
+        "isRandomizable": true,
+        "keyAsset": ""
     },
     {
         "id": 99,

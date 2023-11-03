@@ -1,6 +1,7 @@
 export enum TownUIButtonType {
+    MainMenu,
     MenuGroup,
-    Collections,
+    Collection,
     Inventory,
     Cooking,
     DailyLogin,
@@ -11,5 +12,4 @@ export enum TownUIButtonType {
     Guide,
     SoundEffect,
     BGMusic,
-    CPCity,
 }

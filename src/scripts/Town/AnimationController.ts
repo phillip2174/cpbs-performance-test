@@ -132,43 +132,126 @@ export class AnimationController {
         let onHoverButtonIconTween: Tweens.TweenChain
         let onHoverRotateButtonIconTween: Tweens.TweenChain
         let onHoverButtonTextTween: Tweens.Tween
-
-        onHoverButtonIconTween = scene.tweens.chain({
-            tweens: [
-                {
-                    targets: image,
-                    duration: 300,
-                    ease: 'Cubic.easeInOut',
-                    props: {
-                        scale: {
-                            from: image.scale,
-                            to: image.scale + 0.2,
+        if (image != undefined) {
+            onHoverButtonIconTween = scene.tweens.chain({
+                targets: image,
+                tweens: [
+                    {
+                        duration: 150,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale,
+                                to: image.scale + 0.15,
+                            },
                         },
                     },
-                },
-            ],
-            persist: true,
-            paused: true,
-        })
-
-        onHoverRotateButtonIconTween = scene.tweens.chain({
-            tweens: [
-                {
-                    targets: image,
-                    duration: 300,
-                    ease: 'Cubic.easeInOut',
-                    props: {
-                        angle: {
-                            from: image.angle,
-                            to: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                    {
+                        duration: 200,
+                        delay: 50,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.15,
+                                to: image.scale + 0.075,
+                            },
                         },
                     },
-                },
-            ],
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.075,
+                                to: image.scale + 0.15,
+                            },
+                        },
+                    },
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.15,
+                                to: image.scale + 0.13,
+                            },
+                        },
+                    },
+                    {
+                        duration: 100,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.13,
+                                to: image.scale + 0.15,
+                            },
+                        },
+                    },
+                ],
+                persist: true,
+                paused: true,
+            })
 
-            persist: true,
-            paused: true,
-        })
+            onHoverRotateButtonIconTween = scene.tweens.chain({
+                targets: image,
+                tweens: [
+                    {
+                        duration: 150,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: image.angle,
+                                to: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                            },
+                        },
+                    },
+                    {
+                        duration: 200,
+                        delay: 50,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                                to: AnimationController.BUTTON_ICON_MAX_ANGLE + 3,
+                            },
+                        },
+                    },
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: AnimationController.BUTTON_ICON_MAX_ANGLE + 3,
+                                to: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                            },
+                        },
+                    },
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                                to: AnimationController.BUTTON_ICON_MAX_ANGLE + 1.5,
+                            },
+                        },
+                    },
+                    {
+                        duration: 100,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: AnimationController.BUTTON_ICON_MAX_ANGLE + 1.5,
+                                to: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                            },
+                        },
+                    },
+                ],
+
+                persist: true,
+                paused: true,
+            })
+        }
 
         onHoverButtonTextTween = scene.tweens.addCounter({
             duration: 300,
@@ -200,56 +283,126 @@ export class AnimationController {
         let onLeaveHoverRotateButtonIconTween: Tweens.TweenChain
         let onLeaveHoverButtonTextTween: Tweens.Tween
 
-        onLeaveHoverButtonIconTween = scene.tweens.chain({
-            tweens: [
-                {
-                    targets: image,
-                    duration: 300,
-                    ease: 'Cubic.easeInOut',
-                    props: {
-                        scale: {
-                            from: image.scale + 0.2,
-                            to: image.scale,
+        if (image != undefined) {
+            onLeaveHoverButtonIconTween = scene.tweens.chain({
+                targets: image,
+                tweens: [
+                    {
+                        duration: 150,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.15,
+                                to: image.scale,
+                            },
                         },
                     },
-                },
-            ],
-            persist: true,
-            paused: true,
-        })
+                    {
+                        duration: 200,
+                        delay: 50,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale,
+                                to: image.scale + 0.075,
+                            },
+                        },
+                    },
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.075,
+                                to: image.scale,
+                            },
+                        },
+                    },
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale,
+                                to: image.scale + 0.02,
+                            },
+                        },
+                    },
+                    {
+                        duration: 100,
+                        ease: 'linear',
+                        props: {
+                            scale: {
+                                from: image.scale + 0.02,
+                                to: image.scale,
+                            },
+                        },
+                    },
+                ],
+                persist: true,
+                paused: true,
+            })
 
-        onLeaveHoverRotateButtonIconTween = scene.tweens.chain({
-            tweens: [
-                {
-                    targets: image,
-                    duration: 200,
-                    ease: 'Cubic.easeInOut',
-                    props: {
-                        scale: {
-                            from: image.scale,
-                            to: image.scale - 0.05,
-                        },
-                        angle: {
-                            from: image.angle,
-                            to: AnimationController.BUTTON_ICON_DEFAULT_ANGLE,
+            onLeaveHoverRotateButtonIconTween = scene.tweens.chain({
+                targets: image,
+                tweens: [
+                    {
+                        duration: 150,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: AnimationController.BUTTON_ICON_MAX_ANGLE,
+                                to: image.angle,
+                            },
                         },
                     },
-                },
-                {
-                    targets: image,
-                    duration: 50,
-                    ease: 'Cubic.easeInOut',
-                    props: {
-                        scale: {
-                            from: image.scale - 0.05,
-                            to: image.scale,
+                    {
+                        duration: 200,
+                        delay: 50,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: image.angle,
+                                to: image.angle - 3,
+                            },
                         },
                     },
-                },
-            ],
-            persist: true,
-            paused: true,
-        })
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: image.angle - 3,
+                                to: image.angle,
+                            },
+                        },
+                    },
+                    {
+                        duration: 120,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: image.angle,
+                                to: image.angle - 1.5,
+                            },
+                        },
+                    },
+                    {
+                        duration: 100,
+                        ease: 'linear',
+                        props: {
+                            angle: {
+                                from: image.angle - 1.5,
+                                to: image.angle,
+                            },
+                        },
+                    },
+                ],
+
+                persist: true,
+                paused: true,
+            })
+        }
 
         onLeaveHoverButtonTextTween = scene.tweens.addCounter({
             duration: 300,

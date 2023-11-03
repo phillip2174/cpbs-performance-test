@@ -62,10 +62,4 @@ export class CityUIScene extends Scene {
             this.firstInitSubscription?.unsubscribe()
         })
     }
-
-    public update(): void {
-        if (Input.Keyboard.JustDown(this.input.keyboard.addKey('Q'))) {
-            PodProvider.instance.townUIPod.changeUIState(TownUIState.Collection)
-        }
-    }
 }

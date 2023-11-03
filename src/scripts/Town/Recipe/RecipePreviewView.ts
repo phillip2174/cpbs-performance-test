@@ -33,10 +33,10 @@ export class RecipePreviewView extends GameObjects.Container {
         this.effectThumbnailImage.setVisible(false)
     }
 
-    public setSecretRecipe(effectTineColorCode: number) {
+    public setSecretRecipe(effectTineColorCode: number, isActiveEffect: boolean = true) {
         this.recipeImage.setTexture('secret-recipe').clearTint()
         this.effectThumbnailImage.setTint(effectTineColorCode)
-        this.effectThumbnailImage.setVisible(true)
+        this.effectThumbnailImage.setVisible(isActiveEffect)
     }
 
     public setSizeRecipe(width: number, height: number) {

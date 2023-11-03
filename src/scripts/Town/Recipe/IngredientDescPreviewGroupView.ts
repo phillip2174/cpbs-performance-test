@@ -37,8 +37,9 @@ export class IngredientDescPreviewGroupView extends GameObjects.Container {
     public createUI(ingredientDesc: IngredientDesc, isFirstCell: boolean) {
         let cellRecipe = this.scene.add.container(0, 0)
 
+        const isDesktop = this.scene.sys.game.device.os.desktop
         let positionMock = this.scene.add
-            .rectangle(0, 0, this.widthSize - 20, 17 * ingredientDesc.title.length, 0xff0000, 0)
+            .rectangle(0, 0, this.widthSize - (isDesktop ? 40 : 32), 17 * ingredientDesc.title.length, 0xff0000, 0)
             .setOrigin(0.5, 0.5)
 
         cellRecipe.add(positionMock)
@@ -64,7 +65,7 @@ export class IngredientDescPreviewGroupView extends GameObjects.Container {
             let cpLogo = this.scene.add.image(0, 0, 'is-cp-logo')
 
             let lastText = titleLineGroup.getAll()[titleLineGroup.length - 1] as GameObjects.Text
-            cpLogo.setPosition(-this.widthSize / 2 + lastText.width + cpLogo.width / 2 + 15, lastText.y)
+            cpLogo.setPosition(titleLineGroup.x + lastText.width + cpLogo.width / 2, lastText.y)
 
             cellRecipe.add([cpLogo])
         }

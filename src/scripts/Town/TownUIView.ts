@@ -13,6 +13,8 @@ import { TownUICircleButtonView } from './TownUICircleButtonView'
 import { TownUIButtonType } from './Type/TownUIButtonType'
 import { TownUIState } from './Type/TownUIState'
 import { CPLogoUIButtonView } from './CPLogoUIButtonView'
+import { UserPod } from './Pod/UserPod'
+import { SceneState } from '../../scenes/SceneState'
 
 export class TownUIView extends GameObjects.GameObject {
     private guideLineUIView: GuideLineUIView
@@ -23,6 +25,7 @@ export class TownUIView extends GameObjects.GameObject {
     private cookingButton: TownUIButtonView
     private inventoryButton: TownUIButtonView
     private collectionsButton: TownUIButtonView
+    private cpCityButton: TownUIButtonView
     private townUIButtonGroupView: TownUIButtonGroupView
 
     private userProfileCircleButtonView: TownUICircleButtonView
@@ -40,10 +43,12 @@ export class TownUIView extends GameObjects.GameObject {
 
     private uiStateDisposable: Subscription
     private cameraZoomSubscription: Subscription
+    private firstLoginSubscription: Subscription
 
     private cameraControlPod: CameraControlPod
     private townUIPod: TownUIPod
     private townUIButtonNotificationManager: TownUIButtonNotificationManager
+    private userPod: UserPod
 
     private gameScreenWidth: number = this.scene.cameras.main.width
     private gameScreenHeight: number = this.scene.cameras.main.height
@@ -59,6 +64,7 @@ export class TownUIView extends GameObjects.GameObject {
         this.townUIPod = PodProvider.instance.townUIPod
         this.townUIButtonNotificationManager = PodProvider.instance.townUIButtonNotificationManager
         this.cameraControlPod = PodProvider.instance.cameraControlPod
+        this.userPod = PodProvider.instance.userPod
 
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
 
@@ -106,6 +112,13 @@ export class TownUIView extends GameObjects.GameObject {
                     break
             }
         })
+
+        this.firstLoginSubscription = this.userPod.isFirstLoginOfTheDay.subscribe((isFirstLogin) => {
+            if (isFirstLogin) {
+                this.townUIPod.changeUIState(TownUIState.DailyLogin)
+                this.userPod.setIsFirstLoginOfTheDay(false)
+            }
+        })
     }
 
     private hideTownUIMenuBg(): void {
@@ -143,7 +156,7 @@ export class TownUIView extends GameObjects.GameObject {
             this.cpPointButton.setContainerDepth(201)
             this.dailyLoginButton = new TownUIButtonView(this.scene)
             this.dailyLoginButton.doInit(
-                this.gameScreenWidth - 195,
+                this.gameScreenWidth - 85,
                 this.gameScreenHeight - 60,
                 'daily-login',
                 TownUIButtonType.DailyLogin,
@@ -152,7 +165,7 @@ export class TownUIView extends GameObjects.GameObject {
 
             this.minigameButton = new TownUIButtonView(this.scene)
             this.minigameButton.doInit(
-                this.gameScreenWidth - 85,
+                this.gameScreenWidth - 195,
                 this.gameScreenHeight - 60,
                 'minigame',
                 TownUIButtonType.Minigame,
@@ -160,11 +173,17 @@ export class TownUIView extends GameObjects.GameObject {
             )
 
             this.cookingButton = new TownUIButtonView(this.scene)
-            this.cookingButton.doInit(305, this.gameScreenHeight - 60, 'cooking', TownUIButtonType.Cooking, 'COOKING')
+            this.cookingButton.doInit(
+                this.gameScreenWidth - 305,
+                this.gameScreenHeight - 60,
+                'cooking',
+                TownUIButtonType.Cooking,
+                'COOKING'
+            )
 
             this.inventoryButton = new TownUIButtonView(this.scene)
             this.inventoryButton.doInit(
-                195,
+                305,
                 this.gameScreenHeight - 60,
                 'inventory',
                 TownUIButtonType.Inventory,
@@ -173,12 +192,16 @@ export class TownUIView extends GameObjects.GameObject {
 
             this.collectionsButton = new TownUIButtonView(this.scene)
             this.collectionsButton.doInit(
-                85,
+                195,
                 this.gameScreenHeight - 60,
                 'collections',
-                TownUIButtonType.Collections,
+                TownUIButtonType.Collection,
                 'COLLECTIONS'
             )
+
+            this.cpCityButton = new TownUIButtonView(this.scene)
+            this.cpCityButton.doInit(85, this.gameScreenHeight - 60, 'cp-city', TownUIButtonType.MainMenu, 'CP TOWN')
+            this.cpCityButton.hideNotification()
         }
     }
 
@@ -207,6 +230,18 @@ export class TownUIView extends GameObjects.GameObject {
         this.cookingButton?.onClick(() => {
             this.townUIPod.changeUIState(TownUIState.Cooking)
             this.townUIPod.setIsShowGuideline(false)
+        })
+
+        this.cpCityButton?.onClick(() => {
+            this.townUIPod.changeUIState(TownUIState.MainMenu)
+            this.townUIPod.setIsShowGuideline(true)
+        })
+
+        this.minigameButton?.onClick(() => {
+            //TODO Get Pod In Minigame select to set scene to launchScene
+            console.log('go to mini scene')
+            PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPPuzzle)
+            this.scene.scene.start(`SplashLoaddingScene`)
         })
 
         this.settingCircleButtonView?.onClick(() => {

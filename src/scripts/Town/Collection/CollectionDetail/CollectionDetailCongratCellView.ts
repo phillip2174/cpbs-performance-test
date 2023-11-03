@@ -33,8 +33,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
     private collectionDetailRecipeTweenView: CollectionDetailRecipeTweenView
 
     private congratText: GameObjects.Text
-    private recipeCookedText: GameObjects.Text
-    private recieveText: GameObjects.Text
+    private congratDescTextContainer: GameObjects.Container
 
     private confirmButton: Button
 
@@ -80,12 +79,12 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
 
     private createUI() {
         this.congratContainer = this.scene.add.container(0, 0)
-
-        let sizeWidthBG = this.scene.sys.game.device.os.desktop
+        const isDesktop = this.scene.sys.game.device.os.desktop
+        let sizeWidthBG = isDesktop
             ? CollectionDetailCongratCellView.WIDTH_SIZE_BG_DESKTOP
             : CollectionDetailCongratCellView.WIDTH_SIZE_BG_MOBILE
 
-        let sizeHeightBG = this.scene.sys.game.device.os.desktop
+        let sizeHeightBG = isDesktop
             ? CollectionDetailCongratCellView.HEIGHT_SIZE_BG_DESKTOP
             : CollectionDetailCongratCellView.HEIGHT_SIZE_BG_MOBILE
 
@@ -97,22 +96,10 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
             .setText('ยินดีด้วย!!')
             .setOrigin(0.5)
-            .setPosition(0, 50)
+            .setPosition(0, isDesktop ? 40 : 30)
             .setStyle({ fill: '#29CC6A', fontSize: 36 })
 
-        this.recipeCookedText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded')
-            .setText('"ไข่ตุ๋นฟักทอง" ปรุงเสร็จแล้ว')
-            .setOrigin(0.5)
-            .setPosition(0, 90)
-            .setStyle({ fill: '#585858', fontSize: 25 })
-
-        this.recieveText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded')
-            .setText('คุณได้รับ')
-            .setOrigin(0.5)
-            .setPosition(0, 120)
-            .setStyle({ fill: '#585858', fontSize: 25 })
+        this.congratDescTextContainer = this.scene.add.container(0, isDesktop ? 90 : 75)
 
         this.tagContainer = this.scene.add.container(0, 165)
 
@@ -126,7 +113,11 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
 
         this.tagContainer.add([this.rewardPointCellView, this.tagBonusView])
 
-        this.collectionDetailRecipeTweenView = new CollectionDetailRecipeTweenView(this.scene, 0, 310)
+        this.collectionDetailRecipeTweenView = new CollectionDetailRecipeTweenView(
+            this.scene,
+            0,
+            this.scene.sys.game.device.os.desktop ? 340 : 320
+        )
         this.collectionDetailRecipeTweenView.doInit()
 
         this.confirmButton = new Button(this.scene, 0, this.firstDetailCellBG.height - 50, 119, 48, '', 1000, 'CONFIRM')
@@ -153,8 +144,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.congratContainer.add([
             this.firstDetailCellBG,
             this.congratText,
-            this.recipeCookedText,
-            this.recieveText,
+            this.congratDescTextContainer,
             this.positionTagRect,
             this.tagContainer,
             this.confirmButton,
@@ -166,11 +156,13 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
 
     private setupCookedStateTween(bean: RecipeBean) {
         this.congratText.setScale(0)
-        this.recipeCookedText.setAlpha(0)
-        this.recieveText.setAlpha(0)
+        this.congratDescTextContainer.setAlpha(0)
+
         this.tagBonusView.setVisible(this.recipeBean.userRecipeBean.bonus != undefined)
 
-        this.recipeCookedText.setText(`"${bean.title}" ปรุงเสร็จแล้ว`)
+        //let testArr = ['ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง', 'ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง']
+        this.createTextCongratDesc(bean.title)
+
         this.collectionDetailRecipeTweenView.setupCookedStateTween()
         this.collectionDetailRecipeTweenView.setRecipe(CollectionDetailCongratCellView.RECIPE_KEY_IMAGE + bean.id)
 
@@ -204,15 +196,64 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         }
     }
 
+    private createTextCongratDesc(arrTitle: string[]) {
+        this.congratDescTextContainer.removeAll(true)
+
+        let mapDesc = arrTitle.map((x) => x)
+        let maxArrIndex = mapDesc.length - 1
+        mapDesc[0] = `"${mapDesc[0]}`
+        mapDesc[maxArrIndex] = `${mapDesc[maxArrIndex]}"`
+        mapDesc.push(`ปรุงเสร็จแล้ว คุณได้รับ`)
+
+        mapDesc.forEach((line) => {
+            let lineGroup: GameObjects.Container = this.scene.add.container()
+            let positionMock = this.scene.add
+                .rectangle(
+                    0,
+                    0,
+                    this.firstDetailCellBG.width - (this.scene.sys.game.device.os.desktop ? 100 : 80),
+                    24,
+                    0xff0000,
+                    0
+                )
+                .setOrigin(0.5, 0.5)
+
+            let titleText = TextAdapter.instance
+                .getVectorText(this.scene, 'DB_HeaventRounded')
+                .setText(line)
+                .setOrigin(0.5, 0.5)
+                .setPosition(0, -positionMock.height / 2 + 8)
+                .setStyle({ fill: '#585858', fontSize: 24 })
+
+            lineGroup.add([positionMock, titleText])
+
+            lineGroup.width = lineGroup.getBounds().width
+            lineGroup.height = 24
+
+            this.congratDescTextContainer.add(lineGroup)
+        })
+
+        if (mapDesc.length > 1)
+            Phaser.Actions.AlignTo(this.congratDescTextContainer.getAll(), Phaser.Display.Align.BOTTOM_CENTER, 0, 5)
+
+        this.congratDescTextContainer.width = this.congratDescTextContainer.getBounds().width
+        this.congratDescTextContainer.height = this.congratDescTextContainer.getBounds().height
+
+        this.tagContainer.setPosition(0, this.congratDescTextContainer.y + this.congratDescTextContainer.height - 10)
+
+        if (maxArrIndex > 0) {
+            this.collectionDetailRecipeTweenView.setPosition(0, this.scene.sys.game.device.os.desktop ? 340 : 320)
+        } else {
+            this.collectionDetailRecipeTweenView.setPosition(0, this.scene.sys.game.device.os.desktop ? 320 : 300)
+        }
+    }
+
     private setActiveElement(isActive: boolean) {
         this.congratText.setVisible(isActive)
         this.congratText.setActive(isActive)
 
-        this.recipeCookedText.setVisible(isActive)
-        this.recipeCookedText.setActive(isActive)
-
-        this.recieveText.setVisible(isActive)
-        this.recieveText.setActive(isActive)
+        this.congratDescTextContainer.setVisible(isActive)
+        this.congratDescTextContainer.setActive(isActive)
 
         this.collectionDetailRecipeTweenView.setVisible(isActive)
         this.collectionDetailRecipeTweenView.setActive(isActive)
@@ -296,7 +337,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         })
 
         this.openRecieveTextTween = this.scene.add.tween({
-            targets: [this.recipeCookedText, this.recieveText],
+            targets: [this.congratDescTextContainer],
             duration: 250,
             ease: 'linear',
             props: {

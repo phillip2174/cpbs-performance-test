@@ -1,7 +1,31 @@
 {
     "minigame1-load": {
         "files": [
-          
+            {
+                "type": "image",
+                "key": "minigame-start-button",
+                "url": "assets/minigame/minigame1/button-cta-game.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-1-bg",
+                "url": "assets/minigame/minigame1/minigame-1-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-1-sub-bg",
+                "url": "assets/minigame/minigame1/minigame-1-sub-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-1-logo",
+                "url": "assets/minigame/minigame1/minigame-1-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-1-background-image",
+                "url": "assets/minigame/minigame1/minigame-1-background-image.png"
+            }
         ]
     }
 }

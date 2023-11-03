@@ -6,6 +6,7 @@ import { RecipeRepository } from './RecipeRepository'
 import { InventoryRepository } from './InventoryRepository'
 import { LocalStorageRepository } from './LocalStorageRepository'
 import { DailyLoginRepository } from './DailyLoginRepository'
+import { UserRepository } from './UserRepository'
 
 export class RepositoryProvider {
     private static _instance: RepositoryProvider
@@ -54,5 +55,10 @@ export class RepositoryProvider {
     @LazyGetter()
     get dailyLoginRepository(): DailyLoginRepository {
         return new DailyLoginRepository()
+    }
+
+    @LazyGetter()
+    get userRepository(): UserRepository {
+        return new UserRepository()
     }
 }
