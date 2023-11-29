@@ -6,14 +6,16 @@ import { CookingPod } from '../Pod/CookingPod'
 import { PodProvider } from '../../pod/PodProvider'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { RecipeFilterType } from '../Recipe/RecipeFilterType'
+import { BoldText } from '../../../BoldText/BoldText'
 
-export class CookingFilterCellView extends GameObjects.Container {
+export class CookingFilterCellView extends GameObjects.Container implements IScrollViewCallBack {
+    public cellPageIndex: number
     private filterType: RecipeFilterType
     private buttonFilter: Button
 
     private filterBackground: GameObjects.NineSlice
     private selectedBackground: GameObjects.NineSlice
-    private circleNotification: GameObjects.Arc
+    private circleNotification: GameObjects.Image
 
     private filterText: GameObjects.Text
     private stateFilterSubscription: Subscription
@@ -29,8 +31,10 @@ export class CookingFilterCellView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(filterType: RecipeFilterType, color: number): void {
+    public doInit(filterType: RecipeFilterType, color: number, cellPageIndex: number = 0): void {
         this.cookingPod = PodProvider.instance.cookingPod
+        this.cellPageIndex = cellPageIndex
+
         this.filterType = filterType
         this.filterBackgroundColor = color
         this.setupCellUI()
@@ -39,12 +43,7 @@ export class CookingFilterCellView extends GameObjects.Container {
     }
 
     private setupCellUI(): void {
-        this.filterText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(this.filterType.toString())
-            .setOrigin(0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#FFFFFF', fontSize: 20 })
+        this.filterText = new BoldText(this.scene, 0, -2, this.filterType.toString(), 20, '#FFFFFF', 0, -4)
 
         this.filterBackground = this.scene.add
             .nineslice(0, 0, 'selected-filter-bg', '', this.filterText.width + 48, 36, 10, 10, 10, 10)
@@ -67,9 +66,10 @@ export class CookingFilterCellView extends GameObjects.Container {
             .setOrigin(0.5)
 
         this.circleNotification = this.scene.add
-            .circle(0, 0, 4, 0xdf2b41)
+            .image(0, 0, 'button-notification-bg')
             .setVisible(false)
             .setPosition(this.filterBackground.width / 2 - 9, -this.filterBackground.height / 2 + 9)
+            .setScale(0.48)
 
         this.buttonFilter = new Button(
             this.scene,
@@ -93,9 +93,23 @@ export class CookingFilterCellView extends GameObjects.Container {
         this.height = this.getBounds().height
     }
 
+    public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (isCanInteract) {
+            // this.setVisible(true)
+            this.buttonFilter.setCanInteract(true, false)
+        } else {
+            //this.setVisible(false)
+            this.buttonFilter.setCanInteract(false, false)
+        }
+    }
+
     private setupSubscribes(): void {
         this.stateFilterSubscription = this.cookingPod.cookingFilterState.subscribe((state) => {
             this.setActiveSelected(state == this.filterType)
+        })
+
+        this.on('destroy', () => {
+            this.stateFilterSubscription?.unsubscribe()
         })
     }
 

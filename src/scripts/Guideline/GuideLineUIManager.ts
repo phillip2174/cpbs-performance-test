@@ -1,6 +1,7 @@
 import { BehaviorSubject } from 'rxjs'
 import { GuideLineUICellView } from './GuideLineUICellView'
-import { IngredientBean } from './IngredientBean'
+import { IngredientBean } from '../Ingredient/IngredientBean'
+import { GuideLineUICellState } from './GuideLineUICellState'
 
 export class GuideLineUIManager {
     public guideLineUICellViewList: GuideLineUICellView[] = []
@@ -8,19 +9,21 @@ export class GuideLineUIManager {
     public currentFoundIngredientCount: BehaviorSubject<number> = new BehaviorSubject<number>(0)
 
     public checkIsAllIngredientFound(): void {
-        this.isAllFound.next(
-            this.guideLineUICellViewList.every((cellView) => {
-                return cellView.ingredientBean.isFound == true
-            })
-        )
+        this.isAllFound.next(this.checkAllIsFound())
     }
 
     public updateCurrentFoundIngredientCount(): void {
         this.currentFoundIngredientCount.next(
             this.guideLineUICellViewList.filter((cellView) => {
-                return cellView.ingredientBean.isFound == true
+                return cellView.getGuideLineUICellState() == GuideLineUICellState.IdleFound
             }).length
         )
+    }
+
+    public checkAllIsFound(): boolean {
+        return this.guideLineUICellViewList.every((cellView) => {
+            return cellView.getGuideLineUICellState() == GuideLineUICellState.IdleFound
+        })
     }
 
     public addGuideLineUICellViewList(guide: GuideLineUICellView[]) {

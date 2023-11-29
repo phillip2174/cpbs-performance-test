@@ -52,7 +52,7 @@ export class AnimationController {
                 {
                     targets: container,
                     duration: 130,
-                    props: { scale: { from: 1.03, to: 1 } },
+                    props: { scale: { from: 1.03, to: container.scale } },
                     ease: 'linear',
                     onComplete: () => {
                         if (onCompleteCallBack != undefined || onCompleteCallBack != null) onCompleteCallBack()
@@ -422,6 +422,7 @@ export class AnimationController {
     }
 
     createSpriteSheetAnimation(scene: Phaser.Scene) {
+        if(!scene.anims.exists('idle-nong-som')) 
         scene.anims.create({
             key: 'idle-nong-som',
             frames: scene.anims.generateFrameNumbers('nong-som', { start: 0, end: 1 }),
@@ -430,31 +431,75 @@ export class AnimationController {
             yoyo: true,
             frameRate: 5,
         })
-
+        if(!scene.anims.exists('interact-vending')) 
         scene.anims.create({
             key: 'interact-vending',
             frames: scene.anims.generateFrameNumbers('vending-machine', { start: 0, end: 17 }),
             frameRate: 11,
         })
-
+        if(!scene.anims.exists('idle')) 
         scene.anims.create({
             key: 'idle',
             frames: scene.anims.generateFrameNumbers('vending-machine', { start: 0, end: 0 }),
             frameRate: 1,
         })
-
+        if(!scene.anims.exists('loading-cooking-loop')) 
         scene.anims.create({
             key: 'loading-cooking-loop',
             frames: scene.anims.generateFrameNumbers('loading-cooking', { start: 0, end: 52 }),
             frameRate: 14,
             repeat: -1,
         })
-
+        if(!scene.anims.exists('loading-text-loop')) 
         scene.anims.create({
             key: 'loading-text-loop',
             frames: scene.anims.generateFrameNumbers('loading-text', { start: 0, end: 3 }),
             frameRate: 4,
             repeat: -1,
+        })
+        if(!scene.anims.exists('led-pixel-smile-1')) 
+        scene.anims.create({
+            key: 'led-pixel-smile-1',
+            frames: scene.anims.generateFrameNames('led-smile-01', {
+                prefix: 'smile-',
+                suffix: '.png',
+                end: 35,
+            }),
+            frameRate: 10,
+        })
+        if(!scene.anims.exists('led-pixel-smile-2')) 
+        scene.anims.create({
+            key: 'led-pixel-smile-2',
+            frames: scene.anims.generateFrameNames('led-smile-02', {
+                prefix: 'shy-',
+                suffix: '.png',
+                end: 33,
+            }),
+            frameRate: 10,
+        })
+        if(!scene.anims.exists('mini-food-truck-idle-close')) 
+        scene.anims.create({
+            key: 'mini-food-truck-idle-close',
+            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 0, end: 0 }),
+            frameRate: 1,
+        })
+        if(!scene.anims.exists('mini-food-truck-idle-open')) 
+        scene.anims.create({
+            key: 'mini-food-truck-idle-open',
+            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 5, end: 5 }),
+            frameRate: 1,
+        })
+        if(!scene.anims.exists('mini-food-truck-open')) 
+        scene.anims.create({
+            key: 'mini-food-truck-open',
+            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 0, end: 5 }),
+            frameRate: 20,
+        })
+        if(!scene.anims.exists('mini-food-truck-close')) 
+        scene.anims.create({
+            key: 'mini-food-truck-close',
+            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 5, end: 0 }),
+            frameRate: 20,
         })
     }
 
@@ -502,6 +547,7 @@ export class AnimationController {
             case 4:
             case 5:
             case 14:
+            case 26:
             case 99:
                 switch (objectAnimationBean.stateType) {
                     case ObjectAnimationState.Transition1:
@@ -539,6 +585,22 @@ export class AnimationController {
                             onComplete: () => {
                                 container.setVisible(false)
                                 container.setActive(false)
+                            },
+                        })
+                    default:
+                        break
+                }
+                break
+            case 28:
+                switch (objectAnimationBean.stateType) {
+                    case ObjectAnimationState.Transition1:
+                        return scene.add.tween({
+                            targets: container,
+                            ease: 'Linear',
+                            duration: objectAnimationBean.animTime,
+                            props: {
+                                x: { from: container.x, to: container.x - 90 },
+                                angle: { from: container.angle, to: container.angle - 200 },
                             },
                         })
                     default:

@@ -113,5 +113,6 @@ export class RecipePreviewView extends GameObjects.Container {
         this.onLeaveButtonIconTween?.destroy()
         this.onHoverRotateButtonIconTween?.destroy()
         this.onLeaveRotateButtonIconTween?.destroy()
+        super.destroy(fromScene)
     }
 }

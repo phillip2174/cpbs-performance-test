@@ -4,6 +4,7 @@ import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { DailyLoginBean } from './DailyLoginBean'
 import { RewardBean } from './RewardBean'
 import { RewardType } from './RewardType'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class DailyLoginRewardPreviewView extends GameObjects.Container {
     private previewBg: GameObjects.Image
@@ -30,12 +31,16 @@ export class DailyLoginRewardPreviewView extends GameObjects.Container {
         this.rewardBean = rewardBean
         this.setupPreviewUIContainer()
 
-        this.amountText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('+' + this.rewardBean.amount)
-            .setStyle({ fontSize: this.isDesktop ? 22 : 16 })
-            .setPosition(0, 32)
-            .setOrigin(0.5)
+        this.amountText = new BoldText(
+            this.scene,
+            0,
+            36,
+            '+' + this.rewardBean.amount,
+            this.isDesktop ? 22 : 16,
+            '',
+            0,
+            32
+        )
 
         if (this.dailyLoginBean.isBigReward) {
             this.previewBg.setTint(0xffd47c)
@@ -85,10 +90,10 @@ export class DailyLoginRewardPreviewView extends GameObjects.Container {
                 break
             case RewardType.Point:
                 this.rewardIcon = this.scene.add
-                    .image(1, 0, 'cp-point-button-icon')
+                    .image(1.5, 0, 'bonus-coin')
                     .setOrigin(0.5)
-                    .setDisplaySize(36, 36)
-                    .setSize(36, 36)
+                    .setDisplaySize(48, 48)
+                    .setSize(48, 48)
                 break
         }
     }

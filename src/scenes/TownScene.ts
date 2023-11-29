@@ -4,11 +4,21 @@ import { CameraControlView } from '../scripts/camera/CameraControlView'
 import { TownDayNightView } from './../scripts/Town/TownDayNightView'
 import { ResourceManager } from '../scripts/plugins/resource-loader/ResourceManager'
 import { AnimationController } from '../scripts/Town/AnimationController'
+import { APILoadingManager } from '../scripts/api-loading/APILoadingManager'
+import { SceneState } from './SceneState'
+import { TutorialManager } from '../scripts/Manager/TutorialManager'
+import { PodProvider } from '../scripts/pod/PodProvider'
+import { GameConfig } from '../scripts/GameConfig'
+import { TutorialHintView } from '../Tutorial/TutorialHintView'
 
 export class TownScene extends Scene {
     private townBuildingView: TownBuildingView
     private cameraControlView: CameraControlView
     private townDayNightView: TownDayNightView
+
+    private hintTutorialTownBuildingView: TutorialHintView
+
+    private tutorialManager: TutorialManager
 
     constructor() {
         super({
@@ -21,16 +31,23 @@ export class TownScene extends Scene {
         ResourceManager.instance.setResourceLoaderScene(this)
         AnimationController.instance.createSpriteSheetAnimation(this)
 
+        this.tutorialManager = PodProvider.instance.tutorialManager
+    }
+
+    create() {
         this.cameraControlView = new CameraControlView(this)
         this.cameraControlView.doInit()
-
-        this.scene.launch('CityUIScene')
 
         this.townBuildingView = new TownBuildingView(this)
         this.townBuildingView.doInit()
 
         this.townDayNightView = new TownDayNightView(this)
         this.townDayNightView.doInit()
+
+        if (!this.tutorialManager.tutorialSaveBean.isCompletedTutorial && GameConfig.IS_START_WITH_TUTORIAL) {
+            this.hintTutorialTownBuildingView = new TutorialHintView(this).setDepth(99)
+            this.hintTutorialTownBuildingView.doInit()
+        }
     }
 
     update() {

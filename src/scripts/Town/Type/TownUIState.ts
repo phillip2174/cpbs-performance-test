@@ -5,4 +5,7 @@ export enum TownUIState {
     Inventory,
     Cooking,
     DailyLogin,
+    MiniGameSelect,
+    CompleteIngredients,
+    NextIngredients,
 }

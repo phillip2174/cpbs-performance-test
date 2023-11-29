@@ -145,6 +145,96 @@
                 "type": "image",
                 "key": "minigame-button-icon-play",
                 "url": "assets/global_ui/minigame-button-icon-play.png"
+            },
+            {
+                "type": "image",
+                "key": "coin-tag",
+                "url": "assets/global_ui/coin-tag.png"
+            },
+            {
+                "type": "image",
+                "key": "heart-empty",
+                "url": "assets/global_ui/heart-empty.png"
+            },
+            {
+                "type": "image",
+                "key": "heart-full",
+                "url": "assets/global_ui/heart-full.png"
+            },
+            {
+                "type": "image",
+                "key": "header-background",
+                "url": "assets/global_ui/header-background.png"
+            },
+            {
+                "type": "image",
+                "key": "background-book",
+                "url": "assets/global_ui/background-book-croped.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-1-select-bg",
+                "url": "assets/global_ui/minigame-1-select-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-select-bg",
+                "url": "assets/global_ui/minigame-2-select-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-header-icon",
+                "url": "assets/global_ui/minigame-header-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "play-icon",
+                "url": "assets/global_ui/play-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "scroll-bar-background",
+                "url": "assets/scrollview/scroll-bar-background.png"
+            },
+            {
+                "type": "image",
+                "key": "scroll-bar-content",
+                "url": "assets/scrollview/scroll-bar-content.png"
+            },
+            {
+                "type": "image",
+                "key": "scroll-bar",
+                "url": "assets/scrollview/scroll-bar.png"
+            },
+            {
+                "type": "image",
+                "key": "arrow-icon",
+                "url": "assets/scrollview/arrow-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "circle-button-background",
+                "url": "assets/scrollview/circle-big-button-white.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-play-button",
+                "url": "assets/global_ui/minigame-play-button.png"
+            },
+            {
+                "type": "image",
+                "key": "small-button-white-bg",
+                "url": "assets/global_ui/small-button-white-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-button-icon",
+                "url": "assets/global_ui/minigame-button-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-notice-bg",
+                "url": "assets/global_ui/ui-notice-bg.png"
             }
         ]
     }

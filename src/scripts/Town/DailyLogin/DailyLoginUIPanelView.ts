@@ -11,6 +11,8 @@ import { DailyLoginPod } from './../../pod/DailyLoginPod'
 import { TownUIPod } from './../Pod/TownUIPod'
 import { DailyLoginCellView } from './DailyLoginCellView'
 import { DailyLoginCollectState } from './DailyLoginCollectState'
+import { AudioManager } from '../../Audio/AudioManager'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class DailyLoginUIPanelView extends GameObjects.Container {
     public static readonly BG_WIDTH_DESKTOP: number = 602
@@ -46,6 +48,8 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
     private onCloseTween: Tweens.Tween
     private onCloseTweenChain: Tweens.TweenChain
 
+    private audioManager: AudioManager
+
     private townUIPod: TownUIPod
     private dailyLoginPod: DailyLoginPod
 
@@ -62,6 +66,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
     public doInit(): void {
         this.townUIPod = PodProvider.instance.townUIPod
         this.dailyLoginPod = PodProvider.instance.dailyLoginPod
+        this.audioManager = PodProvider.instance.audioManager
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
         this.setPosition(this.cameraCenterX, this.cameraCenterY)
         this.setDepth(202)
@@ -84,12 +89,25 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
                 if (this.townUIPod.isShowGuideline.value == false && state == TownUIState.DailyLogin) {
                     this.townUIPod.setIsShowGuideline(true)
                 }
+                
+                this.audioManager.playAmbientSound(
+                    'town_ambient',
+                    false,
+                )
+
+                this.audioManager.playBGMSound(
+                    'citygame_01_bgm',
+                    false,
+                )
             } else {
                 this.setActiveContainer(false)
             }
         })
 
         this.setActiveContainer(this.townUIPod.townUIState.value == TownUIState.DailyLogin, false)
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+        })
     }
 
     private setupDailyLoginUIContainer(): void {
@@ -97,7 +115,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
         this.dailyLoginCellContainer = this.scene.add.container()
         this.dailyLoginText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Come back daily and collect awesome rewards!')
+            .setText('กลับมาอีกครั้งในวันพรุ่งนี้ เพื่อรับของรางวัลสุดพิเศษ')
             .setColor('#585858')
             .setOrigin(0.5)
         this.confirmButton = this.createButton(119, 48, 'button-white-bg', 'CONFIRM', 0x29cc6a)
@@ -159,7 +177,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
     private setupDailyLoginCellContainer(): void {
         this.dailyLoginCellContainer.setPosition(
             this.isDesktop ? -this.dailyLoginInnerBg.width / 2 + 295 : 0,
-            this.isDesktop ? -this.dailyLoginInnerBg.height / 2 + 80 : -this.dailyLoginPanelBg.height / 2 + 118
+            this.isDesktop ? -this.dailyLoginInnerBg.height / 2 + 80 : -this.dailyLoginPanelBg.height / 2 + 108
         )
         Phaser.Actions.AlignTo(
             this.dailyLoginCellContainer.getAll(),
@@ -239,9 +257,9 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
 
         this.dailyLoginText
             .setFontSize(20)
-            .setPosition(this.dailyLoginPanelBg.x, -this.dailyLoginPanelBg.height / 2 + 45)
+            .setPosition(this.dailyLoginPanelBg.x, -this.dailyLoginPanelBg.height / 2 + 40)
 
-        this.confirmButton.setPosition(this.dailyLoginPanelBg.x, this.dailyLoginPanelBg.height / 2 - 35)
+        this.confirmButton.setPosition(this.dailyLoginPanelBg.x, this.dailyLoginPanelBg.height / 2 - 42)
 
         this.dailyLoginPanelBg.setInteractive()
         this.dailyLoginUIContainer.add([this.dailyLoginPanelBg, this.dailyLoginText, this.confirmButton])
@@ -251,20 +269,17 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
         this.dailyLoginHeaderContainer = this.scene.add.container()
         this.dailyLoginHeaderBg = this.scene.add.image(0, 0, 'header-background').setOrigin(0.5)
         this.dailyLoginHeaderIcon = this.scene.add.image(0, 0, 'daily-login-header-icon').setOrigin(0.5)
-        this.dailyLoginHeaderText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('DAILY LOGIN')
-            .setOrigin(0.5)
+        this.dailyLoginHeaderText = new BoldText(this.scene, 0, 0, 'DAILY LOGIN')
 
         if (this.isDesktop) {
             this.dailyLoginHeaderContainer.setPosition(0, -this.dailyLoginPanelBg.height / 2)
             this.dailyLoginHeaderBg.setScale(1.25)
             this.dailyLoginHeaderIcon.setScale(1.35).setPosition(-90, -25)
-            this.dailyLoginHeaderText.setPosition(38, -10).setStyle({ fill: '#FFFFFF', fontSize: 36 })
+            this.dailyLoginHeaderText.setPosition(38, -10).setStyle({ fontSize: 36 })
         } else {
             this.dailyLoginHeaderContainer.setPosition(0, -this.dailyLoginPanelBg.height / 2 - 3)
             this.dailyLoginHeaderIcon.setPosition(-70, -18)
-            this.dailyLoginHeaderText.setPosition(28, -10).setStyle({ fill: '#FFFFFF', fontSize: 28 })
+            this.dailyLoginHeaderText.setPosition(28, -10).setStyle({ fontSize: 28 })
         }
 
         this.dailyLoginHeaderContainer.add([
@@ -325,18 +340,21 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
         button.setNineSlice({
             imageAtlasKey: '',
             imageKey: imageKey,
-            leftWidth: 20,
-            rightWidth: 20,
-            topHeight: 1,
-            bottomHeight: 1,
+            leftWidth: 24,
+            rightWidth: 24,
+            topHeight: 21,
+            bottomHeight: 23,
             safeAreaOffset: 0,
         })
 
-        button.setTextStyle({
-            fontFamily: 'DB_HeaventRounded_Bd',
-            fill: 'white',
-            fontSize: 22,
-        })
+        button.setTextStyle(
+            {
+                fontFamily: 'DB_HeaventRounded_Bd',
+                fill: 'white',
+                fontSize: 22,
+            },
+            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+        )
 
         button.setTextPosition(0, 3)
 

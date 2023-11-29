@@ -7,6 +7,8 @@ import { TownUIState } from '../Type/TownUIState'
 import { DailyLoginBean } from './DailyLoginBean'
 import { DailyLoginCollectState } from './DailyLoginCollectState'
 import { DailyLoginRewardPreviewView } from './DailyLoginRewardPreviewView'
+import { AudioManager } from '../../Audio/AudioManager'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class DailyLoginCellView extends GameObjects.Container {
     public static readonly BG_WIDTH_BIG_DESKTOP: number = 243
@@ -41,6 +43,8 @@ export class DailyLoginCellView extends GameObjects.Container {
 
     private isDesktop: boolean
 
+    private audioManager: AudioManager
+
     private uiStateSubscription: Subscription
 
     constructor(scene: Scene) {
@@ -58,6 +62,9 @@ export class DailyLoginCellView extends GameObjects.Container {
             this.stampMaxScale = DailyLoginCellView.STAMP_MAX_SCALE_MOBILE
             this.stampMinScale = DailyLoginCellView.STAMP_MIN_SCALE_MOBILE
         }
+
+        this.audioManager = PodProvider.instance.audioManager
+
         this.dailyLoginBean = dailyLoginBean
         this.setupUI()
         this.createStampTween()
@@ -89,12 +96,14 @@ export class DailyLoginCellView extends GameObjects.Container {
         this.rewardPreviewContainer = this.scene.add.container()
         this.isDesktop ? this.setupCellDesktop() : this.setupCellMobile()
 
-        this.dayText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('DAY ' + this.dailyLoginBean.id)
-            .setStyle({ fill: '#2B2B2B', fontSize: 16 })
-            .setPosition(0, -this.cellBg.height / 2 + (this.isDesktop ? 15 : 10))
-            .setOrigin(0.5)
+        this.dayText = new BoldText(
+            this.scene,
+            0,
+            -this.cellBg.height / 2 + (this.isDesktop ? 15 : 10),
+            'DAY ' + this.dailyLoginBean.id,
+            16,
+            '#2B2B2B'
+        )
 
         this.collectedStamp = this.scene.add
             .image(0, 0, 'daily-login-stamp')
@@ -116,20 +125,18 @@ export class DailyLoginCellView extends GameObjects.Container {
 
     private setupCellDesktop(): void {
         if (this.dailyLoginBean.isBigReward) {
-            this.cellBg = this.scene.add
-                .nineslice(
-                    0,
-                    0,
-                    'collection-card',
-                    '',
-                    DailyLoginCellView.BG_WIDTH_BIG_DESKTOP,
-                    DailyLoginCellView.BG_HEIGHT_DESKTOP,
-                    30,
-                    30,
-                    30,
-                    30
-                )
-                .setTint(0xfff3db)
+            this.cellBg = this.scene.add.nineslice(
+                0,
+                0,
+                'daily-login-big-cell-bg',
+                '',
+                DailyLoginCellView.BG_WIDTH_BIG_DESKTOP,
+                DailyLoginCellView.BG_HEIGHT_DESKTOP,
+                30,
+                30,
+                30,
+                30
+            )
         } else {
             this.cellBg = this.scene.add.nineslice(
                 0,
@@ -148,20 +155,18 @@ export class DailyLoginCellView extends GameObjects.Container {
 
     private setupCellMobile(): void {
         if (this.dailyLoginBean.isBigReward) {
-            this.cellBg = this.scene.add
-                .nineslice(
-                    0,
-                    0,
-                    'collection-card',
-                    '',
-                    DailyLoginCellView.BG_WIDTH_BIG_MOBILE,
-                    DailyLoginCellView.BG_HEIGHT_MOBILE,
-                    30,
-                    30,
-                    30,
-                    30
-                )
-                .setTint(0xfff3db)
+            this.cellBg = this.scene.add.nineslice(
+                0,
+                0,
+                'daily-login-big-cell-bg',
+                '',
+                DailyLoginCellView.BG_WIDTH_BIG_MOBILE,
+                DailyLoginCellView.BG_HEIGHT_MOBILE,
+                30,
+                30,
+                30,
+                30
+            )
         } else {
             this.cellBg = this.scene.add.nineslice(
                 0,
@@ -185,6 +190,10 @@ export class DailyLoginCellView extends GameObjects.Container {
                     reward.setIconGrayscale(state == TownUIState.DailyLogin)
                 })
             }
+        })
+
+        this.on('destroy', () => {
+            this.uiStateSubscription?.unsubscribe()
         })
     }
 
@@ -231,6 +240,7 @@ export class DailyLoginCellView extends GameObjects.Container {
                     delay: 800,
                     onStart: () => {
                         this.collectedStamp.setVisible(true)
+                        this.audioManager.playSFXSound('stamp_sound_effect')
                     },
                     onComplete: () => {
                         this.skipButton?.removeInteractive()
@@ -256,7 +266,6 @@ export class DailyLoginCellView extends GameObjects.Container {
     }
 
     private updateCellCollectedState(): void {
-        if (this.dailyLoginBean.isBigReward) this.cellBg.clearTint()
         this.cellBg.setTexture('daily-login-collected-bg')
         this.rewardPreviews.forEach((rewardPreview) => {
             this.dayText.setColor('#848A92')

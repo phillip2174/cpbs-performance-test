@@ -14,7 +14,7 @@ export class MinigameCPPuzzleImageGroupPod extends Pod {
     public randomIndex(max: number): number[] {
         var arr = [...Array(max).keys()];
         arr = Math.RND.shuffle(arr);
-        console.log(arr);
+        //console.log(arr);
         return arr;
     }
 
@@ -27,7 +27,7 @@ export class MinigameCPPuzzleImageGroupPod extends Pod {
             return true;
 
         } else {
-            console.log("Wrong" + "//" + listCellIndex)
+            //console.log("Wrong")
             return false;
         }
     }

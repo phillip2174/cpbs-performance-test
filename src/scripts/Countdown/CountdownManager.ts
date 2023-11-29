@@ -8,6 +8,9 @@ import { PodProvider } from '../pod/PodProvider'
 import { TownDayNightPod } from '../pod/TownDayNightPod'
 import { TextAdapter } from '../text-adapter/TextAdapter'
 import { CameraControlPod } from '../camera/CameraControlPod'
+import { BoldText } from '../../BoldText/BoldText'
+import { TownUIPod } from '../Town/Pod/TownUIPod'
+import { TownUIState } from '../Town/Type/TownUIState'
 
 export class CountdownManager extends GameObjects.Container {
     private static readonly TIMER_BACKGROUND_KEY: string = 'timer-'
@@ -21,13 +24,14 @@ export class CountdownManager extends GameObjects.Container {
 
     private countdownTimerEvent: Time.TimerEvent
 
-    private isDay: boolean = false
     private isDesktop: boolean
 
+    private townUIPod: TownUIPod
     private townDayNightPod: TownDayNightPod
     private countdownTimerPod: CountdownTimerPod
-    private cameraPod: CameraControlPod
-    private isAllFoundSubscription: Subscription
+
+    private uiStateSubscription: Subscription
+    private timeStateSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene)
@@ -35,73 +39,54 @@ export class CountdownManager extends GameObjects.Container {
     }
 
     public doInit(x: number, y: number): void {
-        this.cameraPod = PodProvider.instance.cameraControlPod
+        this.townUIPod = PodProvider.instance.townUIPod
         this.townDayNightPod = PodProvider.instance.townDayNightPod
         this.countdownTimerPod = PodProvider.instance.countdownTimerPod
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
 
         this.setPosition(x, y)
-
+        this.setupTimerBackgroundAndIcon()
+        this.setupCountdownTimerText()
         this.setupSubscribe()
+
         this.countdownTimerEvent = this.scene.time.addEvent({
             delay: 100,
             repeat: -1,
             callback: () => {
-                this.ShowReloadPopupWhenCountdownFinish()
+                this.OnCountdownFinish()
                 this.updateCountdownTimerText()
             },
         })
     }
 
     private setupSubscribe(): void {
-        this.townDayNightPod.townTimeState.subscribe((state) => {
-            this.setupTimerBackgroundAndIcon(state)
-            this.setupCountdownTimerText()
-            switch (state) {
-                case TownTimeState.Day:
-                    this.isDay = true
-                    break
-                case TownTimeState.Night:
-                    this.isDay = false
-                    break
+        this.uiStateSubscription = this.townUIPod.townUIState.subscribe((state) => {
+            if (this.countdownTimerPod.checkIsCountdownFinish() && state == TownUIState.MainMenu) {
+                this.countdownTimerPod.setIsCountdownFinish(true)
             }
         })
 
-        this.isAllFoundSubscription = PodProvider.instance.guideLineUIManager.isAllFound.subscribe((isFound) => {
-            if (isFound) {
-                this.doOnIsAllFound()
-            }
+        this.timeStateSubscription = this.townDayNightPod.townTimeState.subscribe((state) => {
+            this.updateTimerBgAndIcon(state)
+        })
+
+        this.on('destroy', () => {
+            this.uiStateSubscription?.unsubscribe()
+            this.timeStateSubscription?.unsubscribe()
         })
     }
 
-    private doOnIsAllFound() {
-        this.countdownTimerText.setPosition(this.x, this.y + 100)
-
-        let text = TextAdapter.instance
-            .getVectorText(this.scene, 'FC_Lamoon_Bold')
-            .setText('Coming in : ')
-            .setPosition(0, 30)
-            .setOrigin(0.5, 0.5)
-            .setStyle({
-                fill: '#ff0000',
-                fontSize: 30,
-            })
-
-        this.add([text])
-        this.bringToTop(text)
-    }
-
-    private setupTimerBackgroundAndIcon(state: TownTimeState): void {
+    private setupTimerBackgroundAndIcon(): void {
         this.countdownTimerBackground?.destroy()
         this.countdownTimerIcon?.destroy()
 
         this.countdownTimerBackground = this.scene.add
-            .image(0, 0, CountdownManager.TIMER_BACKGROUND_KEY + state.toLowerCase())
+            .image(0, 0, CountdownManager.TIMER_BACKGROUND_KEY + 'day')
             .setOrigin(0.5)
             .setScale(1)
 
         this.countdownTimerIcon = this.scene.add
-            .image(this.countdownTimerBackground.x - 48, -12, state.toLowerCase() + CountdownManager.TIMER_ICON_KEY)
+            .image(this.countdownTimerBackground.x - 48, -12, 'day' + CountdownManager.TIMER_ICON_KEY)
             .setOrigin(0.5)
 
         this.add([this.countdownTimerBackground, this.countdownTimerIcon])
@@ -123,15 +108,14 @@ export class CountdownManager extends GameObjects.Container {
                 fontSize: 18,
             })
 
-        this.countdownTimerText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('00:00:00')
-            .setOrigin(0.5)
-            .setPosition(this.countdownTimerBackground.x + 32, this.countdownTimerIcon.y + 4.25)
-            .setStyle({
-                fill: '#ffffff',
-                fontSize: 18,
-            })
+        this.countdownTimerText = new BoldText(
+            this.scene,
+            this.countdownTimerBackground.x + 32,
+            this.countdownTimerIcon.y + 4.25,
+            '00:00:00',
+            18,
+            '#ffffff'
+        )
     }
 
     private setupTimerTextMobile(): void {
@@ -145,41 +129,27 @@ export class CountdownManager extends GameObjects.Container {
                 fontSize: 22,
             })
 
-        this.countdownTimerText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('00:00:00')
-            .setOrigin(0.5)
-            .setPosition(this.countdownTimerBackground.x + 36, this.countdownTimerIcon.y + 4.25)
-            .setStyle({
-                fill: '#ffffff',
-                fontSize: 22,
-            })
+        this.countdownTimerText = new BoldText(
+            this.scene,
+            this.countdownTimerBackground.x + 36,
+            this.countdownTimerIcon.y + 4.25,
+            '00:00:00',
+            22,
+            '#ffffff'
+        )
     }
 
-    private ShowReloadPopupWhenCountdownFinish(): void {
+    private updateTimerBgAndIcon(state: TownTimeState): void {
+        this.countdownTimerBackground.setTexture(CountdownManager.TIMER_BACKGROUND_KEY + state.toLowerCase())
+        this.countdownTimerIcon.setTexture(state.toLowerCase() + CountdownManager.TIMER_ICON_KEY)
+    }
+
+    private OnCountdownFinish(): void {
         this.countdownTimerPod.updateTimeDiffTimeStamp()
         if (this.countdownTimerPod.checkIsCountdownFinish()) {
+            this.countdownTimerPod.setIsCountdownFinish(true)
             this.countdownTimerEvent.destroy()
-            this.ShowReloadPopup()
         }
-    }
-
-    private ShowReloadPopup(): void {
-        this.cameraPod.setInteractCamera(false)
-        AlertDialogue.showConfirmPopup(
-            this.scene,
-            'Reminder',
-            "Time's up!\n Another set of ingredients\n is coming!",
-            () => {
-                if (this.isDay) {
-                    this.townDayNightPod.setTownTimeState(TownTimeState.Night)
-                } else {
-                    this.townDayNightPod.setTownTimeState(TownTimeState.Day)
-                }
-                location.reload()
-            },
-            'OK'
-        )
     }
 
     private updateCountdownTimerText(): void {

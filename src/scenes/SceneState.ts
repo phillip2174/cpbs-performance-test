@@ -1,5 +1,5 @@
 export enum SceneState {
-    TownScene = 'TownScene',
+    TownScene = 'CityUIScene',
     MinigameCPPuzzle = 'MinigameCPPuzzle',
     MinigameCPOrder = 'MinigameCPOrder',
 }

@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs'
 import { Pod } from '../../plugins/objects/Pod'
 import { SuccessIndicatorState } from '../Type/SuccessIndicatorState'
-import { IngredientBean } from '../../Guideline/IngredientBean'
+import { IngredientBean } from '../../Ingredient/IngredientBean'
 
 export class SuccessIndicatorPod extends Pod {
     public currentSuccessIndicatorState: BehaviorSubject<SuccessIndicatorState> =

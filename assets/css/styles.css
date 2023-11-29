@@ -29,7 +29,7 @@
 }
 
 body {
-    background-color: black;
+    background-color: #2b2b2b;
     height: 100%;
     width: 100%;
     padding: 0;
@@ -47,10 +47,10 @@ body {
 }
 
 .loading-indicator {
-    width: 62px;
-    height: 62px;
-    background: url('../boot/loading.png') 0 0 no-repeat;
-    animation: spin 1s linear infinite;
+    width: 252px;
+    height: 52px;
+    background: url('../boot/bootload.png') 0 0 no-repeat;
+    animation: loading 0.75s steps(2) infinite;
 }
 
 p {
@@ -71,5 +71,14 @@ p {
     100% {
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
+    }
+}
+
+@keyframes loading {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 -124px;
     }
 }

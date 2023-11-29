@@ -1,7 +1,8 @@
 import { GameObjects, Scene } from 'phaser'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
-import { IngredientBean } from '../../Guideline/IngredientBean'
+import { IngredientBean } from '../../Ingredient/IngredientBean'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class IngredientPreviewCellView extends GameObjects.Container {
     private backgroundIngredient: GameObjects.Image
@@ -18,19 +19,29 @@ export class IngredientPreviewCellView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(scale: number = 1, ingredient: IngredientBean, isTineFill: boolean, isCreateText: boolean = false) {
+    public doInit(
+        scale: number = 1,
+        ingredient: IngredientBean,
+        isTintFill: boolean,
+        isCreateText: boolean = false,
+        isUseGuidelineBg: boolean = false
+    ) {
         this.ingredientBean = ingredient
 
-        this.backgroundIngredient = this.scene.add
-            .image(0, 0, 'white-ingredient-bg')
-            .setTint(isCreateText ? 0xffffff : 0xedf1f8)
+        if (isUseGuidelineBg) {
+            this.backgroundIngredient = this.scene.add.image(0, 0, 'ingredient-slot')
+        } else {
+            this.backgroundIngredient = this.scene.add
+                .image(0, 0, 'white-ingredient-bg')
+                .setTint(isCreateText ? 0xffffff : 0xedf1f8)
+        }
 
         this.ingredientImage = this.scene.add
             .image(0, 0, IngredientPreviewCellView.INGREDIENT_IMAGE_KEY + ingredient.id)
             .setDisplaySize(40, 40)
             .setSize(40, 40)
 
-        if (isTineFill) {
+        if (isTintFill) {
             this.ingredientImage.setTintFill(0xaeaec1)
         }
         this.add([this.backgroundIngredient, this.ingredientImage])
@@ -49,19 +60,19 @@ export class IngredientPreviewCellView extends GameObjects.Container {
 
             let fontSize = scale == 1 ? 16 : 16 / scale / 1.2
 
-            this.currentTotalIngredientText = TextAdapter.instance
-                .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-                .setText('??')
-                .setOrigin(0, 0.5)
-                .setStyle({ fill: '#EE843C', fontSize: fontSize })
-                .setPosition(0, 0)
+            this.currentTotalIngredientText = new BoldText(this.scene, 0, 0, '??', fontSize, '#EE843C').setOrigin(
+                0,
+                0.5
+            )
 
-            this.craftUseIngredientText = TextAdapter.instance
-                .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-                .setText(`/${ingredient.amount}`)
-                .setOrigin(0, 0.5)
-                .setStyle({ fill: '#A7A7A7', fontSize: fontSize })
-                .setPosition(0, 0)
+            this.craftUseIngredientText = new BoldText(
+                this.scene,
+                0,
+                0,
+                `/${ingredient.amount}`,
+                fontSize,
+                '#A7A7A7'
+            ).setOrigin(0, 0.5)
 
             this.textContainer.add([this.currentTotalIngredientText, this.craftUseIngredientText])
 

@@ -15,12 +15,16 @@ import { RecipePreviewView } from '../Recipe/RecipePreviewView'
 import { AnimationController } from '../AnimationController'
 import { RecipePod } from '../../pod/RecipePod'
 import { ButtonNotificationView } from '../ButtonNotificationView'
+import { BoldText } from '../../../BoldText/BoldText'
 
-export class CollectionCellView extends GameObjects.Container {
+export class CollectionCellView extends GameObjects.Container implements IScrollViewCallBack {
+    public static readonly LENGTH_CUT_TEXT: number = 16
     public static readonly BUTTON_ICON_DEFAULT_SCALE: number = 1
     public static readonly BUTTON_ICON_MAX_SCALE: number = 1.2
     public static readonly BUTTON_ICON_DEFAULT_ANGLE: number = 0
     public static readonly BUTTON_ICON_MAX_ANGLE: number = -5
+
+    public cellPageIndex: number
 
     private cellButton: Button
     private cardBackground: GameObjects.Image
@@ -53,8 +57,9 @@ export class CollectionCellView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(bean: RecipeBean) {
+    public doInit(bean: RecipeBean, cellPageIndex: number) {
         this.pod = new CollectionCellPod(this.scene)
+        this.cellPageIndex = cellPageIndex
         this.collectionPod = PodProvider.instance.collectionPod
         this.recipePod = PodProvider.instance.recipePod
         this.pod.setRecipeCellBean(bean)
@@ -88,15 +93,28 @@ export class CollectionCellView extends GameObjects.Container {
 
         this.thumbnailContainer.add([this.thumbnailBackground, this.recipePreviewView])
 
-        this.nameText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Med')
-            .setText(bean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : bean.title)
-            .setOrigin(0.5)
-            .setPosition(0, 40)
-            .setStyle({ fill: '#585858', fontSize: 18 })
+        const title = TextAdapter.splitThaiStringByLegth(bean.title, CollectionCellView.LENGTH_CUT_TEXT)
+
+        if (this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS) {
+            this.nameText = TextAdapter.instance
+                .getVectorText(this.scene, 'DB_HeaventRounded_Med')
+                .setText(bean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : title.length > 1 ? `${title[0]}...` : title[0])
+                .setOrigin(0.5)
+                .setPosition(0, 40)
+                .setStyle({ fill: '#585858', fontSize: 18 })
+        } else {
+            this.nameText = new BoldText(
+                this.scene,
+                0,
+                40,
+                bean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : title.length > 1 ? `${title[0]}...` : title[0],
+                18,
+                '#585858'
+            )
+        }
 
         this.tagRarityView = new TagRarityView(this.scene, 0, 63)
-        this.tagRarityView.doInit()
+        this.tagRarityView.createTagSmall()
 
         this.buttonNotificationView = new ButtonNotificationView(this.scene).setVisible(false)
         this.buttonNotificationView.doInit(65, -75)
@@ -123,7 +141,7 @@ export class CollectionCellView extends GameObjects.Container {
         } else {
             this.recipePreviewView.setRecipePreviewMaster(bean.id)
             this.thumbnailBackground.setTint(0xedf0f5)
-            this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
+            this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
         }
 
         this.recipePreviewView.setSizeRecipe(94, 94)
@@ -147,9 +165,10 @@ export class CollectionCellView extends GameObjects.Container {
     public setCellToUnlocked() {
         let bean: RecipeBean = this.pod.recipeBean
         this.buttonNotificationView.setVisible(false)
-        this.nameText.setText(bean.title)
+        const title = TextAdapter.splitThaiStringByLegth(bean.title, CollectionCellView.LENGTH_CUT_TEXT)
+        this.nameText.setText(title.length > 1 ? `${title[0]}...` : title[0])
         this.recipePreviewView.setRecipePreviewMaster(bean.id)
-        this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
+        this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
         this.recipePreviewView.setCellWithRecipeType(bean.type)
         this.setBackgroundColorCell()
     }
@@ -260,11 +279,22 @@ export class CollectionCellView extends GameObjects.Container {
         this.recipePreviewView?.onLeave()
     }
 
+    public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (isCanInteract) {
+            //this.setVisible(true)
+            this.cellButton.setCanInteract(true, false)
+        } else {
+            // this.setVisible(false)
+            this.cellButton.setCanInteract(false, false)
+        }
+    }
+
     destroy(fromScene?: boolean): void {
         this.onHoverButtonIconTween?.destroy()
         this.onHoverButtonTextTween?.destroy()
 
         this.onLeaveButtonIconTween?.destroy()
         this.onLeaveButtonTextTween?.destroy()
+        super.destroy(fromScene)
     }
 }

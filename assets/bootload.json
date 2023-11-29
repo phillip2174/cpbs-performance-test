@@ -1,16 +1,53 @@
 {
-   "bootload": {
-      "files": [
-         {
-            "type": "image",
-            "key": "loading",
-            "url": "assets/Boot/loading.png"
-         },
-         {
-            "type": "image",
-            "key": "alert-panel",
-            "url": "assets/Boot/alert-panel.png"
-         } 
-      ]
-   }
+    "bootload": {
+        "files": [
+            {
+                "type": "spritesheet",
+                "key": "loading-scene",
+                "url": "assets/Boot/loading.png",
+                "frameConfig": { "frameWidth": 290, "frameHeight": 50 }
+            },
+            {
+                "type": "spritesheet",
+                "key": "loading-mini",
+                "url": "assets/Boot/mini-loading.png",
+                "frameConfig": { "frameWidth": 232, "frameHeight": 42 }
+            },
+            {
+                "type": "image",
+                "key": "alert-panel",
+                "url": "assets/Boot/alert-panel.png"
+            },
+            {
+                "type": "image",
+                "key": "cp-city-logo",
+                "url": "assets/Boot/cp-city-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-1-logo",
+                "url": "assets/Boot/minigame-1-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-logo",
+                "url": "assets/Boot/minigame-2-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "loading-bar-bg",
+                "url": "assets/Boot/loading-bar-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "loading-bar-mask",
+                "url": "assets/Boot/loading-bar-mask.png"
+            },
+            {
+                "type": "image",
+                "key": "glow-effect-loading-bar",
+                "url": "assets/Boot/glow-effect-loading-bar.png"
+            }
+        ]
+    }
 }

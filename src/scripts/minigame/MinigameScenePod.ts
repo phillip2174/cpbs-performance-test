@@ -1,28 +1,77 @@
 import { MinigameResultBean } from './MinigameResultBean';
 import { StartGameResultBean } from './../Service/MinigameService';
-import { Scene } from 'phaser';
-import { BehaviorSubject, Observable, tap } from 'rxjs'
+import { BehaviorSubject, Observable, map, of, tap } from 'rxjs'
 import { MinigameState } from './MinigameState'
-import { MinigameService } from '../Service/MinigameService'
-import { ServiceProvider } from '../Service/ServiceProvider';
+import { MinigameRepository } from '../Repository/MinigameRepository';
+import { RepositoryProvider } from '../Repository/RepositoryProvider';
 
 export class MinigameScenePod {
-    sceneState: BehaviorSubject<MinigameState> = new BehaviorSubject(MinigameState.StartMenu)
+
+    private minigameRepository: MinigameRepository
+    id: number
+    isPlayOnline: boolean = true
     score: number
-    textScore: string;
-    service: MinigameService
-    balance: any;
-    id : number
+    textScore: string = '0000'
+    balance: any
+    ticket: number = 1
+    sceneState: BehaviorSubject<MinigameState> = new BehaviorSubject(MinigameState.StartMenu)
+    settingState: BehaviorSubject<boolean> = new BehaviorSubject(false)
 
     constructor() {
-        this.service = ServiceProvider.instance.minigameService;
+        this.minigameRepository = RepositoryProvider.instance.minigameRepository;
+    }
+
+    setGameId(id: number) {
+        this.id = id
+    }
+
+    setSceneState(state: MinigameState) {
+        this.sceneState.next(state)
+    }
+
+    public setTextScore(score: string): void {
+        this.textScore = score
+    }
+
+    getTicket(isFetch: boolean = true): Observable<number> {
+        if (isFetch) {
+            return this.minigameRepository.getTicket(this.id).pipe(tap(
+                ticket => {
+                    this.ticket = ticket;
+                    this.isPlayOnline = this.ticket != 0
+                })
+            )
+        } else {
+            this.isPlayOnline = this.ticket != 0
+            return of(this.ticket)
+        }
+    }
+
+    public getTextScore(): string {
+        return this.textScore
     }
 
     startGame(): Observable<StartGameResultBean> {
-        return this.service.startGame(this.id).pipe(tap(startGameResultBean => this.balance = startGameResultBean.balance));
+        if (this.ticket > 0) {
+            return this.minigameRepository.startGame(this.id).pipe(map(
+                startGameResultBean => {
+                    this.balance = startGameResultBean.balance
+                    this.ticket = startGameResultBean.ticketLeft
+                    return startGameResultBean
+                })
+            )
+        } else {
+            return this.minigameRepository.startGameOffline(this.id).pipe(map(
+                startGameResultBean => {
+                    this.balance = startGameResultBean.balance
+                    this.ticket = startGameResultBean.ticketLeft
+                    return startGameResultBean
+                })
+            )
+        }
     }
 
     resultMinigame(): Observable<MinigameResultBean> {
-        return this.service.sendResult(this.id,this.score);
+        return this.minigameRepository.sendResult(this.id, this.score);
     }
 }

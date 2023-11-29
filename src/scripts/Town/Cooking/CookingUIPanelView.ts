@@ -11,7 +11,7 @@ import { RecipeBean } from '../Collection/RecipeBean'
 import { RecipeType } from '../Collection/type/RecipeType'
 import { CookingDetailView } from './CookingDetailView'
 import { AnimationController } from '../AnimationController'
-import { IngredientBean } from '../../Guideline/IngredientBean'
+import { IngredientBean } from '../../Ingredient/IngredientBean'
 import { TownTimeState } from '../Type/TownTimeState'
 import { CookingFilterView } from './CookingFilterView'
 import { CookingPod } from './../Pod/CookingPod'
@@ -23,6 +23,8 @@ import { InventoryFilterType } from '../Inventory/InventoryFilterType'
 import { CookState } from '../Collection/type/CookState'
 import { CookingDetailState } from './CookingDetailState'
 import { CookingPanelState } from './CookingPanelState'
+import { APILoadingManager } from '../../api-loading/APILoadingManager'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class CookingUIPanelView extends GameObjects.Container {
     public static readonly COOKING_BG_KEY: string = 'cooking-bg-'
@@ -151,6 +153,14 @@ export class CookingUIPanelView extends GameObjects.Container {
         )
 
         this.setActiveContainer(this.townUIPod.townUIState.value == TownUIState.Cooking, false)
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+            this.stateCookingDetailSubscription?.unsubscribe()
+            this.scrollViewLayerSubscription?.unsubscribe()
+            this.stateFilterSubscription?.unsubscribe()
+            this.currentUnlockedSelectedSubscription?.unsubscribe()
+            this.currentReadySelectedSubscription?.unsubscribe()
+        })
     }
 
     private setupCookingUIContainer(): void {
@@ -185,7 +195,10 @@ export class CookingUIPanelView extends GameObjects.Container {
             )
             this.scrollView.setInitPosXOffset(10)
             this.scrollView.setOffsetMaxMove(10)
-            this.scrollView.setMaskRounded(15)
+            this.scrollView.setMaskRounded(15, 0)
+            this.scrollView.setCallbackOnEndScroll(() => {
+                this.scrollView.doOnEndScroll(this.cookingRecipeCellViews)
+            }, -40)
 
             this.createUICompletedDesktop()
         } else {
@@ -203,8 +216,12 @@ export class CookingUIPanelView extends GameObjects.Container {
                 false
             )
 
+            this.scrollView.setCallbackOnEndScroll(() => {
+                this.scrollView.doOnEndScroll(this.cookingRecipeCellViews)
+            }, -50)
+
             this.scrollView.setOffsetMaxMove(5)
-            this.scrollView.setMaskRounded(10)
+            this.scrollView.setMaskRounded(10, 0)
 
             this.createUICompletedMobile()
         }
@@ -214,20 +231,18 @@ export class CookingUIPanelView extends GameObjects.Container {
         this.cookingHeaderContainer = this.scene.add.container()
         this.cookingHeaderBackground = this.scene.add.nineslice(0, 0, 'header-background', '', 225, 50, 40, 40, 0, 0)
         this.cookingHeaderIcon = this.scene.add.image(0, 0, 'cooking-icon-header').setOrigin(0.5)
-        this.cookingHeaderText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('COOKING')
-            .setOrigin(0.5)
+
+        this.cookingHeaderText = new BoldText(this.scene, 0, 0, 'COOKING')
 
         if (this.isDesktop) {
             this.cookingHeaderContainer.setPosition(0, -this.cookingBackground.height / 2)
             this.cookingHeaderBackground.setScale(1.25)
             this.cookingHeaderIcon.setScale(1.35).setPosition(-50, -23)
-            this.cookingHeaderText.setPosition(35, -12).setStyle({ fill: '#FFFFFF', fontSize: 36 })
+            this.cookingHeaderText.setPosition(35, -12).setStyle({ fontSize: 36 })
         } else {
             this.cookingHeaderContainer.setPosition(0, -this.scene.cameras.main.height / 2 + 18)
             this.cookingHeaderIcon.setPosition(-48, -18)
-            this.cookingHeaderText.setPosition(28, -10).setStyle({ fill: '#FFFFFF', fontSize: 28 })
+            this.cookingHeaderText.setPosition(28, -10).setStyle({ fontSize: 28 })
         }
 
         this.cookingHeaderContainer.add([this.cookingHeaderBackground, this.cookingHeaderIcon, this.cookingHeaderText])
@@ -237,13 +252,11 @@ export class CookingUIPanelView extends GameObjects.Container {
         this.cookingFilterView = new CookingFilterView(this.scene)
         if (this.isDesktop) {
             this.cookingFilterView.doInit(
-                -this.cookingBackground.width / 2 + 68,
-                -this.cookingBackground.height / 2 + 70,
+                this.scene.cameras.main.centerX + -this.cookingBackground.width / 2 + 73,
+                this.scene.cameras.main.centerY + -this.cookingBackground.height / 2 + 40,
                 this.depth,
                 this.cookingBackground.width
             )
-
-            this.cookingUIContainer.add(this.cookingFilterView)
         } else {
             this.cookingFilterView.doInit(
                 this.scene.cameras.main.centerX,
@@ -265,21 +278,11 @@ export class CookingUIPanelView extends GameObjects.Container {
 
         this.textContainer = this.scene.add.container(0, 0)
 
-        this.currentReadyText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Ready ??')
-            .setOrigin(0, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#29CC6A', fontSize: 22 })
+        this.currentReadyText = new BoldText(this.scene, 0, -4, 'Ready ??', 22, '#29CC6A').setOrigin(0, 0.5)
 
         this.midLineImage = this.scene.add.image(0, 0, 'line-completed')
 
-        this.currentCompletedText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Completed ??/??')
-            .setOrigin(0, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#0099FF', fontSize: 22 })
+        this.currentCompletedText = new BoldText(this.scene, 0, -4, 'Completed ??/??', 22, '#0099FF').setOrigin(0, 0.5)
 
         this.textContainer.add([this.currentReadyText, this.midLineImage, this.currentCompletedText])
 
@@ -296,7 +299,9 @@ export class CookingUIPanelView extends GameObjects.Container {
             -this.cookingBackground.height / 2 + 70
         )
 
-        this.positionTextRect = this.scene.add.rectangle(0, 0, 30, 15, 0xff00ff, 0).setOrigin(1, 0.5)
+        this.positionTextRect = this.scene.add
+            .rectangle(0, this.scene.sys.game.device.os.macOS ? 0 : 2, 30, 15, 0xff00ff, 0)
+            .setOrigin(1, 0.5)
 
         this.textContainer = this.scene.add.container(0, 0)
 
@@ -305,21 +310,11 @@ export class CookingUIPanelView extends GameObjects.Container {
             .setOrigin(1, 0.5)
             .setTint(0xedf0f5)
 
-        this.currentReadyText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Ready ??')
-            .setOrigin(1, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#29CC6A', fontSize: 22 })
+        this.currentReadyText = new BoldText(this.scene, 0, -4, 'Ready ??', 22, '#29CC6A').setOrigin(1, 0.5)
 
         this.midLineImage = this.scene.add.image(0, 0, 'line-completed')
 
-        this.currentCompletedText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Completed ??/??')
-            .setOrigin(1, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#0099FF', fontSize: 22 })
+        this.currentCompletedText = new BoldText(this.scene, 0, -4, 'Completed ??/??', 22, '#0099FF').setOrigin(1, 0.5)
 
         this.textContainer.add([this.currentCompletedText, this.midLineImage, this.currentReadyText])
 
@@ -351,7 +346,7 @@ export class CookingUIPanelView extends GameObjects.Container {
             spacing
         )
 
-        this.midLineImage.y = -1
+        this.midLineImage.y = this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS ? -1 : -2
 
         this.updateWidthBGCount()
     }
@@ -405,6 +400,7 @@ export class CookingUIPanelView extends GameObjects.Container {
         this.cookingRecipeCellViews = []
         this.scrollView?.bringToFirst(false)
 
+        APILoadingManager.instance.showMiniLoading()
         this.inventoryPod
             .getInventoryItemData(InventoryFilterType.All)
             .pipe(
@@ -424,6 +420,8 @@ export class CookingUIPanelView extends GameObjects.Container {
                     this.scrollView?.setActiveScrollView(true, this.isTween)
                     this.isTween = true
                     this.cookingPod.isAlreadyOpen = true
+
+                    APILoadingManager.instance.hideMiniLoading()
                 })
             )
             .subscribe()
@@ -438,7 +436,7 @@ export class CookingUIPanelView extends GameObjects.Container {
 
         let groupPage = this.recipePod.groupByPerCount(recipeBean, columnCount)
 
-        groupPage.forEach((group) => {
+        groupPage.forEach((group, index) => {
             let container = this.scene.add.container(0, 0)
             let page = this.scene.add.rectangle(0, 0, width, 299, 0xff0000, 0)
 
@@ -451,7 +449,7 @@ export class CookingUIPanelView extends GameObjects.Container {
 
             group.forEach((x) => {
                 let cell = new CookingRecipeCellView(this.scene)
-                cell.doInit(x)
+                cell.doInit(x, index)
                 containerGroupCell.add(cell)
                 this.cookingRecipeCellViews.push(cell)
             })
@@ -518,7 +516,7 @@ export class CookingUIPanelView extends GameObjects.Container {
                 this.currentCompletedText.width + this.midLineImage.width + this.currentReadyText.width + 40
 
             Phaser.Actions.AlignTo(this.textContainer.getAll(), Phaser.Display.Align.LEFT_CENTER, 10)
-            this.midLineImage.y = -1
+            this.midLineImage.y = this.scene.sys.game.device.os.macOS ? -1 : -2
         }
     }
 

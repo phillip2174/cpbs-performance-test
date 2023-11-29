@@ -6,9 +6,11 @@ import { InventoryPod } from './InventoryPod'
 import { PodProvider } from '../../pod/PodProvider'
 import { Subscription } from 'rxjs'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
+import { BoldText } from '../../../BoldText/BoldText'
 
-export class InventoryFilterCellView extends GameObjects.Container {
+export class InventoryFilterCellView extends GameObjects.Container implements IScrollViewCallBack {
     public static readonly FILTER_TYPE_ICON_KEY: string = 'inventory-filter-type-icon-'
+    public cellPageIndex: number
 
     private filterType: InventoryFilterType
     private filterTypeIcon: GameObjects.Image
@@ -17,20 +19,24 @@ export class InventoryFilterCellView extends GameObjects.Container {
     private filterBackground: GameObjects.NineSlice
     private filterSelectedBackground: GameObjects.NineSlice
 
+    private circleNotification: GameObjects.Image
+
     private filterButton: Button
 
     private inventoryPod: InventoryPod
 
     private filterStateDisposable: Subscription
+    private filterNotificationDisposable: Subscription
 
     constructor(scene: Scene) {
         super(scene)
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(filterType: InventoryFilterType): void {
+    public doInit(filterType: InventoryFilterType, cellPageIndex: number = 0): void {
         this.inventoryPod = PodProvider.instance.inventoryPod
         this.filterType = filterType
+        this.cellPageIndex = cellPageIndex
 
         if (this.scene.sys.game.device.os.desktop) {
             this.setupFilterCellDesktop()
@@ -38,15 +44,22 @@ export class InventoryFilterCellView extends GameObjects.Container {
             this.setupFilterCellMobile()
         }
 
+        this.circleNotification = this.scene.add
+            .image(this.filterBackground.width / 2 - 8, -this.filterBackground.height / 2 + 8, 'button-notification-bg')
+            .setVisible(false)
+            .setScale(0.48)
+
+        this.add([this.circleNotification])
+
         this.setupSubscribes()
     }
 
+    public setNotificationVisible(isVisible: boolean): void {
+        this.circleNotification.setVisible(isVisible)
+    }
+
     private setupFilterCellDesktop(): void {
-        this.filterTypeText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(this.filterType.toString())
-            .setOrigin(0, 0.5)
-            .setStyle({ fill: '#FFFFFF', fontSize: 22 })
+        this.filterTypeText = new BoldText(this.scene, 0, 0, this.filterType.toString(), 22).setOrigin(0, 0.5)
 
         if (this.filterType == InventoryFilterType.FreshFood) {
             this.filterTypeText.setText('FRESH FOOD')
@@ -71,7 +84,7 @@ export class InventoryFilterCellView extends GameObjects.Container {
             )
             .setOrigin(0.5)
 
-        this.filterTypeText.setPosition(-this.filterBackground.width / 2 + 45, -1)
+        this.filterTypeText.setPosition(-this.filterBackground.width / 2 + 45, -2)
         this.filterTypeIcon.setPosition(-this.filterBackground.width / 2 + 40, 0)
 
         this.filterSelectedBackground = this.scene.add
@@ -133,5 +146,29 @@ export class InventoryFilterCellView extends GameObjects.Container {
         this.filterStateDisposable = this.inventoryPod.inventoryFilterState.subscribe((state) => {
             this.setActiveSelected(state == this.filterType)
         })
+
+        this.filterNotificationDisposable = this.inventoryPod.inventoryFilterNotifications.subscribe((filterTypes) => {
+            if (filterTypes.length >= 1) {
+                this.setNotificationVisible(this.checkTypeForShowNotification(filterTypes))
+            } else {
+                this.setNotificationVisible(false)
+            }
+        })
+    }
+
+    private checkTypeForShowNotification(filterTypes: string[]) {
+        return (
+            filterTypes.some((type) => type == this.filterType.toString()) || this.filterType == InventoryFilterType.All
+        )
+    }
+
+    public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (isCanInteract) {
+            //  this.setVisible(true)
+            this.filterButton.setCanInteract(true, false)
+        } else {
+            // this.setVisible(false)
+            this.filterButton.setCanInteract(false, false)
+        }
     }
 }

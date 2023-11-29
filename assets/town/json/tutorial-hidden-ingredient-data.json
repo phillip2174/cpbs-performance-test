@@ -1,0 +1,14 @@
+[
+    {
+        "id": 22,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    },
+    {
+        "id": 12,
+        "amount": 1,
+        "townTimeState": "Day",
+        "isFound": false
+    }
+]

@@ -1,21 +1,24 @@
 import { GameObjects, Scene } from 'phaser'
-import { Subscription, delay, tap, timer } from 'rxjs'
+import { Observable, Subscription, forkJoin, timer } from 'rxjs'
 import { Button } from '../../button/Button'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../../pod/PodProvider'
+import { RecipePod } from '../../pod/RecipePod'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
+import { RecipeBean } from '../Collection/RecipeBean'
+import { TownUIPod } from '../Pod/TownUIPod'
+import { IngredientPreviewView } from '../Recipe/IngredientPreviewView'
+import { RecipePreviewView } from '../Recipe/RecipePreviewView'
+import { RewardPointCellView } from '../Recipe/RewardPointCellView'
+import { TagRarityView } from '../Recipe/TagRarityView'
 import { CookingPod } from './../Pod/CookingPod'
 import { CookingDetailState } from './CookingDetailState'
 import { CookingPanelState } from './CookingPanelState'
-import { TagRarityView } from '../Recipe/TagRarityView'
-import { RewardPointCellView } from '../Recipe/RewardPointCellView'
-import { RecipePreviewView } from '../Recipe/RecipePreviewView'
-import { IngredientPreviewView } from '../Recipe/IngredientPreviewView'
-import { RecipeBean } from '../Collection/RecipeBean'
-import { RecipePod } from '../../pod/RecipePod'
-import { TownUIPod } from '../Pod/TownUIPod'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class CookingDetailSelectRecipeView extends GameObjects.Container {
+    public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 33
+    public static readonly LENGTH_CUT_TEXT_TITLE_MOBILE: number = 28
     public static readonly SCROLL_VIEW_LAYER: number = 1
     private cookingRecipeBackground: GameObjects.NineSlice
     private cookingRecipeNameText: GameObjects.Text
@@ -94,7 +97,13 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
 
     private setupSubscribe(): void {
         this.currnetRecipeBeanSubscription = this.cookingPod.currentRecipeBean.subscribe((recipeBean) => {
-            this.cookingRecipeNameText.setText(recipeBean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : recipeBean.title)
+            const title = TextAdapter.splitThaiStringByLegth(
+                recipeBean.title,
+                this.isDesktop
+                    ? CookingDetailSelectRecipeView.LENGTH_CUT_TEXT_TITLE_DESKTOP
+                    : CookingDetailSelectRecipeView.LENGTH_CUT_TEXT_TITLE_MOBILE
+            )
+            this.cookingRecipeNameText.setText(recipeBean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : title)
             this.positionPointAndTagContainer.setPosition(
                 0,
                 this.cookingRecipeNameText.y +
@@ -103,19 +112,26 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
                     15
             )
 
-            console.log(this.cookingRecipeNameText.height)
             this.setCellMasterData(recipeBean)
             this.recipeBean = recipeBean
+        })
+
+        this.on('destroy', () => {
+            this.currnetRecipeBeanSubscription?.unsubscribe()
         })
     }
 
     private setupTexts(): void {
-        this.cookingRecipeNameText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
+        this.cookingRecipeNameText = new BoldText(
+            this.scene,
+            0,
+            -this.cookingRecipeBackground.height / 2 + 10,
+            '?????????????????',
+            28,
+            '#585858'
+        )
             .setOrigin(0.5, 0)
-            .setText('?????????????????')
-            .setStyle({ fill: '#585858', fontSize: 28 })
-            .setPosition(0, -this.cookingRecipeBackground.height / 2 + 10)
+            .setAlign('center')
     }
 
     private createPointAndTag() {
@@ -130,10 +146,10 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
         this.positionPointAndTag = this.scene.add.rectangle(0, 0, 0, 0, 0xff00ff, 0)
 
         this.tagRarityView = new TagRarityView(this.scene, 0, 0)
-        this.tagRarityView.doInit()
+        this.tagRarityView.createTagLarge()
 
         this.rewardPointCellView = new RewardPointCellView(this.scene, 0, 0)
-        this.rewardPointCellView.doInit()
+        this.rewardPointCellView.createMediumTag()
 
         this.positionPointAndTagContainer.add([this.positionPointAndTag, this.tagRarityView, this.rewardPointCellView])
     }
@@ -155,11 +171,11 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
         if (bean.secretUnlock) {
             this.tagRarityView.setSecretTag()
             this.recipePreview.setSecretRecipe(0x9bd6f8)
-            this.rewardPointCellView.setDefaultPointCell(0.778)
+            this.rewardPointCellView.setPointCell('??', -1, -1)
         } else {
             this.recipePreview.setRecipePreviewMaster(bean.id)
             this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
-            this.rewardPointCellView.setPointRewardCell(bean, 0.778)
+            this.rewardPointCellView.setPointCell(bean.rewardPoint.toString(), -1, -1)
         }
 
         this.ingredientPreview.setPreviewView(bean, 1, 5, true, 50)
@@ -175,20 +191,12 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
 
     private setPointAndTagPosition() {
         let spacing = 10
-        let sumWidth = this.tagRarityView.getBounds().width + this.rewardPointCellView.getBounds().width + spacing
+        let sumWidth = this.tagRarityView.getWidthBG() + this.rewardPointCellView.getWidthBG() + spacing
 
-        this.positionPointAndTag.setSize(sumWidth, 20)
+        this.positionPointAndTag.setSize(sumWidth, 28)
 
-        Phaser.Display.Align.To.LeftCenter(
-            this.tagRarityView,
-            this.positionPointAndTag,
-            -this.tagRarityView.getBounds().width / 2
-        )
-        Phaser.Display.Align.To.RightCenter(
-            this.rewardPointCellView,
-            this.positionPointAndTag,
-            -this.rewardPointCellView.width
-        )
+        this.tagRarityView.x = -this.positionPointAndTag.width / 2 + this.tagRarityView.getWidthBG() / 2
+        this.rewardPointCellView.x = this.positionPointAndTag.width / 2 - this.rewardPointCellView.getWidthBG() / 2
     }
 
     private setupButtons(): void {
@@ -203,9 +211,9 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
 
         this.buttonContainer = this.scene.add.container(0, 0)
 
-        this.cancelButton = this.createButton(93, 40, 'button-white-bg', 'CANCEL', 0xee843c)
+        this.cancelButton = this.createButton(93, 40, 'small-button-white-bg', 'CANCEL', 0xee843c)
 
-        this.letsCookButton = this.createButton(175, 40, 'button-white-bg', "LET'S COOK", 0x29cc6a)
+        this.letsCookButton = this.createButton(175, 40, 'small-button-white-bg', "LET'S COOK", 0x29cc6a)
 
         this.buttonContainer.add([this.cancelButton, this.letsCookButton])
 
@@ -229,15 +237,17 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
         this.letsCookButton.onClick(() => {
             this.cookingPod.changeCookingDetailState(CookingDetailState.CookingAnimation)
 
-            this.recipePod
-                .cookedRecipeMenu(this.recipeBean)
-                .pipe(
-                    delay(4000),
-                    tap((_) => {
-                        this.cookingPod.changeCookingDetailState(CookingDetailState.CookingComplete)
-                    })
-                )
-                .subscribe()
+            let observableInit: Observable<any>[] = []
+
+            let cookedMenu = this.recipePod.cookedRecipeMenu(this.recipeBean)
+            observableInit.push(cookedMenu)
+
+            let timerLoadingDelay = timer(4000)
+            observableInit.push(timerLoadingDelay)
+
+            forkJoin(observableInit).subscribe((_) => {
+                this.cookingPod.changeCookingDetailState(CookingDetailState.CookingComplete)
+            })
         })
     }
 
@@ -254,17 +264,20 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
             imageAtlasKey: '',
             imageKey: imageKey,
             leftWidth: 20,
-            rightWidth: 20,
-            topHeight: 1,
-            bottomHeight: 1,
+            rightWidth: 22,
+            topHeight: 17,
+            bottomHeight: 20,
             safeAreaOffset: 0,
         })
 
-        button.setTextStyle({
-            fontFamily: 'DB_HeaventRounded_Bd',
-            fill: 'white',
-            fontSize: 22,
-        })
+        button.setTextStyle(
+            {
+                fontFamily: 'DB_HeaventRounded_Bd',
+                fill: 'white',
+                fontSize: 22,
+            },
+            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+        )
 
         button.setTextPosition(0, 2)
 

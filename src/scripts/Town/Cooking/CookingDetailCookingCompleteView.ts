@@ -3,19 +3,20 @@ import { Subscription } from 'rxjs'
 import { Button } from '../../button/Button'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../../pod/PodProvider'
+import { RecipePod } from '../../pod/RecipePod'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
+import { RecipeBean } from '../Collection/RecipeBean'
 import { CollectionPanelState } from '../Collection/type/CollectionPanelState'
 import { TownUIPod } from '../Pod/TownUIPod'
+import { RecipePreviewView } from '../Recipe/RecipePreviewView'
 import { TownUIState } from '../Type/TownUIState'
 import { CollectionPod } from './../Pod/CollectionPod'
 import { CookingPod } from './../Pod/CookingPod'
 import { CookingPanelState } from './CookingPanelState'
-import { RewardPointCellView } from '../Recipe/RewardPointCellView'
-import { RecipePreviewView } from '../Recipe/RecipePreviewView'
-import { RecipeBean } from '../Collection/RecipeBean'
-import { RecipePod } from '../../pod/RecipePod'
 
 export class CookingDetailCookingCompleteView extends GameObjects.Container {
+    public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 40
+    public static readonly LENGTH_CUT_TEXT_TITLE_MOBILE: number = 33
     public static readonly SCROLL_VIEW_LAYER: number = 1
     private cookingCompleteBackground: GameObjects.NineSlice
 
@@ -23,10 +24,8 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
 
     private congratDescTextContainer: GameObjects.Container
 
-    private closeButton: Button
     private viewCollectionButton: Button
 
-    private rewardPointCellView: RewardPointCellView
     private recipePreview: RecipePreviewView
 
     private isDesktop: boolean
@@ -76,28 +75,18 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
 
         this.congratDescTextContainer = this.scene.add.container(0, this.congratText.y + 50)
 
-        this.rewardPointCellView = new RewardPointCellView(this.scene, 0, 0)
-        this.rewardPointCellView.doInit()
-
-        this.rewardPointCellView.setPosition(
-            0,
-            this.congratDescTextContainer.y + this.rewardPointCellView.height / 2 + 15
-        )
-
         this.recipePreview = new RecipePreviewView(this.scene, 0, 0)
         this.recipePreview.doInit()
-        this.recipePreview.setSizeRecipe(170, 170)
+        this.recipePreview.setSizeRecipe(190, 190)
 
-        this.recipePreview.setPosition(0, 50)
+        this.recipePreview.setPosition(0, 30)
 
         this.cookingCompleteBackground.setInteractive()
         this.add([
             this.cookingCompleteBackground,
             this.congratText,
             this.congratDescTextContainer,
-            this.rewardPointCellView,
             this.recipePreview,
-            this.closeButton,
             this.viewCollectionButton,
         ])
     }
@@ -107,14 +96,19 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
             this.recipeBean = recipeBean
 
             // let testArr = ['ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง', 'ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง']
-
-            this.createTextCongratDesc(this.recipeBean.secretUnlock ? ['เมนูลับมาสเตอร์เชฟ'] : recipeBean.title)
-            this.rewardPointCellView.setDefaultPointCell()
-            if (!this.recipeBean.secretUnlock) {
-                this.rewardPointCellView.setPointRewardCell(recipeBean)
-            }
+            const title = TextAdapter.splitThaiStringByLegth(
+                recipeBean.title,
+                this.isDesktop
+                    ? CookingDetailCookingCompleteView.LENGTH_CUT_TEXT_TITLE_DESKTOP
+                    : CookingDetailCookingCompleteView.LENGTH_CUT_TEXT_TITLE_MOBILE
+            )
+            this.createTextCongratDesc(this.recipeBean.secretUnlock ? ['เมนูลับมาสเตอร์เชฟ'] : title)
 
             this.recipePreview.setSecretRecipe(0, false)
+        })
+
+        this.on('destroy', () => {
+            this.currnetRecipeBeanSubscription?.unsubscribe()
         })
     }
 
@@ -133,25 +127,22 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
     }
 
     private setupButtons(): void {
-        this.closeButton = this.createButton(98, 48, 'button-white-bg', 'CLOSE', 0xee843c)
-        this.closeButton.setPosition(
-            -this.cookingCompleteBackground.width / 2 + (this.isDesktop ? 115 : 75),
-            this.cookingCompleteBackground.height / 2 - 55
+        this.viewCollectionButton = this.createButton(
+            224,
+            48,
+            'button-white-bg',
+            'COLLECT REWARD',
+            0x29cc6a,
+            'coin-tag',
+            10
         )
-
-        this.viewCollectionButton = this.createButton(195, 48, 'button-white-bg', 'VIEW COLLECTIONS', 0x29cc6a)
         this.viewCollectionButton.setPosition(
-            this.cookingCompleteBackground.width / 2 - (this.isDesktop ? 155 : 120),
+            this.cookingCompleteBackground.width / 2 - this.cookingCompleteBackground.width / 2,
             this.cookingCompleteBackground.height / 2 - 55
         )
     }
 
     private setupButtonListeners(): void {
-        this.closeButton.onClick(() => {
-            this.townUIPod.setLayerScrollView(CookingDetailCookingCompleteView.SCROLL_VIEW_LAYER)
-            this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
-        })
-
         this.viewCollectionButton.onClick(() => {
             this.collectionPod.setCurrentDetailSelectedRecipe(this.recipePod.getRecipeBeanWithID(this.recipeBean.id))
             this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
@@ -166,30 +157,34 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
         imageKey: string,
         txt: string,
         colorBG: number,
-        iconKey?: string
+        iconKey?: string,
+        offset?: number
     ): Button {
         let button = new Button(this.scene, 0, 0, width, height, '', 1000, txt)
         button.setNineSlice({
             imageAtlasKey: '',
             imageKey: imageKey,
-            leftWidth: 20,
-            rightWidth: 20,
-            topHeight: 1,
-            bottomHeight: 1,
+            leftWidth: 24,
+            rightWidth: 24,
+            topHeight: 21,
+            bottomHeight: 23,
             safeAreaOffset: 0,
         })
 
-        button.setTextStyle({
-            fontFamily: 'DB_HeaventRounded_Bd',
-            fill: 'white',
-            fontSize: 22,
-        })
+        button.setTextStyle(
+            {
+                fontFamily: 'DB_HeaventRounded_Bd',
+                fill: 'white',
+                fontSize: 22,
+            },
+            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+        )
 
-        button.setTextPosition(0, 2)
+        button.setTextPosition(15, 2)
 
         if (iconKey != undefined || iconKey != '') {
             let icon = this.scene.add.image(0, 0, iconKey)
-            icon.setPosition(-button.width / 2 + icon.width, 0)
+            icon.setPosition(-button.width / 2 + icon.width + offset, -1)
             button.add(icon)
         }
 
@@ -205,7 +200,7 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
         let maxArrIndex = mapDesc.length - 1
         mapDesc[0] = `"${mapDesc[0]}`
         mapDesc[maxArrIndex] = `${mapDesc[maxArrIndex]}"`
-        mapDesc.push(`ปรุงเสร็จแล้ว คุณได้รับ`)
+        mapDesc.push(`ปรุงเสร็จแล้ว หน้าตาจะเป็นยังไงนะ?? ไปดูกัน`)
 
         mapDesc.forEach((line) => {
             let lineGroup: GameObjects.Container = this.scene.add.container()
@@ -233,10 +228,5 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
 
         this.congratDescTextContainer.width = this.congratDescTextContainer.getBounds().width
         this.congratDescTextContainer.height = this.congratDescTextContainer.getBounds().height
-
-        this.rewardPointCellView.setPosition(
-            0,
-            this.congratDescTextContainer.y + this.congratDescTextContainer.height - 10
-        )
     }
 }

@@ -1,0 +1,108 @@
+{
+    "town-audio-load": {
+        "files": [
+            {
+                "type": "audio",
+                "key": "citygame_01_bgm",
+                "url": "assets/audio/bgm/citygame_01_bgm.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "select_minigame_bgm",
+                "url": "assets/audio/bgm/select_minigame_bgm.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "cooking_ambient",
+                "url": "assets/audio/ambient/cooking_ambient.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "town_ambient",
+                "url": "assets/audio/ambient/town_ambient.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "stamp_sound_effect",
+                "url": "assets/audio/sfx/daily-login/stamp_sound_effect.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "daily_login_open_sfx",
+                "url": "assets/audio/sfx/daily-login/daily_login_open_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "cooking_open_sfx",
+                "url": "assets/audio/sfx/cooking/cooking_open_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "cooking_sound_effect",
+                "url": "assets/audio/sfx/cooking/cooking_sound_effect.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "inventory_open_sfx",
+                "url": "assets/audio/sfx/inventory/inventory_open_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "collection_open_sfx",
+                "url": "assets/audio/sfx/collection/collection_open_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "collection_page_flip_sfx",
+                "url": "assets/audio/sfx/collection/collection_page_flip_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "collection_congrat_sfx",
+                "url": "assets/audio/sfx/collection/collection_congrat_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "positive_click_sfx",
+                "url": "assets/audio/sfx/citygame/positive_click_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "negative_click_sfx",
+                "url": "assets/audio/sfx/citygame/negative_click_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "interact_ingredient_sfx",
+                "url": "assets/audio/sfx/citygame/interact_ingredient_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "collected_ingredient_sfx",
+                "url": "assets/audio/sfx/citygame/collected_ingredient_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "win_sfx",
+                "url": "assets/audio/sfx/minigame/win_sfx.mp3",
+                "autoDecode": true
+            }
+        ]
+    }
+}

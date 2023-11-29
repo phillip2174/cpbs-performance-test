@@ -9,12 +9,113 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>CP Brandsite</title>
-        <script type="module" crossorigin src="./assets/index.96e62d24.js"></script>
-        <link rel="stylesheet" href="./assets/index.36c86be5.css" />
+        <script type="module" crossorigin src="./assets/index.631e5c85.js"></script>
+        <link rel="stylesheet" href="./assets/index.32820410.css" />
     </head>
 
     <body style="margin: 0; padding: 0">
         <div id="app"></div>
+
+        <!-- <script type="text/javascript">
+        
+        window.addEventListener("message", function(event)
+	{
+		var sub = 0;
+		if(event.data == "tick"){
+			if(window.lafcb)
+				if((new Date().getTime()/1000) - window.lafcb.started > 0.5){
+					window.lafcb.func(new Date().getTime()+16)
+					window.lafcb = null;
+				}
+			var i = window.timeouts.length;
+			while (i--) {
+				if(window.timeouts[i].ran){
+					window.timeouts.splice(i,1);
+				}
+			}
+			var i = window.timeouts.length;
+			while (i--) {
+				if(new Date().getTime() - window.timeouts[i].started >= window.timeouts[i].delay && window.timeouts[i]){
+					window.timeouts[i].func();
+					window.timeouts[i].ran = true;
+				}
+			}
+			for(var i in window.intervals){
+				var currTime = new Date().getTime();
+				if(currTime - window.intervals[i].last >= window.intervals[i].delay && window.intervals[i]){
+					window.intervals[i].last = currTime;
+					window.intervals[i].func();
+				}
+			}
+			window.postMessage('tick', '*');
+		}
+	}, false);
+	(function(context) {
+	  'use strict';
+		window.lafcb = null;
+		context.timeouts = [];
+		context.intervals = [];
+		var lastTime = new Date().getTime();
+		context.old = {};
+		
+		old.setTimeout = (i,ii)=> context.setTimeout(i,ii);
+		old.setInterval = (i,ii) =>context.setInterval(i,ii);
+		old.clearTimeout = (i) =>context.clearTimeout(i);
+		old.clearInterval = (i) =>context.clearInterval(i);
+		if(typeof(context.postMessage) == 'function'){
+			context.setTimeout = function(fn, millis) {
+				var id = timeouts.length 
+				timeouts[id] = {id: id,func: fn, delay: millis,started: new Date().getTime()};
+				return id;
+			};
+			context.clearTimeout = function(cancel) {
+				for(var i in timeouts){
+					if(timeouts[i].id == cancel){
+						timeouts.splice(i,1);
+						break;
+					}
+				}
+			};
+			context.setInterval = function(fn, delay ) {
+				intervals[intervals.length] = {func: fn, delay: delay,last: new Date().getTime()};
+				return intervals[intervals.length-1];
+			};
+			context.clearInterval = function(cancel) {
+				for(var i in intervals){
+					if(intervals[i] == cancel){
+						intervals.splice(i,1);
+						break;
+					}
+				}
+			};
+		}
+		
+		context.requestAnimationFrame = function( callback, element ) {
+			lafcb = {started: new Date().getTime()/1000,func: callback};
+			var currTime = new Date().getTime();
+			var timeToCall = 16;
+			var id = context.setTimeout( function() {
+				callback( currTime+timeToCall);
+			}, timeToCall );
+			return id;
+		};
+		context.cancelAnimationFrame = function( id ) {
+			lafcb 
+			context.clearTimeout( id );
+		};
+		context.addEventListener("load",function(){
+			if(typeof(context.postMessage) == 'function'){
+				context.postMessage('tick', '*');
+			}else{
+				context.setTimeout = old.setTimeout
+				context.setInterval = old.setInterval
+				context.clearTimeout = old.clearTimeout
+				context.clearInterval = old.clearInterval
+				alert("Your browser does not support postMessage. Sorry but you will be forced to default to the standard setInterval and setTimeout functions. This means you may experience pauses in your game when you navigate away from the tab it is playing in.");
+			}
+		});
+	})(this);
+</script> -->
     </body>
 
     <body>
@@ -29,7 +130,7 @@
         </div>
         <div id="loading-container">
             <div class="loading-indicator"></div>
-            <p>เกมกำลังดาวน์โหลด กรุณารอสักครู่</p>
+            <!-- <p>เกมกำลังดาวน์โหลด กรุณารอสักครู่</p> -->
         </div>
     </body>
 </html>

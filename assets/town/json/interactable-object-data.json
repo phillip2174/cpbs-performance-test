@@ -61,7 +61,7 @@
         "interactY": -40,
         "interactWidth": 80,
         "interactHeight": 90,
-        "depth": 5,
+        "depth": 6,
         "keyAsset": "people-group-b"
     },
     {
@@ -98,7 +98,7 @@
         "interactY": -100,
         "interactWidth": 275,
         "interactHeight": 200,
-        "depth": 5,
+        "depth": 7,
         "keyAsset": "cp-foodtruck"
     },
     {
@@ -201,5 +201,37 @@
         "interactHeight": 60,
         "depth": 4,
         "keyAsset": "fire-hydrant"
+    },
+    {
+        "id": 28,
+        "typeAnimation": "OneTime",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "",
+                "animTime": 500
+            },
+            {
+                "stateType": "End",
+                "animKey": "",
+                "animTime": -1
+            }
+        ],
+        "typeAsset": "Sprite",
+        "positionX": -160,
+        "positionY": 80,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": 0,
+        "interactWidth": 150,
+        "interactHeight": 150,
+        "depth": 4,
+        "keyAsset": "tomato"
     }
 ]

@@ -5,11 +5,16 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { PodProvider } from '../../pod/PodProvider'
 import { MinigameCPOrderMenuCellView } from './MinigameCPOrderMenuCellView'
 import { MinigameCPOrderPod } from './MinigameCPOrderPod'
+import { TimeBarView } from '../../../bar/TimeBarView'
 
 export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
     private cellViews: MinigameCPOrderMenuCellView[] = []
     private cellPatterns: Array<string[]> = []
     private recipeBeans: RecipeBean[] = []
+
+    private timeBarView: TimeBarView
+
+    private cellGroupBg: GameObjects.Image
 
     private maxCellCount: number = 12
     private rowCount: number = 3
@@ -28,11 +33,27 @@ export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(): void {
+    public doInit(x: number, y: number, timeBar: TimeBarView): void {
+        this.timeBarView = timeBar
         this.minigamePod = PodProvider.instance.minigameCPOrderPod
         this.isDesktop = this.scene.sys.game.device.os.desktop
-        this.isDesktop ? (this.cellSize = 98) : (this.cellSize = 75)
+        this.cellGroupBg = this.scene.add.image(0, 0, 'minigame-2-menu-group-bg').setOrigin(0.5)
+        if (this.isDesktop) {
+            this.cellSize = 98
+            this.cellGroupBg
+                .setPosition(-3, y + 37)
+                .setSize(400, 300)
+                .setDisplaySize(400, 300)
+        } else {
+            this.cellSize = 75
+            this.cellGroupBg
+                .setPosition(-3, y + 19)
+                .setSize(308, 234)
+                .setDisplaySize(308, 234)
+        }
+        this.setPosition(x, y)
         this.showStartPreview()
+        this.add([this.cellGroupBg])
         this.add(this.cellViews)
         this.setupSubscribe()
     }
@@ -48,22 +69,32 @@ export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
         })
     }
 
-    private showStartPreview(): void {
-        for (let i = 0; i < this.maxCellCount; i++) {
-            let cellView = new MinigameCPOrderMenuCellView(this.scene)
-            cellView.doInit(i)
-            this.cellViews.push(cellView)
-        }
+    public showStartPreview(): void {
+        if (this.cellViews.length <= 0) {
+            for (let i = 0; i < this.maxCellCount; i++) {
+                let cellView = new MinigameCPOrderMenuCellView(this.scene)
+                cellView.doInit(i)
+                this.cellViews.push(cellView)
+            }
 
-        this.cellViews = Actions.GridAlign(this.cellViews, {
-            position: Display.Align.LEFT_TOP,
-            width: this.columnCount,
-            height: this.rowCount,
-            cellWidth: this.cellSize,
-            cellHeight: this.cellSize,
-            x: this.isDesktop ? -150 : -115,
-            y: 0,
-        })
+            this.cellViews = Actions.GridAlign(this.cellViews, {
+                position: Display.Align.LEFT_TOP,
+                width: this.columnCount,
+                height: this.rowCount,
+                cellWidth: this.cellSize,
+                cellHeight: this.cellSize,
+                x: this.isDesktop ? -150 : -115,
+                y: 0,
+            })
+        } else {
+            this.minigamePod.clearCurrentRecipes()
+            this.recipeBeans = []
+            this.cellViews.forEach((cell) => cell.onStartGame())
+            this.minigamePod.getRecipeBeans().subscribe((recipeBeans) => {
+                this.recipeBeans = recipeBeans.map((x) => x)
+                this.setCellCurrentRecipe()
+            })
+        }
     }
 
     private setupSubscribe(): void {
@@ -72,25 +103,43 @@ export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
             .pipe(
                 tap((cellPatterns) => (this.cellPatterns = cellPatterns)),
                 concatMap((_) => this.minigamePod.getRecipeBeans()),
-                map((recipeBeans) => (this.recipeBeans = recipeBeans))
+                tap((recipeBeans) => (this.recipeBeans = recipeBeans.map((x) => x)))
             )
             .subscribe((_) => {
-                this.cellViews.forEach(() => {
-                    this.randomRecipeIndex = Math.Between(0, this.recipeBeans.length - 1)
-                    this.minigamePod.addCurrentRecipe(this.recipeBeans[this.randomRecipeIndex])
-                    this.removeRecipe(this.recipeBeans[this.randomRecipeIndex])
-                })
+                this.setCellCurrentRecipe()
             })
 
         this.clickCellSubscription = this.minigamePod.currentClickedCellId.subscribe((id) => {
-            if (this.recipeBeans.length > 0) {
-                this.cellViews[id].playOnClickTween(() => {
-                    this.randomRecipeIndex = Math.Between(0, this.recipeBeans.length - 1)
-                    this.minigamePod.updateCurrentRecipeAtIndex(id, this.recipeBeans[this.randomRecipeIndex])
-                    this.removeRecipe(this.recipeBeans[this.randomRecipeIndex])
-                    this.randomRecipeIndexAndSetCellIcon(id)
-                }, this.minigamePod.checkIsCorrectOrder(id))
+            if (this.minigamePod.previousClickedCellId == id) {
+                this.timeBarView.pauseTimebar()
+                this.cellViews[id].showSuccessIndicator(false)
+            } else {
+                if (!this.minigamePod.checkIsCorrectOrder(id)) {
+                    this.timeBarView.pauseTimebar()
+                }
+                this.cellViews[id].showSuccessIndicator(this.minigamePod.checkIsCorrectOrder(id))
             }
+
+            // if (this.recipeBeans.length > 0) {
+            //     this.cellViews[id].playOnClickTween(() => {
+            //         this.randomRecipeIndex = Math.Between(0, this.recipeBeans.length - 1)
+            //         this.minigamePod.updateCurrentRecipeAtIndex(id, this.recipeBeans[this.randomRecipeIndex])
+            //         this.removeRecipe(this.recipeBeans[this.randomRecipeIndex])
+            //         this.randomRecipeIndexAndSetCellIcon(id)
+            //     }, this.minigamePod.checkIsCorrectOrder(id))
+            // }
+        })
+
+        this.on('destroy', () => {
+            this.clickCellSubscription?.unsubscribe()
+        })
+    }
+
+    private setCellCurrentRecipe() {
+        this.cellViews.forEach(() => {
+            this.randomRecipeIndex = Math.Between(0, this.recipeBeans.length - 1)
+            this.minigamePod.addCurrentRecipe(this.recipeBeans[this.randomRecipeIndex])
+            this.removeRecipe(this.recipeBeans[this.randomRecipeIndex])
         })
     }
 

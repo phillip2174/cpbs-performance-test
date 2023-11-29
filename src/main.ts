@@ -99,7 +99,20 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: true,
         },
     },
+    
     scene: [SplashScene, SplashLoaddingScene, TownScene, CityUIScene, MinigameCPPuzzleScene, MinigameCPOrderScene],
+
+    callbacks: {
+        preBoot: function(game) {
+            // @ts-ignore: Unreachable code error
+            game.bgmAudioManager = Phaser.Sound.SoundManagerCreator.create(game);
+            // @ts-ignore: Unreachable code error
+            game.sfxAudioManager = Phaser.Sound.SoundManagerCreator.create(game);
+            // @ts-ignore: Unreachable code error
+            game.ambientAudioManager = Phaser.Sound.SoundManagerCreator.create(game);
+        }
+    }
+
 }
 
 export default new Phaser.Game(config)

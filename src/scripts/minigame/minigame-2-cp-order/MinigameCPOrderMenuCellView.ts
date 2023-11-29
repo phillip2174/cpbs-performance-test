@@ -6,6 +6,8 @@ import { MinigameState } from '../MinigameState'
 import { MinigameScenePod } from '../MinigameScenePod'
 import { MinigameSuccessIndicatorView } from '../MinigameSuccessIndicatorView'
 import { PodProvider } from '../../pod/PodProvider'
+import { AudioManager } from '../../Audio/AudioManager'
+import { Subscription, timer } from 'rxjs'
 
 export class MinigameCPOrderMenuCellView extends GameObjects.Container {
     public static readonly CELL_BG_KEY: string = 'minigame-menu-cell-bg-'
@@ -14,22 +16,28 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
     private cellBg: GameObjects.Image
     private cellIcon: GameObjects.Image
 
-    private cellButton: Button
+    private cellButton: GameObjects.Rectangle
 
     private cellId: number
+    private interactDelay: number = 650
 
-    private succesIndicatorView: MinigameSuccessIndicatorView
+    private successIndicatorView: MinigameSuccessIndicatorView
 
     private isDesktop: boolean
     private isTweening: boolean = false
     private isIconChanged: boolean = false
+    private isOnInteractDelay: boolean = false
 
     private onClickTween: Tweens.Tween
 
     private updateIconCallback: Function
 
+    private audioManager: AudioManager
+
     private scenePod: MinigameScenePod
     private minigamePod: MinigameCPOrderPod
+
+    private interactDelaySubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene)
@@ -40,14 +48,18 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
         this.cellId = cellId
         this.scenePod = PodProvider.instance.minigameScenePod
         this.minigamePod = PodProvider.instance.minigameCPOrderPod
+        this.audioManager = PodProvider.instance.audioManager
         this.isDesktop = this.scene.sys.game.device.os.desktop
         this.isDesktop ? this.setupCellDesktop() : this.setupCellMobile()
-        this.cellButton = new Button(this.scene, 0, 0, this.cellBg.width, this.cellBg.height, '', 250).setAlpha(0.01)
-        this.succesIndicatorView = new MinigameSuccessIndicatorView(this.scene)
-        this.succesIndicatorView.doInit()
+        this.cellButton = this.scene.add
+            .rectangle(0, 0, this.cellBg.width, this.cellBg.height)
+            .setOrigin(0.5)
+            .setAlpha(0.01)
+        this.successIndicatorView = new MinigameSuccessIndicatorView(this.scene)
+        this.successIndicatorView.doInit()
         this.setOnClickAction()
-        this.createOnClickTween()
-        this.add([this.cellBg, this.cellIcon, this.cellButton, this.succesIndicatorView])
+        //this.createOnClickTween()
+        this.add([this.cellBg, this.cellIcon, this.cellButton, this.successIndicatorView])
     }
 
     public setCellBg(colorKey: string): void {
@@ -58,11 +70,23 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
         this.cellIcon.setTexture(MinigameCPOrderMenuCellView.CELL_ICON_KEY + iconKey)
     }
 
+    public showSuccessIndicator(isCorrect: boolean): void {
+        this.successIndicatorView?.playIndicatorTween(isCorrect)
+
+        if (isCorrect) this.audioManager.playSFXSound('order_correct_sfx')
+        else this.audioManager.playSFXSound('order_incorrect_sfx')
+    }
+
+    public onStartGame(): void {
+        this.cellBg.setTexture(MinigameCPOrderMenuCellView.CELL_BG_KEY + 'white')
+        this.cellIcon.setTexture('minigame-menu-cell-icon-secret')
+    }
+
     public playOnClickTween(callback: Function, isCorrect: boolean): void {
         this.updateIconCallback = callback
         if (!this.isTweening) {
             this.onClickTween?.restart()
-            this.succesIndicatorView?.playIndicatorTween(isCorrect)
+            this.successIndicatorView?.playIndicatorTween(isCorrect)
         }
     }
 
@@ -86,10 +110,23 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
     }
 
     private setOnClickAction(): void {
-        this.cellButton.onClick(() => {
-            //TODO: Check Minigame State Is Game Start
+        this.cellButton.setInteractive().on('pointerdown', () => {
+            if (!this.checkIsCellClickable() || this.isOnInteractDelay) return
             this.minigamePod.setCurrentClickedCellId(this.cellId)
+            this.isOnInteractDelay = true
+            this.interactDelaySubscription = timer(this.interactDelay).subscribe((_) => {
+                this.isOnInteractDelay = false
+                this.interactDelaySubscription.unsubscribe()
+            })
         })
+    }
+
+    private checkIsCellClickable(): boolean {
+        return (
+            this.scenePod.sceneState.value == MinigameState.GameStart &&
+            !this.minigamePod.getIsTimerZero() &&
+            this.minigamePod.isClickable
+        )
     }
 
     private createOnClickTween(): void {

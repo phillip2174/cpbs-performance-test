@@ -50,6 +50,71 @@
                 "type": "image",
                 "key": "minigame-fail-indicator",
                 "url": "assets/minigame/minigame2/minigame-fail-indicator.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-bubble-success",
+                "url": "assets/town/check-mark.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-bubble-fail",
+                "url": "assets/town/x-mark.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-sub-bg",
+                "url": "assets/minigame/minigame2/minigame-2-sub-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-logo",
+                "url": "assets/minigame/minigame2/minigame-2-logo.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-menu-group-bg",
+                "url": "assets/minigame/minigame2/minigame-2-menu-group-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-character-order-bg",
+                "url": "assets/minigame/minigame2/minigame-2-character-order-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-character-idle",
+                "url": "assets/minigame/minigame2/minigame-2-character-idle.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-character-think",
+                "url": "assets/minigame/minigame2/minigame-2-character-think.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-bubble-small",
+                "url": "assets/minigame/minigame2/minigame-2-bubble-small.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-bubble-big",
+                "url": "assets/minigame/minigame2/minigame-2-bubble-big.png"
+            },
+            {
+                "type": "image",
+                "key": "line-completed",
+                "url": "assets/global_ui/line-completed.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-2-countdown-start",
+                "url": "assets/minigame/minigame2/minigame-2-countdown-start.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-background-countdown-ticket",
+                "url": "assets/minigame/minigame1/minigame-background-countdown-ticket.png"
             }
         ]
     }

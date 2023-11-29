@@ -2,12 +2,17 @@ import { BehaviorSubject, Observable, map } from 'rxjs'
 import { RepositoryProvider } from '../../Repository/RepositoryProvider'
 import { UserBean } from '../../User/UserBean'
 import { UserRepository } from './../../Repository/UserRepository'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { PodProvider } from '../../pod/PodProvider'
+import { UserType } from '../../User/UserType'
 
 export class UserPod {
     public static readonly SECONDS_CONVERT_MODIFIER: number = 1000
     public static readonly UNIX_DAY_TIMESTAMP: number = 86400
     public userBean: UserBean
+    public userCPpoint: BehaviorSubject<number> = new BehaviorSubject<number>(0)
     public isFirstLoginOfTheDay: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+    public userLoginType: UserType = UserType.Login
 
     private currentLoginTime: Date
     private userRepository: UserRepository
@@ -17,9 +22,10 @@ export class UserPod {
     }
 
     public getUserBean(): Observable<UserBean> {
-        return this.userRepository.getUserBean().pipe(
+        return this.userRepository.getUserBean(this.userLoginType).pipe(
             map((userBean) => {
                 this.userBean = userBean
+                this.userCPpoint.next(this.userBean.cpPoint)
                 console.log(this.userBean)
                 return this.userBean
             })

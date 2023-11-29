@@ -14,8 +14,9 @@ import { TownUIButtonType } from './Type/TownUIButtonType'
 import { TownUIState } from './Type/TownUIState'
 import { CPLogoUIButtonView } from './CPLogoUIButtonView'
 import { UserPod } from './Pod/UserPod'
-import { SceneState } from '../../scenes/SceneState'
-
+import { UserType } from '../User/UserType'
+import { TutorialStepState } from '../../Tutorial/TutorialStepState'
+import { AudioManager } from '../Audio/AudioManager'
 export class TownUIView extends GameObjects.GameObject {
     private guideLineUIView: GuideLineUIView
 
@@ -45,6 +46,8 @@ export class TownUIView extends GameObjects.GameObject {
     private cameraZoomSubscription: Subscription
     private firstLoginSubscription: Subscription
 
+    private audioManager: AudioManager
+
     private cameraControlPod: CameraControlPod
     private townUIPod: TownUIPod
     private townUIButtonNotificationManager: TownUIButtonNotificationManager
@@ -65,6 +68,7 @@ export class TownUIView extends GameObjects.GameObject {
         this.townUIButtonNotificationManager = PodProvider.instance.townUIButtonNotificationManager
         this.cameraControlPod = PodProvider.instance.cameraControlPod
         this.userPod = PodProvider.instance.userPod
+        this.audioManager = PodProvider.instance.audioManager
 
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
 
@@ -97,27 +101,62 @@ export class TownUIView extends GameObjects.GameObject {
                 case TownUIState.MainMenu:
                     this.townUIPod.setLayerScrollView(0)
                     this.townUIMenuBackground.setVisible(true)
+
+                    this.audioManager.playAmbientSound('town_ambient', false)
+
+                    this.audioManager.playBGMSound('citygame_01_bgm', false)
                     break
                 case TownUIState.Collection:
                     this.hideTownUIMenuBg()
+
+                    this.audioManager.stopBGMSound()
+                    this.audioManager.playAmbientSound('cooking_ambient', false)
+
+                    this.audioManager.playSFXSound('collection_open_sfx')
                     break
                 case TownUIState.Inventory:
                     this.hideTownUIMenuBg()
+
+                    this.audioManager.stopBGMSound()
+                    this.audioManager.playAmbientSound('cooking_ambient', false)
+
+                    this.audioManager.playSFXSound('inventory_open_sfx')
                     break
                 case TownUIState.Cooking:
                     this.hideTownUIMenuBg()
+
+                    this.audioManager.stopBGMSound()
+                    this.audioManager.playAmbientSound('cooking_ambient', false)
+
+                    this.audioManager.playSFXSound('cooking_open_sfx')
                     break
                 case TownUIState.DailyLogin:
                     this.townUIMenuBackground.setVisible(true)
+
+                    this.audioManager.playSFXSound('daily_login_open_sfx')
+                    break
+                case TownUIState.MiniGameSelect:
+                    this.hideTownUIMenuBg()
                     break
             }
         })
 
-        this.firstLoginSubscription = this.userPod.isFirstLoginOfTheDay.subscribe((isFirstLogin) => {
-            if (isFirstLogin) {
-                this.townUIPod.changeUIState(TownUIState.DailyLogin)
-                this.userPod.setIsFirstLoginOfTheDay(false)
-            }
+        if (
+            PodProvider.instance.tutorialManager.isCompletedTutorial() &&
+            this.userPod.userLoginType == UserType.Login
+        ) {
+            this.firstLoginSubscription = this.userPod.isFirstLoginOfTheDay.subscribe((isFirstLogin) => {
+                if (isFirstLogin) {
+                    this.townUIPod.changeUIState(TownUIState.DailyLogin)
+                    this.userPod.setIsFirstLoginOfTheDay(false)
+                }
+            })
+        }
+
+        this.on('destroy', () => {
+            this.uiStateDisposable?.unsubscribe()
+            this.firstLoginSubscription?.unsubscribe()
+            this.cameraZoomSubscription?.unsubscribe()
         })
     }
 
@@ -147,12 +186,12 @@ export class TownUIView extends GameObjects.GameObject {
             this.townUIButtonGroupView = new TownUIButtonGroupView(this.scene)
             this.townUIButtonGroupView.doInit()
 
-            this.cpPointButton.doInit(this.gameScreenWidth - 25, 105, 'cp-point', '1,200')
+            this.cpPointButton.doInit(this.gameScreenWidth - 25, 105, 'cp-point')
         } else {
             this.setupZoomButtonGroup()
             this.setActionButtonZoom()
 
-            this.cpPointButton.doInit(this.gameScreenWidth - 15, 105, 'cp-point', '1,200')
+            this.cpPointButton.doInit(this.gameScreenWidth - 15, 105, 'cp-point')
             this.cpPointButton.setContainerDepth(201)
             this.dailyLoginButton = new TownUIButtonView(this.scene)
             this.dailyLoginButton.doInit(
@@ -207,41 +246,59 @@ export class TownUIView extends GameObjects.GameObject {
 
     private setupActionButton() {
         this.menuGroupButton?.onClick(() => {
-            this.townUIButtonNotificationManager.setMenuGroupIsUpdate(false)
-            this.townUIPod.setIsShowMenuGroup(true)
+            if (
+                PodProvider.instance.tutorialManager.isCompletedTutorial(
+                    true,
+                    TutorialStepState.CompletedCollectedIngredient
+                )
+            ) {
+                this.townUIButtonNotificationManager.setMenuGroupIsUpdate(false)
+                this.townUIPod.setIsShowMenuGroup(true)
+            }
         })
 
         this.dailyLoginButton?.onClick(() => {
-            this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
-            this.townUIPod.changeUIState(TownUIState.DailyLogin)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
+                this.townUIPod.changeUIState(TownUIState.DailyLogin)
+            }
         })
 
         this.inventoryButton?.onClick(() => {
-            this.townUIButtonNotificationManager.setInventoryIsUpdate(false)
-            this.townUIPod.changeUIState(TownUIState.Inventory)
-            this.townUIPod.setIsShowGuideline(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIButtonNotificationManager.setInventoryIsUpdate(false)
+                this.townUIPod.changeUIState(TownUIState.Inventory)
+                this.townUIPod.setIsShowGuideline(false)
+            }
         })
 
         this.collectionsButton?.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.Collection)
-            this.townUIPod.setIsShowGuideline(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.Collection)
+                this.townUIPod.setIsShowGuideline(false)
+            }
         })
 
         this.cookingButton?.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.Cooking)
-            this.townUIPod.setIsShowGuideline(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.Cooking)
+                this.townUIPod.setIsShowGuideline(false)
+            }
         })
 
         this.cpCityButton?.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.MainMenu)
-            this.townUIPod.setIsShowGuideline(true)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.MainMenu)
+                this.townUIPod.setIsShowGuideline(true)
+            }
         })
 
         this.minigameButton?.onClick(() => {
-            //TODO Get Pod In Minigame select to set scene to launchScene
-            console.log('go to mini scene')
-            PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPPuzzle)
-            this.scene.scene.start(`SplashLoaddingScene`)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.MiniGameSelect)
+                this.townUIPod.setIsShowGuideline(false)
+                this.townUIPod.setIsShowMenuGroup(false)
+            }
         })
 
         this.settingCircleButtonView?.onClick(() => {

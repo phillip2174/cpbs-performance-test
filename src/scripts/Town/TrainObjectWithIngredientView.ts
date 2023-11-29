@@ -1,5 +1,5 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
-import { Observable, Subscription, tap, timer } from 'rxjs'
+import { Observable, Subscription, of, tap, timer } from 'rxjs'
 import { ObjectPlacementDebugger } from '../plugins/ObjectPlacementDebugger'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
@@ -24,7 +24,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(ingredientObjectView: IngredientObjectView): Observable<any> {
+    public doInit(ingredientObjectView: IngredientObjectView) {
         this.setDepth(2)
         let test = new ObjectPlacementDebugger(this.scene)
 
@@ -46,15 +46,19 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
             startAnimation: 'close',
             isLooping: true,
         }
+
+        this.trainObjectSpine = this.scene.add.spine(
+            spineConfig.x,
+            spineConfig.y,
+            spineConfig.key,
+            spineConfig.startAnimation,
+            spineConfig.isLooping
+        )
+
         let fadeInOutFx = this.postFX.addReveal(0.5, 0, 0)
 
-        return ResourceManager.instance.loadSpine(this.scene, spineConfig).pipe(
-            tap((spine) => {
-                this.trainObjectSpine = spine
-                this.tweenTrainAnimation(fadeInOutFx)
-                this.add([this.trainObjectSpine as any, this.ingredientObjectView])
-            })
-        )
+        this.tweenTrainAnimation(fadeInOutFx)
+        this.add([this.trainObjectSpine as any, this.ingredientObjectView])
     }
 
     private tweenTrainAnimation(fadeInOutFx: Phaser.FX.Wipe) {
@@ -122,12 +126,13 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
         })
     }
 
-    // destroy(fromScene?: boolean): void {
-    //     this.timerSubscription?.unsubscribe()
-    //     this.timerTweenSubscription?.unsubscribe()
-    //     this.tweenMoveIn?.destroy()
-    //     this.tweenMoveInOut?.destroy()
-    //     this.tweenMoveOut?.destroy()
-    //     this.trainObjectSpine?.destroy()
-    // }
+    destroy(fromScene?: boolean): void {
+        this.timerSubscription?.unsubscribe()
+        this.timerTweenSubscription?.unsubscribe()
+        this.tweenMoveIn?.destroy()
+        this.tweenMoveInOut?.destroy()
+        this.tweenMoveOut?.destroy()
+        this.trainObjectSpine?.destroy()
+        super.destroy(fromScene)
+    }
 }

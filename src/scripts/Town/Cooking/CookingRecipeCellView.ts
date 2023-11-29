@@ -17,8 +17,12 @@ import { CookingCellState } from './type/CookingCellState'
 import { RecipePod } from '../../pod/RecipePod'
 import { Subscription } from 'rxjs'
 import { AnimationController } from '../AnimationController'
+import { BoldText } from '../../../BoldText/BoldText'
 
-export class CookingRecipeCellView extends GameObjects.Container {
+export class CookingRecipeCellView extends GameObjects.Container implements IScrollViewCallBack {
+    public static readonly LENGTH_CUT_TEXT: number = 20
+    public cellPageIndex: number
+    private cookingCellState: CookingCellState
     private recipeBackground: GameObjects.NineSlice
     private recipeNameText: GameObjects.Text
 
@@ -59,9 +63,11 @@ export class CookingRecipeCellView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(recipeBean: RecipeBean): void {
+    public doInit(recipeBean: RecipeBean, cellPageIndex: number): void {
         this.cookingPod = PodProvider.instance.cookingPod
         this.recipePod = PodProvider.instance.recipePod
+
+        this.cellPageIndex = cellPageIndex
 
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
         this.recipeBackgroundWidth = this.isDesktop ? 196 : 170
@@ -81,12 +87,15 @@ export class CookingRecipeCellView extends GameObjects.Container {
             30
         )
 
-        this.recipeNameText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(this.recipeBean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : this.recipeBean.title)
-            .setOrigin(0.5)
-            .setStyle({ fill: '#585858' })
-            .setPosition(0, -this.recipeBackgroundHeight / 2 + 25)
+        const title = TextAdapter.splitThaiStringByLegth(this.recipeBean.title, CookingRecipeCellView.LENGTH_CUT_TEXT)
+        this.recipeNameText = new BoldText(
+            this.scene,
+            0,
+            -this.recipeBackgroundHeight / 2 + 25,
+            this.recipeBean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : title.length > 1 ? `${title[0]}...` : title[0],
+            18,
+            '#585858'
+        )
 
         this.createPointAndTag()
         this.createRecipeAndIngredient()
@@ -96,13 +105,13 @@ export class CookingRecipeCellView extends GameObjects.Container {
         this.cellButton = new Button(
             this.scene,
             0,
-            0,
+            -this.recipeBackgroundHeight / 2 + this.recipeBackgroundHeight / 4 + 20,
             this.recipeBackgroundWidth,
-            this.recipeBackgroundHeight,
+            this.recipeBackgroundHeight / 2 + 20,
             ''
-        ).setAlpha(0.001)
+        ).setAlpha(0.01)
 
-        this.selectButton = this.createButton(89, 43, 'button-white-bg', 'SELECT', 0x29cc6a)
+        this.selectButton = this.createButton(89, 40, 'small-button-white-bg', 'SELECT', 0x29cc6a)
         this.selectButton.setPosition(0, this.recipeBackgroundHeight / 2 - 40)
 
         this.setActionButton()
@@ -122,6 +131,38 @@ export class CookingRecipeCellView extends GameObjects.Container {
         this.height = this.getBounds().height
     }
 
+    public setCellWithUserRecipe(userRecipe: UserRecipe) {
+        let bean: RecipeBean = this.recipeBean
+
+        switch (userRecipe.state) {
+            case CookState.Cooked:
+                if (!bean.secretUnlock) this.setCellToCompleted()
+                this.handleButton(CookingCellState.Completed)
+                this.cookingCellState = CookingCellState.Completed
+                break
+            case CookState.Unlocked:
+                this.handleButton(CookingCellState.Completed)
+                this.setCellToCompleted()
+                this.cookingCellState = CookingCellState.Completed
+                break
+        }
+
+        this.setPointAndTagPosition()
+        this.isReady = false
+    }
+
+    public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (isCanInteract) {
+            //this.setVisible(true)
+            this.handleButton(this.cookingCellState)
+            this.cellButton.setCanInteract(true, false)
+        } else {
+            //this.setVisible(false)
+            this.selectButton.setCanInteract(false, false)
+            this.cellButton.setCanInteract(false, false)
+        }
+    }
+
     private doOnClickButton() {
         if (!this.cookingPod.isDragScrollViewCooking && !this.cookingPod.isDragScrollViewFilter) {
             this.cookingPod.setCurrentRecipeBean(this.recipeBean)
@@ -130,39 +171,21 @@ export class CookingRecipeCellView extends GameObjects.Container {
         }
     }
 
-    public setCellWithUserRecipe(userRecipe: UserRecipe) {
-        let bean: RecipeBean = this.recipeBean
-
-        switch (userRecipe.state) {
-            case CookState.Cooked:
-                if (!bean.secretUnlock) this.setCellToCompleted()
-                this.handleButton(CookingCellState.Completed)
-                break
-            case CookState.Unlocked:
-                this.handleButton(CookingCellState.Completed)
-                this.setCellToCompleted()
-                break
-        }
-
-        this.setPointAndTagPosition()
-        this.isReady = false
-    }
-
     private setActionButton() {
-        this.cellButton.onClick(
-            () => {
-                if (this.isReady) {
-                    this.doOnClickButton()
-                    this.onClickUpTweener?.restart()
-                }
-            },
-            () => {
-                if (this.isReady) this.onClickDownTweener?.restart()
-            },
-            () => {
-                if (this.isReady) this.onClickUpTweener?.restart()
-            }
-        )
+        // this.cellButton.onClick(
+        //     () => {
+        //         this.doOnClickButton()
+        //         this.onClickUpTweener?.restart()
+        //         if (this.isReady) {
+        //         }
+        //     },
+        //     () => {
+        //         if (this.isReady) this.onClickDownTweener?.restart()
+        //     },
+        //     () => {
+        //         if (this.isReady) this.onClickUpTweener?.restart()
+        //     }
+        // )
 
         this.selectButton.onClick(() => {
             this.doOnClickButton()
@@ -170,22 +193,31 @@ export class CookingRecipeCellView extends GameObjects.Container {
 
         if (this.scene.sys.game.device.os.desktop) {
             this.cellButton.on('pointerover', () => {
-                this.onHoverButton()
+                if (this.isReady) this.onHoverButton()
+            })
+
+            this.selectButton.on('pointerover', () => {
+                if (this.isReady) this.onHoverButton()
             })
 
             this.cellButton.on('pointerout', () => {
-                this.onLeaveButton()
+                if (this.isReady) this.onLeaveButton()
+            })
+
+            this.selectButton.on('pointerout', () => {
+                if (this.isReady) this.onLeaveButton()
             })
         }
     }
 
     private setCellToCompleted() {
         let bean: RecipeBean = this.recipeBean
-        this.recipeNameText.setText(this.recipeBean.title)
+        const title = TextAdapter.splitThaiStringByLegth(this.recipeBean.title, CookingRecipeCellView.LENGTH_CUT_TEXT)
+        this.recipeNameText.setText(title.length > 1 ? `${title[0]}...` : title[0])
         this.recipePreview.setRecipePreviewMaster(bean.id)
-        this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
+        this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
         this.recipePreview.setCellWithRecipeType(bean.type)
-        this.rewardPointCellView.setPointRewardCell(bean, 0.5)
+        this.rewardPointCellView.setPointCell(bean.rewardPoint.toString())
     }
 
     public getBean(): RecipeBean {
@@ -198,10 +230,10 @@ export class CookingRecipeCellView extends GameObjects.Container {
         this.positionPointAndTag = this.scene.add.rectangle(0, 0, 0, 0, 0xff00ff, 0)
 
         this.tagRarityView = new TagRarityView(this.scene, 0, 0)
-        this.tagRarityView.doInit()
+        this.tagRarityView.createTagSmall()
 
         this.rewardPointCellView = new RewardPointCellView(this.scene, 0, 0)
-        this.rewardPointCellView.doInit(0.5)
+        this.rewardPointCellView.createSmallTag()
 
         this.positionPointAndTagContainer.add([this.positionPointAndTag, this.tagRarityView, this.rewardPointCellView])
     }
@@ -226,24 +258,28 @@ export class CookingRecipeCellView extends GameObjects.Container {
         if (bean.secretUnlock) {
             this.tagRarityView.setSecretTag(0.643)
             this.recipePreview.setSecretRecipe(0x9bd6f8)
+            this.rewardPointCellView.setPointCell('??')
         } else {
             this.recipePreview.setRecipePreviewMaster(bean.id)
-            this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase(), 0.643)
-            this.rewardPointCellView.setPointRewardCell(bean, 0.5)
+            this.tagRarityView.setColorTagAndTextWithType(bean.type, bean.type.toString().toUpperCase())
+            this.rewardPointCellView.setPointCell(bean.rewardPoint.toString())
         }
 
         this.ingredientPreview.setPreviewView(bean, this.isDesktop ? 0.693 : 0.65, 5, true)
         this.handleButton(bean.secretUnlock ? CookingCellState.Secret : CookingCellState.Uncook)
+        this.cookingCellState = bean.secretUnlock ? CookingCellState.Secret : CookingCellState.Uncook
 
         this.isReady = this.ingredientPreview.updateCellIngredientPreviewUser()
         if (this.isReady && !bean.secretUnlock) {
             this.recipePreview.setCellWithRecipeType(bean.type)
             this.handleButton(CookingCellState.Ready)
+            this.cookingCellState = CookingCellState.Ready
 
             this.isReady = true
         } else if (this.isReady && bean.secretUnlock) {
             if (this.recipePod.totalUnlockedRecipe >= bean.secretUnlock.unlockRecipeAmount) {
                 this.handleButton(CookingCellState.Ready)
+                this.cookingCellState = CookingCellState.Ready
 
                 this.isReady = true
             } else {
@@ -252,6 +288,7 @@ export class CookingRecipeCellView extends GameObjects.Container {
         } else if (!this.isReady && bean.secretUnlock) {
             if (this.recipePod.totalUnlockedRecipe >= bean.secretUnlock.unlockRecipeAmount) {
                 this.handleButton(CookingCellState.Uncook)
+                this.cookingCellState = CookingCellState.Uncook
             }
         }
 
@@ -298,7 +335,7 @@ export class CookingRecipeCellView extends GameObjects.Container {
         this.selectButton.setText(
             `COLLECTED ${this.recipePod.totalUnlockedRecipe}/${this.recipeBean.secretUnlock.unlockRecipeAmount}`
         )
-        this.selectButton.setButtonSize(this.selectButton.getBounds().width + 30, 43)
+        this.selectButton.setButtonSize(this.selectButton.label.width + 30, 43)
     }
 
     private setPointAndTagPosition() {
@@ -341,16 +378,19 @@ export class CookingRecipeCellView extends GameObjects.Container {
             imageKey: imageKey,
             leftWidth: 20,
             rightWidth: 20,
-            topHeight: 1,
-            bottomHeight: 1,
+            topHeight: 17,
+            bottomHeight: 20,
             safeAreaOffset: 0,
         })
 
-        button.setTextStyle({
-            fontFamily: 'DB_HeaventRounded_Bd',
-            fill: 'white',
-            fontSize: 22,
-        })
+        button.setTextStyle(
+            {
+                fontFamily: 'DB_HeaventRounded_Bd',
+                fill: 'white',
+                fontSize: 22,
+            },
+            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+        )
 
         button.setTextPosition(0, 1)
 
@@ -433,5 +473,6 @@ export class CookingRecipeCellView extends GameObjects.Container {
 
         this.onLeaveButtonIconTween?.destroy()
         this.onLeaveButtonTextTween?.destroy()
+        super.destroy(fromScene)
     }
 }

@@ -1,6 +1,9 @@
 import { GameObjects, Tweens } from 'phaser'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { Action } from 'rxjs/internal/scheduler/Action'
+import { PodProvider } from '../../pod/PodProvider'
+import { BoldText } from '../../../BoldText/BoldText'
+import { AudioManager } from '../../Audio/AudioManager'
 
 export class CollectionDetailRecipeTweenView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
@@ -55,7 +58,11 @@ export class CollectionDetailRecipeTweenView extends GameObjects.Container {
 
     private isRecieveResource: boolean = true
 
+    private audioManager: AudioManager
+
     public doInit() {
+        this.audioManager = PodProvider.instance.audioManager
+
         this.setupContainer()
         this.setupUI()
 
@@ -153,16 +160,7 @@ export class CollectionDetailRecipeTweenView extends GameObjects.Container {
         this.ingredientLightRayEffectImage = this.scene.add.image(0, -15, 'circle-effect')
         this.ingredientGlowEffectImage = this.scene.add.image(0, -15, 'glow-effect')
 
-        this.ingredientCountText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('+2')
-            .setOrigin(0.5)
-            .setPosition(0, -20)
-            .setStroke('#ffffff', 16)
-            .setStyle({
-                fill: '#ed833d',
-                fontSize: 80,
-            })
+        this.ingredientCountText = new BoldText(this.scene, 0, -20, '+2', 80, '#ed833d').setStroke('#ffffff', 16)
 
         this.collectionDetailIngredientTweenContainer.add([
             this.ingredientImage,
@@ -308,6 +306,7 @@ export class CollectionDetailRecipeTweenView extends GameObjects.Container {
                 this.startTweenGetIngredient()
                 this.startTweenRecipeEffect()
 
+                this.audioManager.playSFXSound('collection_congrat_sfx')
                 if (this.onFinishTweenRecipeCallback != undefined) this.onFinishTweenRecipeCallback()
             },
             persist: true,

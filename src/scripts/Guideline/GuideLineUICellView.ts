@@ -4,7 +4,8 @@ import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
 import { GuideLineUICellPod } from './GuideLineUICellPod'
 import { GuideLineUICellState } from './GuideLineUICellState'
-import { IngredientBean } from './IngredientBean'
+import { IngredientBean } from '../Ingredient/IngredientBean'
+import { GuideLineUIManager } from './GuideLineUIManager'
 
 export class GuideLineUICellView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
@@ -13,15 +14,17 @@ export class GuideLineUICellView extends GameObjects.Container {
     private backgroundImage: GameObjects.Image
 
     private pod: GuideLineUICellPod
+    private guideLineUIManager: GuideLineUIManager
     private stateSubscription: Subscription
 
-    constructor(scene: Scene, ingredientBean: IngredientBean) {
+    constructor(scene: Scene, ingredientBean: IngredientBean, userIsFound: boolean) {
         super(scene)
         GameObjectConstructor(scene, this)
         this.ingredientBean = ingredientBean
         this.pod = new GuideLineUICellPod(this.scene)
+        this.guideLineUIManager = PodProvider.instance.guideLineUIManager
 
-        if (this.ingredientBean.isFound) this.pod.changeState(GuideLineUICellState.IdleFound)
+        if (userIsFound) this.pod.changeState(GuideLineUICellState.IdleFound)
         else this.pod.changeState(GuideLineUICellState.IdleNotFound)
     }
 
@@ -41,7 +44,6 @@ export class GuideLineUICellView extends GameObjects.Container {
                     this.ingredientImage.setTintFill(0xaeaec1)
                     break
                 case GuideLineUICellState.TweenToFound:
-                    PodProvider.instance.guideLineUIManager.updateCurrentFoundIngredientCount()
                     this.tweenGuideLine()
                     break
             }
@@ -50,7 +52,8 @@ export class GuideLineUICellView extends GameObjects.Container {
     }
 
     private tweenGuideLine() {
-        this.ingredientImage.clearTint()
+        this.pod.changeState(GuideLineUICellState.IdleFound)
+        this.guideLineUIManager.updateCurrentFoundIngredientCount()
 
         this.scene.tweens.chain({
             targets: this.ingredientImage,
@@ -88,7 +91,8 @@ export class GuideLineUICellView extends GameObjects.Container {
             ],
             onComplete: () => {
                 this.ingredientImage.rotation = 0
-                PodProvider.instance.guideLineUIManager.checkIsAllIngredientFound()
+
+                this.guideLineUIManager.checkIsAllIngredientFound()
             },
         })
     }
@@ -100,6 +104,10 @@ export class GuideLineUICellView extends GameObjects.Container {
 
     public addImagesToContainer(): void {
         this.add([this.backgroundImage, this.ingredientImage])
+    }
+
+    public getGuideLineUICellState(): GuideLineUICellState {
+        return this.pod.guideLineUICellState.value
     }
 
     public destroy(fromScene?: boolean): void {

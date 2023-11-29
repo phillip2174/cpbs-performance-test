@@ -1,9 +1,10 @@
-import { IngredientBean } from '../Guideline/IngredientBean'
+import { GameConfig } from '../GameConfig'
+import { IngredientBean } from '../Ingredient/IngredientBean'
 import { RandomNumber } from '../plugins/Random'
 import { IngredientObjectView } from './IngredientObjectView'
 
 export class IngredientObjectManager {
-    public ingredientObjectGroup: IngredientObjectView[] = []
+    public ingredientObjectRandomPool: IngredientObjectView[] = []
 
     private static _instance: IngredientObjectManager
 
@@ -17,18 +18,22 @@ export class IngredientObjectManager {
         return this.getInstance()
     }
 
-    public addIngredientObjectGroup(object: IngredientObjectView) {
-        this.ingredientObjectGroup.push(object)
+    public clearIngredientRandomPoolList() {
+        this.ingredientObjectRandomPool = []
     }
 
-    public randomIngredientIdToIngredientObject(ingredientBeans: IngredientBean[]) {
+    public addIngredientObjectToRandomPool(object: IngredientObjectView) {
+        this.ingredientObjectRandomPool.push(object)
+    }
+
+    public randomIngredientIdToIngredientObject(hiddenIngredientBeans: IngredientBean[]) {
         let cloneIngredientObjectViews: IngredientObjectView[]
-        cloneIngredientObjectViews = Object.assign([], this.ingredientObjectGroup)
+        cloneIngredientObjectViews = Object.assign([], this.ingredientObjectRandomPool)
 
         let cloneIngredientNotFounds: IngredientBean[]
         cloneIngredientNotFounds = Object.assign(
             [],
-            ingredientBeans.filter((x) => x.isFound == false)
+            hiddenIngredientBeans.map((x) => x)
         )
 
         console.log(` (###) clone cloneIngredientObjectGroup Count : ` + cloneIngredientObjectViews.length)
@@ -54,5 +59,23 @@ export class IngredientObjectManager {
             }
             console.log(` (###) clone interactableGroup left : ` + cloneIngredientObjectViews.length)
         }
+    }
+
+    public setIngredientObjectTutorial(
+        originalCurrentIngredient: IngredientBean[],
+        mapHiddenIngredientBeansWithUser: IngredientBean[]
+    ) {
+        const mapUserID = mapHiddenIngredientBeansWithUser.map((x) => x.id)
+        GameConfig.TUTORIAL_INGREDIENT_OBJECT_ID.forEach((tutorialObjectID, index) => {
+            const ingredientObject = this.ingredientObjectRandomPool.find(
+                (object) => object.getIngredientObjectBean().id == tutorialObjectID
+            )
+
+            if (ingredientObject != undefined || ingredientObject != null) {
+                if (mapUserID.includes(originalCurrentIngredient[index].id)) {
+                    ingredientObject.setFoundIngredient(originalCurrentIngredient[index].id)
+                }
+            }
+        })
     }
 }

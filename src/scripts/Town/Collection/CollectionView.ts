@@ -20,6 +20,8 @@ import { AnimationController } from '../AnimationController'
 import { CollectionDetailView } from './CollectionDetail/CollectionDetailView'
 import { CollectionPanelState } from './type/CollectionPanelState'
 import { RecipePod } from '../../pod/RecipePod'
+import { APILoadingManager } from '../../api-loading/APILoadingManager'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class CollectionView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -57,6 +59,7 @@ export class CollectionView extends GameObjects.Container {
     private stateCollectionSubscription: Subscription
     private filterSubscription: Subscription
     private layerScrollViewSubscription: Subscription
+    private isDragSubscription: Subscription
     private currentUnlockedSelectedSubscription: Subscription
 
     private collectionPod: CollectionPod
@@ -115,7 +118,7 @@ export class CollectionView extends GameObjects.Container {
             this.collectionDetailView.updateCurrentScrollViewLayer(currentScrollViewLayer)
         })
 
-        this.scrollView?.isDrag.subscribe((x) => {
+        this.isDragSubscription = this.scrollView?.isDrag.subscribe((x) => {
             this.collectionPod.isDragScrollView = x
         })
 
@@ -126,6 +129,15 @@ export class CollectionView extends GameObjects.Container {
         )
 
         this.setActiveContainer(this.townUIPod.townUIState.value == TownUIState.Collection, false)
+
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+            this.filterSubscription?.unsubscribe()
+            this.stateCollectionSubscription?.unsubscribe()
+            this.layerScrollViewSubscription?.unsubscribe()
+            this.isDragSubscription?.unsubscribe()
+            this.currentUnlockedSelectedSubscription?.unsubscribe()
+        })
     }
 
     private createTween() {
@@ -203,6 +215,7 @@ export class CollectionView extends GameObjects.Container {
         this.scrollView?.bringToFirst(false)
 
         //TODO : Fetch data with isAlreadyOpen
+        APILoadingManager.instance.showMiniLoading()
         this.recipePod
             .getUserRecipeData()
             .pipe(
@@ -219,6 +232,8 @@ export class CollectionView extends GameObjects.Container {
                     this.scrollView?.setActiveScrollView(true, this.isTween)
                     this.isTween = true
                     this.collectionPod.isAlreadyOpen = true
+
+                    APILoadingManager.instance.hideMiniLoading()
                 })
             )
             .subscribe()
@@ -232,7 +247,7 @@ export class CollectionView extends GameObjects.Container {
 
             let groupPage = this.recipePod.groupByPerCount(recipeBean, countGroupPerPage)
 
-            groupPage.forEach((group) => {
+            groupPage.forEach((group, indexPage) => {
                 let container = this.scene.add.container(0, 0)
                 let page = this.scene.add.rectangle(0, 0, width, height, 0xff0000, 0)
                 container.add(page)
@@ -254,7 +269,8 @@ export class CollectionView extends GameObjects.Container {
                         halfData,
                         rowCountColumn,
                         2,
-                        centerHalfPagePosition
+                        centerHalfPagePosition,
+                        indexPage
                     )
                 })
 
@@ -265,11 +281,11 @@ export class CollectionView extends GameObjects.Container {
             let countGroupPerPage = window.innerWidth >= GameConfig.MAX_SIZE_WIDTH_MOBILE_SCREEN ? 6 : 4
 
             let groupPage = this.recipePod.groupByPerCount(recipeBean, countGroupPerPage)
-            groupPage.forEach((group) => {
+            groupPage.forEach((group, index) => {
                 let container = this.scene.add.container(0, 0)
                 let page = this.scene.add.rectangle(0, 0, width, height, 0xff0000, 0)
                 container.add([page])
-                this.createCellAndSetGrid(container, 20, 10, 0, 0, group, rowCount, 2, 0)
+                this.createCellAndSetGrid(container, 20, 10, 0, 0, group, rowCount, 2, 0, index)
                 this.scrollView.addChildIntoContainer(container)
             })
         }
@@ -284,15 +300,17 @@ export class CollectionView extends GameObjects.Container {
         beanArr: RecipeBean[],
         row: number,
         column: number,
-        positionXRect: number
+        positionXRect: number,
+        index: number
     ) {
         let spacingWidth = spacingW
         let spacingHeight = spacingH
 
         let containerGroupCell = this.scene.add.container(containerGroupX, containerGroupY).setScale(1)
+
         beanArr.forEach((x) => {
             let cell = new CollectionCellView(this.scene)
-            cell.doInit(x)
+            cell.doInit(x, index)
             containerGroupCell.add(cell)
             this.collectionCellViews.push(cell)
         })
@@ -367,6 +385,10 @@ export class CollectionView extends GameObjects.Container {
                 24
             )
 
+            this.scrollView.setCallbackOnEndScroll(() => {
+                this.scrollView.doOnEndScroll(this.collectionCellViews)
+            }, 0)
+
             this.collectionFilterView = new CollectionFilterView(this.scene)
             this.collectionFilterView.doInit(
                 -78,
@@ -397,6 +419,10 @@ export class CollectionView extends GameObjects.Container {
                 24,
                 17
             )
+
+            this.scrollView.setCallbackOnEndScroll(() => {
+                this.scrollView.doOnEndScroll(this.collectionCellViews)
+            }, -20)
 
             this.collectionFilterView = new CollectionFilterView(this.scene)
             this.collectionFilterView.doInit(
@@ -440,12 +466,7 @@ export class CollectionView extends GameObjects.Container {
 
         this.iconHeader = this.scene.add.image(-95, -30, 'icon-header').setScale(1)
 
-        this.headerText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('COLLECTIONS')
-            .setOrigin(0.5)
-            .setPosition(35, -12)
-            .setStyle({ fill: '#FFFFFF', fontSize: 36 })
+        this.headerText = new BoldText(this.scene, 35, -12, 'COLLECTIONS', 36)
 
         this.collectionHeaderContainer = this.scene.add.container(
             -this.collectionsDesktopBackground.displayWidth / 2 + 240,
@@ -484,12 +505,7 @@ export class CollectionView extends GameObjects.Container {
 
         this.iconHeader = this.scene.add.image(-75, -20, 'icon-header').setScale(0.8)
 
-        this.headerText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('COLLECTIONS')
-            .setOrigin(0.5)
-            .setPosition(28, -10)
-            .setStyle({ fill: '#FFFFFF', fontSize: 28 })
+        this.headerText = new BoldText(this.scene, 28, -10, 'COLLECTIONS', 28)
 
         let positionButton = this.inverseNormalize(
             0.5,
@@ -524,12 +540,7 @@ export class CollectionView extends GameObjects.Container {
             10
         )
 
-        this.currentCollectedText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Collected ??/??')
-            .setOrigin(0.5, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#0099FF', fontSize: 22 })
+        this.currentCollectedText = new BoldText(this.scene, 0, -4, 'Collected ??/??', 22, '#0099FF')
 
         this.collectionCollectedContainer.add([this.currentCollectedImage, this.currentCollectedText])
 
@@ -546,12 +557,10 @@ export class CollectionView extends GameObjects.Container {
             .nineslice(10, 0, 'white-bg-count', '', 30, 36, 20, 20, 10, 10)
             .setOrigin(1, 0.5)
 
-        this.currentCollectedText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Collected ?/??')
-            .setOrigin(1, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#0099FF', fontSize: 22 })
+        this.currentCollectedText = new BoldText(this.scene, 0, -2, 'Collected ?/??', 22, '#0099FF', 0, -4).setOrigin(
+            1,
+            0.5
+        )
 
         this.currentCollectedImage.width = this.currentCollectedText.getBounds().width + 20
 

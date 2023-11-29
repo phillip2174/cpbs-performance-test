@@ -244,6 +244,34 @@
                 "key": "loading-text",
                 "url": "assets/town/loading-text.png",
                 "frameConfig": { "frameWidth": 37, "frameHeight": 20 }
+            },
+            {
+                "type": "atlas",
+                "key": "led-smile-01",
+                "atlasURL": "assets/town/3d_billboard/spritesheet/led-smile-01.json",
+                "textureURL": "assets/town/3d_billboard/spritesheet/led-smile-01.png"
+            },
+            {
+                "type": "atlas",
+                "key": "led-smile-02",
+                "atlasURL": "assets/town/3d_billboard/spritesheet/led-smile-02.json",
+                "textureURL": "assets/town/3d_billboard/spritesheet/led-smile-02.png"
+            },
+            {
+                "type": "spritesheet",
+                "key": "mini-food-truck",
+                "url": "assets/town/mini-food-truck.png",
+                "frameConfig": { "frameWidth": 125, "frameHeight": 130 }
+            },
+            {
+                "type": "image",
+                "key": "cheese",
+                "url": "assets/town/cheese.png"
+            },
+            {
+                "type": "image",
+                "key": "tomato",
+                "url": "assets/town/tomato.png"
             }
         ]
     }

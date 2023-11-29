@@ -3,6 +3,6 @@ export enum IngredientType {
     Vegetable = 'Vegetable',
     FreshFood = 'FreshFood',
     Sausage = 'Sausage',
-    Condiments = 'Condiments',
-    Noodles = 'Noodles',
+    Condiments = 'Condiment',
+    Noodles = 'Noodle',
 }

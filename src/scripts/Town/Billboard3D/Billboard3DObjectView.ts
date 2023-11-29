@@ -6,8 +6,8 @@ import { PodProvider } from '../../pod/PodProvider'
 
 export class Billboard3DObjectView extends GameObjects.GameObject {
     public static readonly DELAY_SHOW_PRODUCT: number = 2000
-    public static readonly DELAY_SHOW_CP_LED: number = 2000
-    public static readonly DEPTH_3D_BILLBOARD: number = 4
+    public static readonly DELAY_SHOW_CP_LED: number = 3200
+    public static readonly DEPTH_3D_BILLBOARD: number = 5
 
     private billboard1Image: GameObjects.Image
     private billboard2Image: GameObjects.Image
@@ -16,7 +16,7 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
 
     private billboardFoodPlateImage: GameObjects.Image
 
-    private billboardCPCoverImage: GameObjects.Image
+    private billboardCPCoverImage: GameObjects.Sprite
 
     private mainCamera: Phaser.Cameras.Scene2D.Camera
 
@@ -26,12 +26,13 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
     private onOpenCPCoverTween: Tweens.Tween
     private onCloseCPCoverTween: Tweens.Tween
 
-    private is3DBillboardIsRunning: boolean
+    private is3DBillboardIsRunning: boolean = false
 
     private billboardObjectPod: BillboardObjectPod
 
     private showProductTimerSubscription: Subscription
     private showCPLedTimerSubscription: Subscription
+    private closeCPLedTimerSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene, 'gameObject')
@@ -47,7 +48,6 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
         this.createCPCoverTween()
         this.createBillboardImage()
 
-        this.is3DBillboardIsRunning = false
         this.playTween3DBillboard()
 
         /*this.scene.add.rectangle(this.mainCamera.centerX, this.mainCamera.centerY, 100, 100, 0xcecece, 1)
@@ -67,13 +67,13 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
 
     private setupBillboard3DImage() {
         this.billboard1Image = this.scene.add
-            .image(this.mainCamera.centerX + 110, this.mainCamera.centerY - 215, '3d-billboard-01-04')
+            .image(this.mainCamera.centerX + 115, this.mainCamera.centerY - 230, '3d-billboard-01-04')
             .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.billboard2Image = this.scene.add
-            .image(this.mainCamera.centerX + 170, this.mainCamera.centerY - 185, '3d-billboard-01-03')
+            .image(this.mainCamera.centerX + 170, this.mainCamera.centerY - 195, '3d-billboard-01-03')
             .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
@@ -97,22 +97,29 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
             .setAlpha(1)
 
         this.billboardCPCoverImage = this.scene.add
-            .image(this.mainCamera.centerX + 350, this.mainCamera.centerY - 115, '3d-billboard-led-cp')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
-            .setOrigin(0.5)
-            .setScale(0.62)
-            .setAlpha(1)
+            .sprite(this.mainCamera.centerX + 355, this.mainCamera.centerY - 117, '')
+            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD + 2)
+            .setScale(1.95)
     }
 
     private playTween3DBillboard() {
         if (this.is3DBillboardIsRunning) return
-
-        this.startTween3DBillboard()
-        this.is3DBillboardIsRunning = true
+        this.resetOnStop3DBillboardTween()
+        this.billboardCPCoverImage.play(`led-pixel-smile-${this.billboardObjectPod.currentLEDPixelIndex}`)
+        this.showCPLedTimerSubscription = timer(Billboard3DObjectView.DELAY_SHOW_CP_LED).subscribe((onComplete) => {
+            this.startTween3DBillboard()
+            this.billboardObjectPod.updateIndex3DPixelIndex()
+            this.is3DBillboardIsRunning = true
+        })
     }
 
     private startTween3DBillboard() {
         this.resetOpenTweenProductAndRandomProductGroup()
+
+        this.closeCPLedTimerSubscription = timer(200).subscribe((onComplete) => {
+            this.onCloseCPCoverTween?.restart()
+        })
+
         this.onOpenProductTweenChain.restart()
     }
 
@@ -173,13 +180,13 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
             persist: true,
             paused: true,
             onComplete: () => {
-                if (this.is3DBillboardIsRunning) {
-                    this.showCPLedTimerSubscription = timer(Billboard3DObjectView.DELAY_SHOW_CP_LED).subscribe(
-                        (onComplete) => {
-                            this.startTween3DBillboard()
-                        }
-                    )
-                }
+                this.billboardCPCoverImage.play(`led-pixel-smile-${this.billboardObjectPod.currentLEDPixelIndex}`)
+                this.showCPLedTimerSubscription = timer(Billboard3DObjectView.DELAY_SHOW_CP_LED).subscribe(
+                    (onComplete) => {
+                        this.startTween3DBillboard()
+                        this.billboardObjectPod.updateIndex3DPixelIndex()
+                    }
+                )
             },
         })
 
@@ -189,7 +196,7 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
             ease: 'linear',
             props: {
                 alpha: {
-                    from: 1,
+                    from: this.billboardCPCoverImage.alpha,
                     to: 0,
                 },
             },
@@ -205,22 +212,21 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
                     targets: this.billboard1Image,
                     duration: 200,
                     props: {
-                        x: this.mainCamera.centerX + 120,
-                        y: this.mainCamera.centerY - 210,
+                        x: this.mainCamera.centerX + 125,
+                        y: this.mainCamera.centerY - 225,
                         alpha: {
                             from: 0,
                             to: 1,
                         },
                     },
                     ease: 'cubic.inout',
-                    onComplete: () => this.onCloseCPCoverTween.restart(),
                 },
                 {
                     targets: this.billboard1Image,
                     duration: 100,
                     props: {
-                        x: this.mainCamera.centerX + 110,
-                        y: this.mainCamera.centerY - 215,
+                        x: this.mainCamera.centerX + 115,
+                        y: this.mainCamera.centerY - 230,
                     },
                     ease: 'cubic.inout',
                 },
@@ -229,7 +235,7 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
                     duration: 200,
                     props: {
                         x: this.mainCamera.centerX + 190,
-                        y: this.mainCamera.centerY - 175,
+                        y: this.mainCamera.centerY - 185,
                         alpha: {
                             from: 0,
                             to: 1,
@@ -242,7 +248,7 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
                     duration: 100,
                     props: {
                         x: this.mainCamera.centerX + 170,
-                        y: this.mainCamera.centerY - 185,
+                        y: this.mainCamera.centerY - 195,
                     },
                     ease: 'cubic.inout',
                 },
@@ -393,5 +399,12 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
 
     private addZeroPad(num: number, place: number) {
         return String(num).padStart(place, '0')
+    }
+
+    destroy(fromScene?: boolean): void {
+        this.showProductTimerSubscription?.unsubscribe()
+        this.showCPLedTimerSubscription?.unsubscribe()
+        this.closeCPLedTimerSubscription?.unsubscribe()
+        super.destroy(fromScene)
     }
 }

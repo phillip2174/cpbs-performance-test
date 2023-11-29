@@ -15,6 +15,8 @@ import { TagBonusView } from '../../Recipe/TagBonusView'
 import { RecipePod } from '../../../pod/RecipePod'
 
 export class CollectionDetailCongratCellView extends GameObjects.Container {
+    public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 45
+    public static readonly LENGTH_CUT_TEXT_TITLE_MOBILE: number = 30
     public static readonly WIDTH_SIZE_BG_MOBILE: number = 311
     public static readonly HEIGHT_SIZE_BG_MOBILE: number = 464
     public static readonly WIDTH_SIZE_BG_DESKTOP: number = 480
@@ -43,6 +45,8 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
     private openTagCellTween: Tweens.TweenChain
     private openRecieveTextTween: Tweens.Tween
 
+    private isDesktop: boolean
+
     private selectedSubscription: Subscription
     private recipeBean: RecipeBean
 
@@ -56,6 +60,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
     public doInit() {
         this.collectionPod = PodProvider.instance.collectionPod
         this.recipePod = PodProvider.instance.recipePod
+        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
 
         this.createUI()
         this.createTween()
@@ -106,7 +111,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.positionTagRect = this.scene.add.rectangle(0, 165, 0, 0, 0xff00ff, 0)
 
         this.rewardPointCellView = new RewardPointCellView(this.scene, 0, 0)
-        this.rewardPointCellView.doInit()
+        this.rewardPointCellView.createLargeTag()
 
         this.tagBonusView = new TagBonusView(this.scene, 0, 0)
         this.tagBonusView.doInit()
@@ -161,7 +166,13 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.tagBonusView.setVisible(this.recipeBean.userRecipeBean.bonus != undefined)
 
         //let testArr = ['ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง', 'ไข่ตุ่นฟักทองไข่ตุ่นฟักทองไข่ตุ่นฟักทอง']
-        this.createTextCongratDesc(bean.title)
+        const title = TextAdapter.splitThaiStringByLegth(
+            bean.title,
+            this.isDesktop
+                ? CollectionDetailCongratCellView.LENGTH_CUT_TEXT_TITLE_DESKTOP
+                : CollectionDetailCongratCellView.LENGTH_CUT_TEXT_TITLE_MOBILE
+        )
+        this.createTextCongratDesc(title)
 
         this.collectionDetailRecipeTweenView.setupCookedStateTween()
         this.collectionDetailRecipeTweenView.setRecipe(CollectionDetailCongratCellView.RECIPE_KEY_IMAGE + bean.id)
@@ -203,7 +214,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         let maxArrIndex = mapDesc.length - 1
         mapDesc[0] = `"${mapDesc[0]}`
         mapDesc[maxArrIndex] = `${mapDesc[maxArrIndex]}"`
-        mapDesc.push(`ปรุงเสร็จแล้ว คุณได้รับ`)
+        mapDesc.push(`ปรุงเสร็จแล้วคุณได้รับ`)
 
         mapDesc.forEach((line) => {
             let lineGroup: GameObjects.Container = this.scene.add.container()
@@ -263,10 +274,12 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.selectedSubscription = this.collectionPod.currentDetailRecipeSelected.subscribe((bean) => {
             this.recipeBean = bean
             if (this.recipeBean.userRecipeBean?.state == CookState.Cooked) {
-                this.rewardPointCellView.setPointRewardCell(bean)
+                this.rewardPointCellView.setPointCell(bean.rewardPoint.toString())
                 this.setupCookedStateTween(bean)
             }
         })
+
+        this.on('destroy', () => { this.selectedSubscription?.unsubscribe() })
     }
 
     private createTween() {
@@ -328,7 +341,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
                             to: 1,
                         },
                     },
-                    onComplete: () => {},
+                    onComplete: () => { },
                     ease: 'linear',
                 },
             ],

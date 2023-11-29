@@ -3,12 +3,12 @@ import { CookState } from './type/CookState'
 import { SecretRecipeBean } from './SecretRecipeBean'
 import { IngredientDesc } from './IngredientDescBean'
 import { UserRecipe } from './UserRecipe'
-import { IngredientBean } from '../../Guideline/IngredientBean'
+import { IngredientBean } from '../../Ingredient/IngredientBean'
 
 export class RecipeBean {
     public id: number
-    public title: string[]
-    public description: string[]
+    public title: string
+    public description: string
     public type: RecipeType
     public secretUnlock: SecretRecipeBean
     public rewardPoint: number
@@ -19,8 +19,8 @@ export class RecipeBean {
 
     constructor(
         id: number,
-        title: string[],
-        description: string[],
+        title: string,
+        description: string,
         type: RecipeType,
         secretUnlock: SecretRecipeBean,
         rewardPoint: number,

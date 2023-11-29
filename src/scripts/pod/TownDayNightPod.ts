@@ -22,4 +22,8 @@ export class TownDayNightPod {
     public setTownTimeState(state: TownTimeState): void {
         this.townTimeState.next(state)
     }
+
+    public getTownTimeState(): TownTimeState {
+        return this.townTimeState.getValue()
+    }
 }

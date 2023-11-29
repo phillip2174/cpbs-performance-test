@@ -2,6 +2,7 @@ import { GameObjects, Scene } from 'phaser'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { BonusBean } from './BonusBean'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class TagBonusView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
@@ -22,12 +23,10 @@ export class TagBonusView extends GameObjects.Container {
             .setDisplaySize(28, 28)
             .setSize(28, 28)
 
-        this.bonusText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('+?')
-            .setOrigin(1, 0.5)
-            .setPosition(this.tagBackground.width / 2 - 11, -3)
-            .setStyle({ fill: '#EE843C', fontSize: 28 })
+        this.bonusText = new BoldText(this.scene, this.tagBackground.width / 2 - 11, -3, '+?', 28, '#EE843C').setOrigin(
+            1,
+            0.5
+        )
 
         this.add([this.tagBackground, this.bonusIcon, this.bonusText])
 

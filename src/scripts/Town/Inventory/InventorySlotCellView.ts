@@ -2,13 +2,17 @@ import { GameObjects, Scene } from 'phaser'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { InventoryItemBean } from './InventoryItemBean'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class InventorySlotCellView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
     private slotBackground: GameObjects.NineSlice
     private ingredientImage: GameObjects.Image
+    private circleNotification: GameObjects.Image
     private ingredientCountText: GameObjects.Text
     private inventoryItemBean: InventoryItemBean
+
+    private isDesktop: boolean
 
     constructor(scene: Scene) {
         super(scene)
@@ -16,13 +20,32 @@ export class InventorySlotCellView extends GameObjects.Container {
     }
 
     public doInit(x: number, y: number): void {
+        this.isDesktop = this.scene.sys.game.device.os.desktop
         this.setPosition(x, y)
 
-        this.scene.sys.game.device.os.desktop
-            ? (this.slotBackground = this.scene.add.nineslice(0, 0, 'ingredient-slot', '', 80, 80, 16, 16, 15, 15))
-            : (this.slotBackground = this.scene.add.nineslice(0, 0, 'ingredient-slot', '', 70, 70, 16, 16, 15, 15))
+        if (this.isDesktop) {
+            this.slotBackground = this.scene.add.nineslice(0, 0, 'ingredient-slot', '', 80, 80, 16, 16, 15, 15)
+            this.circleNotification = this.scene.add
+                .image(
+                    this.slotBackground.width / 2 - 13,
+                    -this.slotBackground.height / 2 + 13,
+                    'button-notification-bg'
+                )
+                .setScale(0.5)
+        } else {
+            this.slotBackground = this.scene.add.nineslice(0, 0, 'ingredient-slot', '', 70, 70, 16, 16, 15, 15)
+            this.circleNotification = this.scene.add
+                .image(
+                    this.slotBackground.width / 2 - 11,
+                    -this.slotBackground.height / 2 + 11,
+                    'button-notification-bg'
+                )
+                .setScale(0.48)
+        }
 
-        this.add([this.slotBackground])
+        this.circleNotification.setVisible(false)
+
+        this.add([this.slotBackground, this.circleNotification])
     }
 
     public setIngredientInCell(inventoryItemBean: InventoryItemBean): void {
@@ -34,12 +57,9 @@ export class InventorySlotCellView extends GameObjects.Container {
             InventorySlotCellView.INGREDIENT_IMAGE_KEY + this.inventoryItemBean.id
         )
 
-        this.ingredientCountText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('X' + this.inventoryItemBean.amount)
-            .setOrigin(1, 0.5)
+        this.ingredientCountText = new BoldText(this.scene, 0, 0, 'X' + this.inventoryItemBean.amount).setOrigin(1, 0.5)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (this.isDesktop) {
             this.ingredientImage.setDisplaySize(56, 56)
             this.ingredientImage.setSize(56, 56)
             this.ingredientCountText.setStyle({ fill: '#585858', fontSize: 18 })
@@ -52,5 +72,9 @@ export class InventorySlotCellView extends GameObjects.Container {
         }
 
         this.add([this.ingredientImage, this.ingredientCountText])
+    }
+
+    public setNotificationVisible(isVisible: boolean): void {
+        this.circleNotification.setVisible(isVisible)
     }
 }

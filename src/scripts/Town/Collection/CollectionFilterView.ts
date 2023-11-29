@@ -15,6 +15,8 @@ export class CollectionFilterView extends GameObjects.Container {
     private collectionFilterCellContainer: GameObjects.Container
     private collectionAlignFilterCellContainer: GameObjects.Container
 
+    private cellFilters: CollectionFilterCellView[] = []
+
     private scrollView: ScrollViewNormalAndPagination
 
     private stateSubscription: Subscription
@@ -22,6 +24,7 @@ export class CollectionFilterView extends GameObjects.Container {
 
     private collectionPod: CollectionPod
     private townUIPod: TownUIPod
+    dragSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene)
@@ -46,11 +49,16 @@ export class CollectionFilterView extends GameObjects.Container {
             }
         })
 
-        this.scrollView?.isDrag.subscribe((x) => {
+       this.dragSubscription =  this.scrollView?.isDrag.subscribe((x) => {
             this.collectionPod.isDragScrollViewFilter = x
         })
 
         this.setActiveFilter(this.townUIPod.townUIState.value == TownUIState.Collection, false)
+        
+        this.on('destroy',() => {
+            this.stateSubscription?.unsubscribe()
+            this.dragSubscription?.unsubscribe()
+        })
     }
 
     public updateCurrentScrollViewLayer(layer: number) {
@@ -98,23 +106,37 @@ export class CollectionFilterView extends GameObjects.Container {
         this.scrollView.setInitPosXOffset(20)
         // this.scrollView.openDebugCheck()
 
+        this.scrollView.setCallbackOnEndScroll(
+            () => {
+                this.scrollView.doOnEndScroll(this.cellFilters)
+            },
+            0,
+            3
+        )
+
         let collectionAllFilterCellView = new CollectionFilterCellView(this.scene)
-        collectionAllFilterCellView.doInit(RecipeFilterType.All, 37, 0x0099ff)
+        collectionAllFilterCellView.doInit(RecipeFilterType.All, 37, 0x0099ff, 0)
+        this.cellFilters.push(collectionAllFilterCellView)
 
         let collectionEasyFilterCellView = new CollectionFilterCellView(this.scene)
-        collectionEasyFilterCellView.doInit(RecipeFilterType.Easy, 37, 0x29cc6a)
+        collectionEasyFilterCellView.doInit(RecipeFilterType.Easy, 37, 0x29cc6a, 1)
+        this.cellFilters.push(collectionEasyFilterCellView)
 
         let collectionNormalFilterCellView = new CollectionFilterCellView(this.scene)
-        collectionNormalFilterCellView.doInit(RecipeFilterType.Normal, 37, 0xffbf3c)
+        collectionNormalFilterCellView.doInit(RecipeFilterType.Normal, 37, 0xffbf3c, 2)
+        this.cellFilters.push(collectionNormalFilterCellView)
 
         let collectionHardFilterCellView = new CollectionFilterCellView(this.scene)
-        collectionHardFilterCellView.doInit(RecipeFilterType.Hard, 37, 0xee843c)
+        collectionHardFilterCellView.doInit(RecipeFilterType.Hard, 37, 0xee843c, 3)
+        this.cellFilters.push(collectionHardFilterCellView)
 
         let collectionChallengeFilterCellView = new CollectionFilterCellView(this.scene)
-        collectionChallengeFilterCellView.doInit(RecipeFilterType.Challenge, 37, 0x7b61ff)
+        collectionChallengeFilterCellView.doInit(RecipeFilterType.Challenge, 37, 0x7b61ff, 4)
+        this.cellFilters.push(collectionChallengeFilterCellView)
 
         let collectionSecretFilterCellView = new CollectionFilterCellView(this.scene)
-        collectionSecretFilterCellView.doInit(RecipeFilterType.Secret, 37, 0x0060d0)
+        collectionSecretFilterCellView.doInit(RecipeFilterType.Secret, 37, 0x0060d0, 5)
+        this.cellFilters.push(collectionSecretFilterCellView)
 
         this.scrollView.addChildIntoContainer(collectionAllFilterCellView)
         this.scrollView.addChildIntoContainer(collectionEasyFilterCellView)

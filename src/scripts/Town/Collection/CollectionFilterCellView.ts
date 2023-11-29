@@ -6,14 +6,18 @@ import { CollectionPod } from '../Pod/CollectionPod'
 import { PodProvider } from '../../pod/PodProvider'
 import { RecipeFilterType } from '../Recipe/RecipeFilterType'
 import { Subscription } from 'rxjs'
+import { BoldText } from '../../../BoldText/BoldText'
+import { AudioManager } from '../../Audio/AudioManager'
 
-export class CollectionFilterCellView extends GameObjects.Container {
+export class CollectionFilterCellView extends GameObjects.Container implements IScrollViewCallBack {
+    public cellPageIndex: number
+
     private filterType: RecipeFilterType
     private buttonFilter: Button
 
     private filterBackground: GameObjects.NineSlice
     private selectedBackground: GameObjects.NineSlice
-    private circleNotification: GameObjects.Arc
+    private circleNotification: GameObjects.Image
 
     private filterText: GameObjects.Text
     private stateFilterSubscription: Subscription
@@ -31,22 +35,21 @@ export class CollectionFilterCellView extends GameObjects.Container {
     private onHoverNotificationTween: Tweens.Tween
     private onLeaveNotificationTween: Tweens.Tween
 
+    private audioManager: AudioManager
+
     private collectionPod: CollectionPod
     constructor(scene: Scene) {
         super(scene)
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(filterType: RecipeFilterType, height: number, color: number) {
+    public doInit(filterType: RecipeFilterType, height: number, color: number, cellPageIndex: number = 0) {
         this.collectionPod = PodProvider.instance.collectionPod
+        this.audioManager = PodProvider.instance.audioManager
         this.filterType = filterType
+        this.cellPageIndex = cellPageIndex
 
-        this.filterText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(filterType.toString())
-            .setOrigin(0.5, 0.5)
-            .setPosition(0, -4)
-            .setStyle({ fill: '#FFFFFF', fontSize: 22 })
+        this.filterText = new BoldText(this.scene, 0, -4, filterType.toString(), 22)
 
         let isDesktop = this.scene.sys.game.device.os.desktop
         this.filterBackground = this.scene.add
@@ -81,7 +84,7 @@ export class CollectionFilterCellView extends GameObjects.Container {
             )
             .setOrigin(0.5, isDesktop ? 1 : 0.5)
 
-        this.circleNotification = this.scene.add.circle(0, 0, 4, 0xdf2b41).setVisible(false)
+        this.circleNotification = this.scene.add.image(0, 0, 'button-notification-bg').setVisible(false).setScale(0.48)
 
         if (isDesktop) {
             this.circleNotification.setPosition(
@@ -112,6 +115,16 @@ export class CollectionFilterCellView extends GameObjects.Container {
         this.height = this.getBounds().height
     }
 
+    public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (isCanInteract) {
+            // this.setVisible(true)
+            this.buttonFilter.setCanInteract(true, false)
+        } else {
+            //this.setVisible(false)
+            this.buttonFilter.setCanInteract(false, false)
+        }
+    }
+
     private setActionFilter() {
         this.stateFilterSubscription = this.collectionPod.collectionFilterState.subscribe((state) => {
             this.setActiveSelected(state == this.filterType)
@@ -132,6 +145,7 @@ export class CollectionFilterCellView extends GameObjects.Container {
 
         this.buttonFilter?.onClick(() => {
             if (!this.collectionPod.isDragScrollViewFilter) {
+                this.audioManager.playSFXSound('collection_page_flip_sfx')
                 this.collectionPod.changeStateFilter(this.filterType)
             }
         })
@@ -145,6 +159,11 @@ export class CollectionFilterCellView extends GameObjects.Container {
                 this.onLeaveButton()
             })
         }
+
+        this.on('destroy', () => {
+            this.stateFilterSubscription?.unsubscribe()
+            this.notificationFilterSubscription?.unsubscribe()
+        })
     }
 
     private setActiveSelected(isActive: boolean) {

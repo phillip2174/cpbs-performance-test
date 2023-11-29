@@ -28,7 +28,7 @@
         "interactY": -120,
         "interactWidth": 300,
         "interactHeight": 182,
-        "depth": 4,
+        "depth": 10,
         "isRandomizable": false,
         "keyAsset": "cloud-ham"
     },
@@ -61,7 +61,7 @@
         "interactY": 0,
         "interactWidth": 30,
         "interactHeight": 30,
-        "depth": 7,
+        "depth": 10,
         "isRandomizable": true,
         "keyAsset": ""
     },
@@ -94,7 +94,7 @@
         "interactY": 0,
         "interactWidth": 30,
         "interactHeight": 30,
-        "depth": 4,
+        "depth": 10,
         "isRandomizable": true,
         "keyAsset": ""
     },
@@ -127,7 +127,7 @@
         "interactY": 0,
         "interactWidth": 30,
         "interactHeight": 30,
-        "depth": 4,
+        "depth": 10,
         "isRandomizable": true,
         "keyAsset": ""
     },
@@ -160,7 +160,7 @@
         "interactY": 0,
         "interactWidth": 30,
         "interactHeight": 30,
-        "depth": 4,
+        "depth": 10,
         "isRandomizable": true,
         "keyAsset": ""
     },
@@ -274,7 +274,7 @@
         "interactY": -50,
         "interactWidth": 120,
         "interactHeight": 90,
-        "depth": 4,
+        "depth": 6,
         "isRandomizable": false,
         "keyAsset": "makro-door"
     },
@@ -312,7 +312,7 @@
         "interactY": -40,
         "interactWidth": 75,
         "interactHeight": 100,
-        "depth": 4,
+        "depth": 6,
         "isRandomizable": false,
         "keyAsset": "7-11-door"
     },
@@ -383,7 +383,7 @@
         "interactY": -95,
         "interactWidth": 90,
         "interactHeight": 120,
-        "depth": 4,
+        "depth": 8,
         "isRandomizable": false,
         "keyAsset": "red-umbrella"
     },
@@ -454,7 +454,7 @@
         "interactY": -200,
         "interactWidth": 160,
         "interactHeight": 260,
-        "depth": 3,
+        "depth": 2,
         "isRandomizable": false,
         "keyAsset": "tree"
     },
@@ -553,7 +553,7 @@
         "interactY": -28,
         "interactWidth": 60,
         "interactHeight": 55,
-        "depth": 5,
+        "depth": 6,
         "isRandomizable": false,
         "keyAsset": "flower-bush"
     },
@@ -586,7 +586,7 @@
         "interactY": -28,
         "interactWidth": 60,
         "interactHeight": 55,
-        "depth": 6,
+        "depth": 8,
         "isRandomizable": false,
         "keyAsset": "flower-bush"
     },
@@ -619,7 +619,7 @@
         "interactY": -28,
         "interactWidth": 60,
         "interactHeight": 55,
-        "depth": 5,
+        "depth": 7,
         "isRandomizable": false,
         "keyAsset": "flower-bush"
     },
@@ -652,7 +652,7 @@
         "interactY": -28,
         "interactWidth": 60,
         "interactHeight": 55,
-        "depth": 4,
+        "depth": 6,
         "isRandomizable": false,
         "keyAsset": "flower-bush"
     },
@@ -685,9 +685,46 @@
         "interactY": 0,
         "interactWidth": 30,
         "interactHeight": 30,
-        "depth": 7,
+        "depth": 10,
         "isRandomizable": true,
         "keyAsset": ""
+    },
+    {
+        "id": 27,
+        "typeAnimation": "Toggle",
+        "animationWithStateBeans": [
+            {
+                "stateType": "Idle",
+                "animKey": "mini-food-truck-idle-open",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition1",
+                "animKey": "mini-food-truck-close",
+                "animTime": 1000
+            },
+            {
+                "stateType": "End",
+                "animKey": "mini-food-truck-idle-close",
+                "animTime": -1
+            },
+            {
+                "stateType": "Transition2",
+                "animKey": "mini-food-truck-open",
+                "animTime": 1000
+            }
+        ],
+        "typeAsset": "SpriteSheet",
+        "positionX": 812,
+        "positionY": 520,
+        "scaleX": 1,
+        "scaleY": 1,
+        "interactX": 0,
+        "interactY": 20,
+        "interactWidth": 130,
+        "interactHeight": 70,
+        "depth": 5,
+        "keyAsset": "mini-food-truck"
     },
     {
         "id": 99,

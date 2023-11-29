@@ -1,9 +1,9 @@
 [
-    { "uid": "02", "id": 1, "type": "FreshFood", "amount": 2 },
-    { "uid": "01", "id": 4, "type": "Noodles", "amount": 4 },
-    { "uid": "02", "id": 2, "type": "FreshFood", "amount": 3 },
+    { "uid": "02", "id": 1, "type": "FreshFood", "amount": 2, "updatedDate": 1698998220 },
+    { "uid": "01", "id": 4, "type": "Noodle", "amount": 4, "updatedDate": 1699011030 },
+    { "uid": "02", "id": 2, "type": "FreshFood", "amount": 3, "updatedDate": 1698998220 },
     { "uid": "03", "id": 3, "type": "Vegetable", "amount": 2 },
     { "uid": "04", "id": 10, "type": "FreshFood", "amount": 2 },
-    { "uid": "05", "id": 9, "type": "Condiments", "amount": 31 },
+    { "uid": "05", "id": 9, "type": "Condiment", "amount": 31 },
     { "uid": "06", "id": 16, "type": "Meat", "amount": 100 }
 ]

@@ -1,0 +1,734 @@
+{
+	"textures": [
+		{
+			"image": "led-smile-02.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1775,
+				"h": 1918
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "shy-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 1,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 1,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 1,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1421,
+						"y": 1,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 275,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 549,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 823,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-8.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 1097,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-9.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 1371,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-10.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1,
+						"y": 1645,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-11.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 275,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-12.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 275,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-13.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 275,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-14.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1421,
+						"y": 275,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-15.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 549,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-16.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 823,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-17.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 1097,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-18.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 1371,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-19.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 356,
+						"y": 1645,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-20.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 549,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-21.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 549,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-22.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1421,
+						"y": 549,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-23.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 823,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-24.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 823,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-25.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1421,
+						"y": 823,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-26.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 1097,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-27.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 1371,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-28.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 711,
+						"y": 1645,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-29.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 1097,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-30.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1421,
+						"y": 1097,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-31.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 1371,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-32.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1066,
+						"y": 1645,
+						"w": 353,
+						"h": 272
+					}
+				},
+				{
+					"filename": "shy-33.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 353,
+						"h": 272
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 353,
+						"h": 272
+					},
+					"frame": {
+						"x": 1421,
+						"y": 1371,
+						"w": 353,
+						"h": 272
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:bb811fed342fba4168d48579694aabad:4ace5cbb661210b4b3c4355d7610df0a:54add6e46310e05d52d370fa933e4729$"
+	}
+}

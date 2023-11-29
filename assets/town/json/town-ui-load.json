@@ -13,38 +13,8 @@
             },
             {
                 "type": "image",
-                "key": "header-background",
-                "url": "assets/town/collection/header-background.png"
-            },
-            {
-                "type": "image",
                 "key": "icon-header",
                 "url": "assets/town/collection/icon-header.png"
-            },
-            {
-                "type": "image",
-                "key": "scroll-bar-background",
-                "url": "assets/scrollview/scroll-bar-background.png"
-            },
-            {
-                "type": "image",
-                "key": "scroll-bar-content",
-                "url": "assets/scrollview/scroll-bar-content.png"
-            },
-            {
-                "type": "image",
-                "key": "scroll-bar",
-                "url": "assets/scrollview/scroll-bar.png"
-            },
-            {
-                "type": "image",
-                "key": "arrow-icon",
-                "url": "assets/scrollview/arrow-icon.png"
-            },
-            {
-                "type": "image",
-                "key": "circle-button-background",
-                "url": "assets/scrollview/circle-button-background.png"
             },
             {
                 "type": "image",
@@ -58,8 +28,18 @@
             },
             {
                 "type": "image",
-                "key": "tag-bg",
-                "url": "assets/town/collection/tag-bg.png"
+                "key": "medium-tag",
+                "url": "assets/town/collection/medium-tag.png"
+            },
+            {
+                "type": "image",
+                "key": "small-tag",
+                "url": "assets/town/collection/small-tag.png"
+            },
+            {
+                "type": "image",
+                "key": "large-tag",
+                "url": "assets/town/collection/large-tag.png"
             },
             {
                 "type": "image",
@@ -105,11 +85,6 @@
                 "type": "image",
                 "key": "daily-login-button-icon",
                 "url": "assets/town/ui/daily-login-button-icon.png"
-            },
-            {
-                "type": "image",
-                "key": "minigame-button-icon",
-                "url": "assets/town/ui/minigame-button-icon.png"
             },
             {
                 "type": "image",
@@ -253,11 +228,6 @@
             },
             {
                 "type": "image",
-                "key": "coin-reward-bg",
-                "url": "assets/town/collection/coin-reward-bg.png"
-            },
-            {
-                "type": "image",
                 "key": "paper-bg",
                 "url": "assets/town/collection/details/paper-bg.png"
             },
@@ -375,9 +345,52 @@
                 "type": "image",
                 "key": "ui-button-selected-bg",
                 "url": "assets/town/ui/ui-button-selected-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "daily-login-big-cell-bg",
+                "url": "assets/town/daily_login/daily-login-big-cell-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "day-night-notice-night-icon",
+                "url": "assets/town/day_night/day-night-notice-night-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "day-night-notice-day-icon",
+                "url": "assets/town/day_night/day-night-notice-day-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "complete-ingredients-bg",
+                "url": "assets/town/ui/complete-ingredients-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "complete-ingredients-header",
+                "url": "assets/town/ui/complete-ingredients-header.png"
+            },
+            {
+                "type": "image",
+                "key": "complete-ingredients-guideline-bg",
+                "url": "assets/town/ui/complete-ingredients-guideline-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "ui-panel-bg-effect",
+                "url": "assets/town/ui/ui-panel-bg-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "next-ingredients-guideline-bg",
+                "url": "assets/town/ui/next-ingredients-guideline-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "clock-button",
+                "url": "assets/town/ui/clock-button.png"
             }
-
-           
         ]
     }
 }

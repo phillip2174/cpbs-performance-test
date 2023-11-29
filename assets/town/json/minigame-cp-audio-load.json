@@ -1,0 +1,102 @@
+{
+    "minigame-cp-audio-load": {
+        "files": [
+            {
+                "type": "audio",
+                "key": "minigame_bgm",
+                "url": "assets/audio/bgm/minigame_bgm.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "positive_click_sfx",
+                "url": "assets/audio/sfx/citygame/positive_click_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "negative_click_sfx",
+                "url": "assets/audio/sfx/citygame/negative_click_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "clock_ticking_01_sfx",
+                "url": "assets/audio/sfx/minigame/clock_ticking_01_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "jigsaw_puzzle_move_sfx",
+                "url": "assets/audio/sfx/minigame/jigsaw_puzzle_move_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "win_sfx",
+                "url": "assets/audio/sfx/minigame/win_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "lose_sfx",
+                "url": "assets/audio/sfx/minigame/lose_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "minigame_countdown_sfx",
+                "url": "assets/audio/sfx/minigame/minigame_countdown_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "star_01_sfx",
+                "url": "assets/audio/sfx/minigame/star_01_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "star_02_sfx",
+                "url": "assets/audio/sfx/minigame/star_02_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "star_03_sfx",
+                "url": "assets/audio/sfx/minigame/star_03_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "star_glow_effect_sfx",
+                "url": "assets/audio/sfx/minigame/star_glow_effect_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "ticket_tearing",
+                "url": "assets/audio/sfx/minigame/ticket_tearing.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "order_correct_sfx",
+                "url": "assets/audio/sfx/minigame/order-minigame/order_correct_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "order_incorrect_sfx",
+                "url": "assets/audio/sfx/minigame/order-minigame/order_incorrect_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "order_incoming_sfx",
+                "url": "assets/audio/sfx/minigame/order-minigame/order_incoming_sfx.mp3",
+                "autoDecode": true
+            }
+        ]
+    }
+}

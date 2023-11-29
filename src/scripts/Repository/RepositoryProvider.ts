@@ -7,6 +7,8 @@ import { InventoryRepository } from './InventoryRepository'
 import { LocalStorageRepository } from './LocalStorageRepository'
 import { DailyLoginRepository } from './DailyLoginRepository'
 import { UserRepository } from './UserRepository'
+import { MinigameRepository } from './MinigameRepository'
+import { TutorialRepository } from './TutorialRepository'
 
 export class RepositoryProvider {
     private static _instance: RepositoryProvider
@@ -60,5 +62,15 @@ export class RepositoryProvider {
     @LazyGetter()
     get userRepository(): UserRepository {
         return new UserRepository()
+    }
+
+    @LazyGetter()
+    get minigameRepository(): MinigameRepository {
+        return new MinigameRepository()
+    }
+
+    @LazyGetter()
+    get tutorialRepository(): TutorialRepository {
+        return new TutorialRepository()
     }
 }

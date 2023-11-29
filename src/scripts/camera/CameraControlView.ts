@@ -99,7 +99,7 @@ export class CameraControlView extends GameObjects.GameObject {
             this.dragEvent = this.scene.input.on('pointermove', (pointer) => {
                 this.setDragPointAndOffset(pointer)
                 switch (true) {
-                    case this.dragPoint.isDown && !this.cameraControlPod.isHoldingButton:
+                    case this.dragPoint.leftButtonDown() && !this.cameraControlPod.isHoldingButton:
                         this.dragCamera()
                         break
                 }
@@ -178,6 +178,12 @@ export class CameraControlView extends GameObjects.GameObject {
             } else {
                 this.disableCameraMovements()
             }
+        })
+
+        this.on('destroy', () => {
+            this.zoomValueSubscription?.unsubscribe()
+            this.cameraInteractSubscription?.unsubscribe()
+            this.delayMovingSubscription?.unsubscribe()
         })
     }
 

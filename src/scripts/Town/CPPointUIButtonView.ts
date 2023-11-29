@@ -7,6 +7,9 @@ import { PodProvider } from '../pod/PodProvider'
 import { Subscription, skip } from 'rxjs'
 import { TownUIState } from './Type/TownUIState'
 import { AnimationController } from './AnimationController'
+import { UserPod } from './Pod/UserPod'
+import { SceneState } from '../../scenes/SceneState'
+import { BoldText } from '../../BoldText/BoldText'
 
 export class CPPointUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
@@ -22,17 +25,20 @@ export class CPPointUIButtonView extends GameObjects.Container {
 
     private isDesktop: boolean
 
+    private userPod: UserPod
     private townUIPod: TownUIPod
 
     private stateSubscription: Subscription
+    private cpPointSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene)
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(x: number, y: number, iconKey: string, buttonText?: string): void {
+    public doInit(x: number, y: number, iconKey: string): void {
         this.townUIPod = PodProvider.instance.townUIPod
+        this.userPod = PodProvider.instance.userPod
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
         this.buttonPosX = x
         this.buttonPosY = y
@@ -51,12 +57,15 @@ export class CPPointUIButtonView extends GameObjects.Container {
 
         this.buttonIcon = this.scene.add.image(0, 0, iconKey + CPPointUIButtonView.ICON_IMAGE_KEY).setOrigin(0, 0.5)
 
-        this.buttonText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(buttonText)
-            .setOrigin(1, 0.5)
+        this.buttonText = new BoldText(
+            this.scene,
+            0,
+            0,
+            this.convertFormatPoint(this.userPod.userCPpoint.value)
+        ).setOrigin(1, 0.5)
 
         this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
+
         this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
 
         this.add([this.backgroundButton, this.buttonIcon, this.buttonText])
@@ -74,39 +83,62 @@ export class CPPointUIButtonView extends GameObjects.Container {
         this.setDepth(depth)
     }
 
+    private convertFormatPoint(point: number): string {
+        if (point > 99999) {
+            return new Intl.NumberFormat('en', {
+                notation: 'compact',
+                //@ts-ignore
+                roundingMode: 'floor',
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+            }).format(point)
+        } else {
+            return new Intl.NumberFormat().format(point)
+        }
+    }
+
     private setupSubscribe(): void {
         if (!this.isDesktop) return
-        this.stateSubscription = this.townUIPod.townUIState.pipe(skip(1)).subscribe((state) => {
-            if (state != TownUIState.MainMenu && state != TownUIState.DailyLogin && state != TownUIState.Settings) {
-                if (!this.townUIPod.isFinishChangeUITween) {
-                    this.setPosition(this.buttonPosX, this.buttonPosY - 65)
-                    this.setActiveButton(true, true)
-                }
-            } else if (state == TownUIState.MainMenu || state == TownUIState.DailyLogin) {
-                if (this.townUIPod.isFinishChangeUITween) {
-                    this.townUIPod.setIsFinishChangeUITween(false)
-                    this.setPosition(this.buttonPosX, this.buttonPosY)
-                    this.setActiveButton(true, true)
-                }
-            }
-        })
 
-        if (
-            this.townUIPod.townUIState.value != TownUIState.MainMenu &&
-            this.townUIPod.townUIState.value != TownUIState.DailyLogin &&
-            this.townUIPod.townUIState.value != TownUIState.Settings
-        ) {
-            this.townUIPod.setIsFinishChangeUITween(true)
-            this.setPosition(this.buttonPosX, this.buttonPosY - 65)
-            this.setActiveButton(true, false)
-        } else if (
-            this.townUIPod.townUIState.value == TownUIState.MainMenu ||
-            this.townUIPod.townUIState.value == TownUIState.DailyLogin
-        ) {
-            this.townUIPod.setIsFinishChangeUITween(false)
-            this.setPosition(this.buttonPosX, this.buttonPosY)
-            this.setActiveButton(true, false)
+        if (PodProvider.instance.splashPod.launchScene == SceneState.TownScene) {
+            this.stateSubscription = this.townUIPod.townUIState.pipe(skip(1)).subscribe((state) => {
+                if (state != TownUIState.MainMenu && state != TownUIState.DailyLogin && state != TownUIState.Settings) {
+                    if (!this.townUIPod.isFinishChangeUITween) {
+                        this.setPosition(this.buttonPosX, this.buttonPosY - 65)
+                        this.setActiveButton(true, true)
+                    }
+                } else if (state == TownUIState.MainMenu || state == TownUIState.DailyLogin) {
+                    if (this.townUIPod.isFinishChangeUITween) {
+                        this.townUIPod.setIsFinishChangeUITween(false)
+                        this.setPosition(this.buttonPosX, this.buttonPosY)
+                        this.setActiveButton(true, true)
+                    }
+                }
+            })
+
+            if (
+                this.townUIPod.townUIState.value != TownUIState.MainMenu &&
+                this.townUIPod.townUIState.value != TownUIState.DailyLogin &&
+                this.townUIPod.townUIState.value != TownUIState.Settings
+            ) {
+                this.townUIPod.setIsFinishChangeUITween(true)
+                this.setPosition(this.buttonPosX, this.buttonPosY - 65)
+                this.setActiveButton(true, false)
+            } else if (
+                this.townUIPod.townUIState.value == TownUIState.MainMenu ||
+                this.townUIPod.townUIState.value == TownUIState.DailyLogin
+            ) {
+                this.townUIPod.setIsFinishChangeUITween(false)
+                this.setPosition(this.buttonPosX, this.buttonPosY)
+                this.setActiveButton(true, false)
+            }
         }
+
+        this.cpPointSubscription = this.userPod.userCPpoint.subscribe((point) => {
+            this.buttonText.setText(this.convertFormatPoint(point))
+            this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
+            this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
+        })
     }
 
     private CheckHoverOnButton(): void {
@@ -130,19 +162,19 @@ export class CPPointUIButtonView extends GameObjects.Container {
     }
 
     private setupButtonMobile(): void {
-        this.buttonText.setPosition(-8, -4).setStyle({ fill: '#D97837', fontSize: 32 })
-        this.backgroundButton.setButtonSize(this.buttonText.width + 50, 42)
+        this.buttonText.setPosition(-8, -5).setStyle({ fill: '#D97837', fontSize: 32 })
+        this.backgroundButton.setButtonSize((this.buttonText.width <= 28 ? 25 : this.buttonText.width) + 50, 42)
         this.buttonIcon.setScale(0.85)
     }
 
     private setupButtonDesktop(): void {
         this.buttonText.setPosition(-15, -5).setStyle({ fill: '#D97837', fontSize: 36 })
-        this.backgroundButton.setButtonSize(this.buttonText.width + 65, 50)
+        this.backgroundButton.setButtonSize((this.buttonText.width <= 28 ? 28 : this.buttonText.width) + 65, 50)
     }
 
     private setActiveButton(isActive: boolean, isTween: boolean): void {
         if (isTween) {
-            this.onOpenTween.restart()
+            this.onOpenTween?.restart()
             this.setActive(true)
             this.setVisible(true)
         } else {
@@ -155,5 +187,12 @@ export class CPPointUIButtonView extends GameObjects.Container {
     private createTweens(): void {
         if (!this.isDesktop) return
         this.onOpenTween = AnimationController.instance.tweenOpenContainer(this.scene, this, () => {}).onOpenTween
+    }
+
+    destroy(fromScene?: boolean): void {
+        this.onOpenTween?.destroy()
+        this.stateSubscription?.unsubscribe()
+        this.cpPointSubscription?.unsubscribe()
+        super.destroy(fromScene)
     }
 }

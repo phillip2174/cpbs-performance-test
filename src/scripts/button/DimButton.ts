@@ -1,5 +1,7 @@
 import { GameObjects, Tweens } from 'phaser'
 import { AccessibilityButtonGroupView } from './../Town/AccessibilityButtonGroupView'
+import { PodProvider } from '../pod/PodProvider'
+import { AudioManager } from '../Audio/AudioManager'
 
 export class DimButton extends GameObjects.Container {
     private dimBackground: GameObjects.Rectangle
@@ -13,27 +15,41 @@ export class DimButton extends GameObjects.Container {
 
     private callBack: Function
 
+    private audioManager: AudioManager
+
     private onOpenRectTween: Tweens.Tween
     private onCloseRectTween: Tweens.Tween
 
-    constructor(scene: Phaser.Scene, dimValue: number = 0.5, isShowSprite: boolean = false) {
+    constructor(
+        scene: Phaser.Scene,
+        dimValue: number = 0.5,
+        isShowSprite: boolean = false,
+        keyImage: string = 'kitchen-bg'
+    ) {
         super(scene)
+        this.audioManager = PodProvider.instance.audioManager
+
         this.isShowSprite = isShowSprite
-        this.createUI(dimValue, isShowSprite)
+        this.createUI(dimValue, isShowSprite, keyImage)
         this.createAction()
         this.createTween()
     }
 
-    createUI(dimValue: number, isShowSprite: boolean) {
+    createUI(dimValue: number, isShowSprite: boolean, keyImage: string) {
         if (isShowSprite) {
-            this.dimSprite = this.scene.add
-                .image(0, 0, 'kitchen-bg')
-                .setOrigin(0.5)
-                .setDisplaySize(this.scene.cameras.main.width, this.scene.cameras.main.height)
-
             if (this.scene.sys.game.device.os.desktop) {
+                this.dimSprite = this.scene.add
+                    .image(0, 0, keyImage)
+                    .setOrigin(0.5)
+                    .setDisplaySize(this.scene.cameras.main.width, this.scene.cameras.main.height)
                 this.add(this.dimSprite)
             } else {
+                this.dimSprite = this.scene.add
+                    .image(0, 0, keyImage)
+                    .setOrigin(0.5)
+                    .setDisplaySize(2291, this.scene.cameras.main.height)
+                this.dimSprite.x = this.dimSprite.x + this.scene.cameras.main.width / 1.1
+
                 this.accessibilityButtonGroupView = new AccessibilityButtonGroupView(this.scene)
                 this.accessibilityButtonGroupView.doInit(0, 0)
 
@@ -51,6 +67,7 @@ export class DimButton extends GameObjects.Container {
         if (this.isShowSprite) {
             this.dimSprite?.setInteractive().on('pointerdown', () => {
                 if (!this.isCanInteract) return
+                this.audioManager.playSFXSound('negative_click_sfx')
                 this.isPointerDown = true
             })
 
@@ -65,6 +82,7 @@ export class DimButton extends GameObjects.Container {
         } else {
             this.dimBackground?.setInteractive().on('pointerdown', () => {
                 if (!this.isCanInteract) return
+                this.audioManager.playSFXSound('negative_click_sfx')
                 this.isPointerDown = true
             })
 

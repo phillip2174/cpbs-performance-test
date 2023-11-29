@@ -1,7 +1,7 @@
 import { GameObjects, Scene } from 'phaser'
 import { Observable, Subscription, of, tap, timer } from 'rxjs'
 import { GameConfig } from '../GameConfig'
-import { IngredientBean } from '../Guideline/IngredientBean'
+import { IngredientBean } from '../Ingredient/IngredientBean'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 import { PodProvider } from '../pod/PodProvider'
@@ -16,6 +16,9 @@ import { ObjectAnimationState } from './Type/ObjectAnimationState'
 import { ObjectAnimationType } from './Type/ObjectAnimationType'
 import { ObjectAssetType } from './Type/ObjectAssetType'
 import { CameraControlPod } from '../camera/CameraControlPod'
+import { TutorialStepState } from '../../Tutorial/TutorialStepState'
+import { TutorialState } from '../../Tutorial/TutorialState'
+import { AudioManager } from '../Audio/AudioManager'
 
 export class IngredientObjectView extends GameObjects.Container {
     public static readonly SPINE_PATH: string = `assets/spines/`
@@ -36,9 +39,12 @@ export class IngredientObjectView extends GameObjects.Container {
     private isCanToggle: boolean
     private isReapet: boolean
     private isInContainer: boolean
+    private isPointerDown: boolean
 
     private textStatusMock: GameObjects.Text
     private currentTween: Phaser.Tweens.Tween
+
+    private audioManager: AudioManager
 
     private pod: IngredientObjectPod
     private townBuildingPod: TownBuildingPod
@@ -52,6 +58,7 @@ export class IngredientObjectView extends GameObjects.Container {
         this.pod.SetIngredientObjectBean(bean)
         this.townBuildingPod = PodProvider.instance.townbuildingPod
         this.cameraPod = PodProvider.instance.cameraControlPod
+        this.audioManager = PodProvider.instance.audioManager
 
         this.isPickIngredient = isPickIngredient
 
@@ -63,7 +70,7 @@ export class IngredientObjectView extends GameObjects.Container {
         }
     }
 
-    public doInit(): Observable<any> {
+    public doInit() {
         let bean: IngredientObjectBean = this.pod.ingredientObjectBean
         switch (bean.typeAsset) {
             case ObjectAssetType.Spine:
@@ -73,23 +80,27 @@ export class IngredientObjectView extends GameObjects.Container {
                     x: 0,
                     y: 0,
                     key: bean.keyAsset,
-                    path: IngredientObjectView.SPINE_PATH,
                     startAnimation: bean.animationWithStateBeans[0].animKey,
                     isLooping: isLoop,
                 }
 
-                return ResourceManager.instance.loadSpine(this.scene, spineConfig).pipe(
-                    tap((spine) => {
-                        // console.log(spine)
-                        this.spineGameObject = spine
-                        this.add(this.spineGameObject as any)
-
-                        this.setPlayer()
-                        this.setInteractiveObject()
-                        this.setSubscribe()
-                        this.debugInteract()
-                    })
+                this.spineGameObject = this.scene.add.spine(
+                    spineConfig.x,
+                    spineConfig.y,
+                    spineConfig.key,
+                    spineConfig.startAnimation,
+                    spineConfig.isLooping
                 )
+
+                this.add(this.spineGameObject as any)
+
+                this.setPlayer()
+                this.setInteractiveObject()
+                this.setSubscribe()
+                this.debugInteract()
+
+                break
+
             case ObjectAssetType.Sprite:
                 this.spriteImageObject = this.scene.add.image(0, 0, bean.keyAsset)
                 this.add([this.spriteImageObject])
@@ -100,8 +111,7 @@ export class IngredientObjectView extends GameObjects.Container {
                 this.debugInteract()
 
                 // if (this.pod.ingredientObjectBean.isRandomizable) this.spriteImageObject.setTexture('ingredient_7')
-
-                return of(undefined)
+                break
             case ObjectAssetType.SpriteSheet:
                 this.spriteSheetObject = this.scene.add.sprite(0, 0, bean.keyAsset)
                 this.add([this.spriteSheetObject])
@@ -110,11 +120,13 @@ export class IngredientObjectView extends GameObjects.Container {
                 this.setInteractiveObject()
                 this.setSubscribe()
                 this.debugInteract()
-
-                return of(undefined)
+                break
         }
     }
 
+    public getIngredientObjectBean(): IngredientObjectBean {
+        return this.pod.ingredientObjectBean
+    }
     private setPlayer(): void {
         let bean = this.pod.ingredientObjectBean
 
@@ -201,6 +213,10 @@ export class IngredientObjectView extends GameObjects.Container {
                     break
             }
         })
+
+        this.on('destroy', () => {
+            this.stateAnimationSubscription?.unsubscribe()
+        })
     }
 
     private playAnimation(
@@ -281,6 +297,13 @@ export class IngredientObjectView extends GameObjects.Container {
             !this.pod.isActiveObject
         ) {
             this.pod.isActiveObject = true
+
+            if (!PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                if (this.pod.ingredientObjectBean.id == GameConfig.TUTORIAL_INGREDIENT_OBJECT_ID[0]) {
+                    PodProvider.instance.tutorialManager.updateCurrentToNextTutorial()
+                    PodProvider.instance.tutorialManager.setTutorialState(TutorialState.CountDown)
+                }
+            }
             this.townBuildingPod.interactObject(this.pod.ingredientID).subscribe((bean) => {
                 //Remove when have backend api
                 if (GameConfig.IS_MOCK_API) {
@@ -294,42 +317,68 @@ export class IngredientObjectView extends GameObjects.Container {
     }
 
     private setInteractiveObject() {
-        this.setInteractionOnButtonPointerUp()
+        this.setInteractionOnButtonPointer()
     }
 
-    private setInteractionOnButtonPointerUp(): void {
+    private setInteractionOnButtonPointer(): void {
+        this.interactZone?.setInteractive().on('pointerdown', () => {
+            this.isPointerDown = true
+        })
+
         this.interactZone.setInteractive().on('pointerup', () => {
             if (!this.cameraPod.isMovingCamera.value) {
-                let currentAnimationState = this.pod.currentAnimationState.value
-
-                if (this.isCanToggle) {
+                if (this.isPointerDown) {
                     if (
-                        (currentAnimationState == ObjectAnimationState.End ||
-                            currentAnimationState == ObjectAnimationState.Transition2) &&
-                        this.pod.ingredientObjectBean.typeAnimation == ObjectAnimationType.Repeat
+                        PodProvider.instance.tutorialManager.isCompletedTutorial(true, TutorialStepState.Welcome) &&
+                        this.pod.ingredientObjectBean.id == GameConfig.TUTORIAL_INGREDIENT_OBJECT_ID[0]
                     ) {
-                        this.isReapet = true
-                        if (currentAnimationState == ObjectAnimationState.Transition2) {
-                            this.pod.ChangeAnimationState(ObjectAnimationState.End)
-                        }
-                        this.endRepeatTimerAnimationSubscription?.unsubscribe()
-                        this.endRepeatTimerAnimationSubscription = timer(
-                            this.pod.getObjectAnimationBeanWithIndex(2).animTime
-                        ).subscribe((_) => {
-                            this.isReapet = false
-                        })
-                    } else {
-                        if (currentAnimationState == ObjectAnimationState.Idle) {
-                            this.pod.ChangeAnimationState(ObjectAnimationState.Transition1)
-                        }
-
-                        if (currentAnimationState == ObjectAnimationState.End) {
-                            this.pod.ChangeAnimationState(ObjectAnimationState.Transition2)
-                        }
+                        this.onOnPointerUp()
+                    } else if (
+                        PodProvider.instance.tutorialManager.isCompletedTutorial(
+                            true,
+                            TutorialStepState.CollectedFirstIngredient
+                        )
+                    ) {
+                        this.onOnPointerUp()
+                    } else if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                        this.onOnPointerUp()
                     }
                 }
             }
         })
+    }
+
+    private onOnPointerUp() {
+        let currentAnimationState = this.pod.currentAnimationState.value
+        this.audioManager.playSFXSound('interact_ingredient_sfx')
+        if (this.isCanToggle) {
+            if (
+                (currentAnimationState == ObjectAnimationState.End ||
+                    currentAnimationState == ObjectAnimationState.Transition2) &&
+                this.pod.ingredientObjectBean.typeAnimation == ObjectAnimationType.Repeat
+            ) {
+                this.isReapet = true
+                if (currentAnimationState == ObjectAnimationState.Transition2) {
+                    this.pod.ChangeAnimationState(ObjectAnimationState.End)
+                }
+                this.endRepeatTimerAnimationSubscription?.unsubscribe()
+                this.endRepeatTimerAnimationSubscription = timer(
+                    this.pod.getObjectAnimationBeanWithIndex(2).animTime
+                ).subscribe((_) => {
+                    this.isReapet = false
+                })
+            } else {
+                if (currentAnimationState == ObjectAnimationState.Idle) {
+                    this.pod.ChangeAnimationState(ObjectAnimationState.Transition1)
+                }
+
+                if (currentAnimationState == ObjectAnimationState.End) {
+                    this.pod.ChangeAnimationState(ObjectAnimationState.Transition2)
+                }
+            }
+        }
+
+        this.isPointerDown = false
     }
 
     private doOnPickupItem(bean: IngredientBean) {
@@ -340,7 +389,7 @@ export class IngredientObjectView extends GameObjects.Container {
             ? this.scene.cameras.main.centerY + this.pod.ingredientObjectBean.positionY
             : this.y + this.interactZone.y
         let indicator = new SuccessIndicatorView(this.scene, x, y)
-        bean.isFound = true //Change To Mutation API Update Bean To Server
+        //   bean.isFound = true //Change To Mutation API Update Bean To Server
         indicator.doInit(bean)
     }
 
@@ -349,7 +398,7 @@ export class IngredientObjectView extends GameObjects.Container {
             if (this.isPickIngredient) {
                 this.textStatusMock = TextAdapter.instance
                     .getVectorText(this.scene, 'FC_Lamoon_Bold')
-                    .setText('false' + `(${this.pod.ingredientObjectBean.depth})`)
+                    .setText('NF' + `(D: ${this.pod.ingredientObjectBean.depth})`)
                     .setPosition(0, 60)
                     .setOrigin(0.5, 0.5)
                     .setStyle({
@@ -386,7 +435,7 @@ export class IngredientObjectView extends GameObjects.Container {
             this.setPlayer()
         }
         if (GameConfig.DEBUG_OBJECT) {
-            this.textStatusMock.setText('true' + `(${this.pod.ingredientObjectBean.depth})`)
+            this.textStatusMock.setText('F : ' + `(D : ${this.pod.ingredientObjectBean.depth})`)
 
             this.textStatusMock.setStyle({
                 fill: 'Green',
@@ -395,7 +444,7 @@ export class IngredientObjectView extends GameObjects.Container {
 
             let idIngredientText = TextAdapter.instance
                 .getVectorText(this.scene, 'FC_Lamoon_Bold')
-                .setText(`ID Item : ${this.pod.ingredientID}`)
+                .setText(`ID Ingredient : ${this.pod.ingredientID}`)
                 .setPosition(0, 80)
                 .setOrigin(0.5, 0.5)
                 .setStyle({

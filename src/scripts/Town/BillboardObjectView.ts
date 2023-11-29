@@ -31,13 +31,13 @@ export class BillboardObjectView extends GameObjects.GameObject {
 
         this.currentBillboardImage = this.scene.add
             .image(x, y, this.billboardImageKeys[this.currentImageKeyIndex])
-            .setDepth(100)
+            .setDepth(97)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.nextBillboardImage = this.scene.add
             .image(x, y, this.billboardImageKeys[this.nextImageKeyIndex])
-            .setDepth(100)
+            .setDepth(97)
             .setOrigin(0.5)
             .setAlpha(0)
     }
@@ -109,5 +109,6 @@ export class BillboardObjectView extends GameObjects.GameObject {
     destroy(fromScene?: boolean): void {
         this.getBillboardImageKeysDisposable?.unsubscribe()
         this.billboardTweenIntervalDisposable?.unsubscribe()
+        super.destroy(fromScene)
     }
 }

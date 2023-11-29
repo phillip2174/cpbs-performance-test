@@ -1,5 +1,5 @@
 import { GameObjects, Input, Scene } from 'phaser'
-import { Observable, concatMap, forkJoin, map, of, tap } from 'rxjs'
+import { Observable, concatMap, delay, forkJoin, map, of, tap } from 'rxjs'
 import { GameConfig } from '../GameConfig'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
@@ -41,14 +41,16 @@ export class TownBuildingView extends GameObjects.GameObject {
         this.ingredientObjectManager = IngredientObjectManager.instance
         this.cameraPod = PodProvider.instance.cameraControlPod
 
+        this.ingredientObjectManager.clearIngredientRandomPoolList()
         this.keyT = this.scene.input.keyboard.addKey('T')
 
         this.townBuildingPod
-            .getIngredientBeansData(this.townDayNightPod.townTimeState.value)
+            .getUserIngredientData()
             .pipe(
-                tap((x) => console.log(`(1) getGuideLineUICellBeans : ` + x.length)),
-                concatMap((_) => this.townBuildingPod.getIngredientObjects()),
-                concatMap((_) => this.townBuildingPod.getInteractableObjects()),
+                concatMap((_) => this.townBuildingPod.getCurrentHiddenIngredientData()),
+                concatMap((_) => this.townBuildingPod.getIngredientObjectsDataPosition()),
+                concatMap((_) => this.townBuildingPod.getInteractableObjectsDataPosition()),
+                concatMap((_) => this.townBuildingPod.getNextHiddenIngredientData()),
                 map((_) => {
                     // if (GameConfig.DEBUG_OBJECT) {
                     //     this.mockingTown = this.scene.add
@@ -66,62 +68,53 @@ export class TownBuildingView extends GameObjects.GameObject {
                         this.rangeMapRectangleBackground.height
                     )
 
-                    let observableInit: Observable<any>[] = []
-
                     let idleObjectGroupView = new IdleObjectGroupView(this.scene)
-                    idleObjectGroupView.doInit(observableInit)
+                    idleObjectGroupView.doInit()
 
                     this.townBuildingPod.interactableObjects.forEach((object) => {
                         let objectView: IngredientObjectView = new IngredientObjectView(this.scene, object)
                         objectView.setPositionContainer()
-                        observableInit.push(objectView.doInit())
+                        objectView.doInit()
                     })
-
-                    let trainObject = new TrainObjectWithIngredientView(
-                        this.scene,
-                        this.scene.cameras.main.centerX,
-                        this.scene.cameras.main.centerY
-                    )
 
                     let trainIngredientObject = new IngredientObjectView(
                         this.scene,
                         this.townBuildingPod.ingredientObjects[this.townBuildingPod.ingredientObjects.length - 1],
                         true
                     )
-                    observableInit.push(
-                        trainIngredientObject.doInit().pipe(
-                            tap((_) => {
-                                this.ingredientObjectManager.addIngredientObjectGroup(trainIngredientObject)
-                            })
-                        )
+                    trainIngredientObject.doInit()
+                    this.ingredientObjectManager.addIngredientObjectToRandomPool(trainIngredientObject)
+
+                    let trainObject = new TrainObjectWithIngredientView(
+                        this.scene,
+                        this.scene.cameras.main.centerX,
+                        this.scene.cameras.main.centerY
                     )
-                    observableInit.push(trainObject.doInit(trainIngredientObject))
+                    trainObject.doInit(trainIngredientObject)
 
                     this.townBuildingPod.ingredientObjects
                         .slice(0, this.townBuildingPod.ingredientObjects.length - 1)
                         .forEach((object) => {
                             let objectView: IngredientObjectView = new IngredientObjectView(this.scene, object, true)
                             objectView.setPositionContainer()
-                            observableInit.push(
-                                objectView.doInit().pipe(
-                                    tap((_) => {
-                                        this.ingredientObjectManager.addIngredientObjectGroup(objectView)
-                                    })
-                                )
-                            )
+                            objectView.doInit()
+                            this.ingredientObjectManager.addIngredientObjectToRandomPool(objectView)
                         })
 
-                    return observableInit
-                }),
-                concatMap((observableInit) => forkJoin(observableInit)),
-                tap((_) => {
-                    IngredientObjectManager.instance.randomIngredientIdToIngredientObject(
-                        this.townBuildingPod.ingredientBeans
-                    )
+                    if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                        IngredientObjectManager.instance.randomIngredientIdToIngredientObject(
+                            this.townBuildingPod.getIngredientBeanNotFoundWithUser()
+                        )
+                    } else {
+                        IngredientObjectManager.instance.setIngredientObjectTutorial(
+                            this.townBuildingPod.currentHiddenIngredientBeans,
+                            this.townBuildingPod.getIngredientBeanNotFoundWithUser()
+                        )
+                    }
 
                     this.townBuildingPod.setFirstLoad()
                     this.cameraPod.setInteractCamera(true)
-                    APILoadingManager.instance.hideAPILoading()
+                    APILoadingManager.instance.hideSceneLoading()
                 })
             )
             .subscribe((_) => {})
@@ -152,11 +145,11 @@ export class TownBuildingView extends GameObjects.GameObject {
         this.buildingImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building')
             .setScale(1)
-            .setDepth(3)
+            .setDepth(5)
 
         this.buildingRoofImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building-roof')
-            .setDepth(5)
+            .setDepth(6)
 
         this.trainTrailImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'train-rail')

@@ -1,0 +1,59 @@
+[
+    {
+        "tutorialID": 0,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-0",
+        "headerText": ["ยินดีต้อนรับสู่ CP CITY"],
+        "desc1Text": ["มาค้นวัตถุดิบที่ซ่อนอยู่ในจุดต่างๆ กันเถอะ"],
+        "desc2Text": [],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "มาเริ่มกันเลย",
+                "buttonColorCode": "#29CC6A",
+                "buttonWidth": 162
+            }
+        ],
+        "tutorialButtonGuestDataBean": [
+            {
+                "buttonText": "ทดลองเล่น",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 127
+            },
+            {
+                "buttonText": "เข้าสู่ระบบ",
+                "buttonColorCode": "#29CC6A",
+                "buttonWidth": 127
+            }
+        ]
+    },
+    {
+        "tutorialID": 1,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-1",
+        "headerText": ["สำเร็จ! ได้รับวัตถุดิบ", "ชิ้นแรกแล้ว"],
+        "desc1Text": ["ค้นหาอีก 2 วัตถุดิบที่ยังซ่อนอยู่"],
+        "desc2Text": ["สามารถดูได้ตรงนี้ ว่ายังเหลือวัตถุดิบ", "ที่ต้องเก็บอีกกี่ชิ้น"],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "เข้าใจแล้ว",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 140
+            }
+        ]
+    },
+    {
+        "tutorialID": 2,
+        "characterImageKey": "tutorial-character-2",
+        "contentImageKey": "content-panel-2_2",
+        "headerText": ["สุดยอดไปเลย!", "เก็บวัตถุดิบครบแล้ว"],
+        "desc1Text": ["ตอนนี้คุณพร้อมสำหรับการปรุงเมนูแล้ว", "ไปที่ COOKING เพื่อเริ่มทำเมนูแรกกันเลย"],
+        "desc2Text": ["นี่คือห้องครัวของคุณ!"],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "ไป COOKING",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 170
+            }
+        ]
+    }
+]

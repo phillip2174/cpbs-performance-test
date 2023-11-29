@@ -13,6 +13,7 @@ export class InventoryFilterView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
 
     private filterScrollView: ScrollViewNormalAndPagination
+    private filterCells: InventoryFilterCellView[] = []
     private townUIPod: TownUIPod
     private inventoryPod: InventoryPod
 
@@ -89,26 +90,41 @@ export class InventoryFilterView extends GameObjects.Container {
         this.filterScrollView = new ScrollViewNormalAndPagination(this.scene)
         this.filterScrollView.doInit(this.x, this.y, widthBG / 1.045, 50, this.depth + 1, 5, true, false, 1, false)
 
+        this.filterScrollView.setCallbackOnEndScroll(
+            () => {
+                this.filterScrollView.doOnEndScroll(this.filterCells)
+            },
+            0,
+            2
+        )
+
         let inventoryFilterAllButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterAllButton.doInit(InventoryFilterType.All)
+        inventoryFilterAllButton.doInit(InventoryFilterType.All, 0)
+        this.filterCells.push(inventoryFilterAllButton)
 
         let inventoryFilterMeatButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterMeatButton.doInit(InventoryFilterType.Meat)
+        inventoryFilterMeatButton.doInit(InventoryFilterType.Meat, 1)
+        this.filterCells.push(inventoryFilterMeatButton)
 
         let inventoryFilterVegetableButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterVegetableButton.doInit(InventoryFilterType.Vegetable)
+        inventoryFilterVegetableButton.doInit(InventoryFilterType.Vegetable, 2)
+        this.filterCells.push(inventoryFilterVegetableButton)
 
         let inventoryFilterFreshFoodButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterFreshFoodButton.doInit(InventoryFilterType.FreshFood)
+        inventoryFilterFreshFoodButton.doInit(InventoryFilterType.FreshFood, 3)
+        this.filterCells.push(inventoryFilterFreshFoodButton)
 
         let inventoryFilterSausageButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterSausageButton.doInit(InventoryFilterType.Sausage)
+        inventoryFilterSausageButton.doInit(InventoryFilterType.Sausage, 4)
+        this.filterCells.push(inventoryFilterSausageButton)
 
         let inventoryFilterCondimentsButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterCondimentsButton.doInit(InventoryFilterType.Condiment)
+        inventoryFilterCondimentsButton.doInit(InventoryFilterType.Condiment, 5)
+        this.filterCells.push(inventoryFilterCondimentsButton)
 
         let inventoryFilterNoodlesButton = new InventoryFilterCellView(this.scene)
-        inventoryFilterNoodlesButton.doInit(InventoryFilterType.Noodle)
+        inventoryFilterNoodlesButton.doInit(InventoryFilterType.Noodle, 6)
+        this.filterCells.push(inventoryFilterNoodlesButton)
 
         this.filterScrollView.addChildIntoContainer(inventoryFilterAllButton)
         this.filterScrollView.addChildIntoContainer(inventoryFilterMeatButton)
@@ -129,6 +145,10 @@ export class InventoryFilterView extends GameObjects.Container {
         })
 
         this.setActiveFilter(this.townUIPod.townUIState.value == TownUIState.Inventory, false)
+        
+        this.on('destroy', () => {
+            this.stateDisposable?.unsubscribe()
+        })
     }
 
     private setActiveFilter(isActive: boolean, isTween: boolean = true) {

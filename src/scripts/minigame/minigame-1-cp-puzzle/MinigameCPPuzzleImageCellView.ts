@@ -5,11 +5,14 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { ResourceManager } from '../../plugins/resource-loader/ResourceManager';
 import { MinigameCPPuzzleImageGroupView } from './MinigameCPPuzzleImageGroupView';
 import { MinigameCPPuzzleImageGroupPod } from './MinigameCPPuzzleImageGroupPod';
+import { PodProvider } from '../../pod/PodProvider';
+import { AudioManager } from '../../Audio/AudioManager';
+
 
 
 export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
 
-
+    private readonly OFFSET = 2;
     private image: GameObjects.Image
     private masker: GameObjects.Graphics;
     index: number;
@@ -23,6 +26,11 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
     isCanClick: boolean;
     textDebug: GameObjects.Text;
     pod: MinigameCPPuzzleImageGroupPod;
+    selectImage: GameObjects.Graphics;
+    fx: Phaser.FX.Glow;
+    fxGlow: GameObjects.Graphics;
+
+    private audioManager: AudioManager
 
     constructor(scene: Scene) {
         super(scene)
@@ -30,6 +38,7 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
     }
 
     public doInit(group: MinigameCPPuzzleImageGroupView, pod: MinigameCPPuzzleImageGroupPod, indexOrigin: number, indexPosition: number, width: number, height: number): void {
+        this.audioManager = PodProvider.instance.audioManager
         this.index = indexOrigin;
         this.group = group;
         this.pod = pod
@@ -55,6 +64,7 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
                 }
             } else {
                 this.onDeSelect();
+                this.audioManager.playSFXSound('negative_click_sfx')
                 this.pod.selectImagePositionIndex.next(undefined);
             }
         })
@@ -73,28 +83,54 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
 
 
     createPreview() {
+        const x = -this.cellWidth / 2;
+        const y = -this.cellHeight / 2;
+        this.fxGlow = this.scene.add.graphics().fillStyle(0xFFFFFF, 0.6).fillRoundedRect(x, y, this.cellWidth - this.OFFSET, this.cellHeight - this.OFFSET, 6);
+        this.add(this.fxGlow)
+        this.fxGlow.setActive(false)
+
         this.image = this.scene.add.image(0, 0, 'minigame1', this.index);
         this.add(this.image)
         this.image.setPosition(0, 0);
-        this.masker = this.scene.add.graphics().fillRoundedRect(-this.cellWidth / 2, - this.cellHeight / 2, this.cellWidth, this.cellHeight, 20);
-        this.stroke = this.scene.add.graphics().lineStyle(6, 0xEE843C).strokeRoundedRect(-this.cellWidth / 2, - this.cellHeight / 2, this.cellWidth - 2, this.cellHeight - 2, 20);
-        this.add(this.stroke);
+
+        this.masker = this.scene.add.graphics().fillRoundedRect(x, y, this.cellWidth - this.OFFSET, this.cellHeight - this.OFFSET, 6);
+
+        this.selectImage = this.scene.add.graphics().fillStyle(0xF78A3B, 0.6).fillRoundedRect(x, y, this.cellWidth - this.OFFSET, this.cellHeight - this.OFFSET, 6).setDepth(2);
+        this.stroke = this.scene.add.graphics().lineStyle(6, 0xEE843C).strokeRoundedRect(x + 2, y + 2, this.cellWidth - this.OFFSET - 4, this.cellHeight - this.OFFSET - 4, 6).setDepth(5);
+        this.add([this.selectImage, this.stroke]);
+        this.selectImage.setVisible(false);
         this.stroke.setVisible(false);
+
+       
+        
         //this.textDebug = this.scene.add.text(0, 0, this.index.toString() + ":" + this.indexPosition.toString()).setColor("green");
         //this.add(this.textDebug);
+        
         this.image.setMask(this.masker.createGeometryMask());
+        
         // var debug1 = this.scene.add.rectangle(0,0, 50, 50, 0xff00ff).setOrigin(0.5).setDepth(1002);
         // this.add(debug1);
+
+        this.setDepth(0);
     }
 
     public onSelect() {
+        this.setDepth(10);
+        this.selectImage.setVisible(true);
         this.stroke.setVisible(true);
+        this.fx = this.fxGlow.postFX.addGlow(0xEE843C, 6, 0, false, 1, 10);
+        this.fxGlow.setActive(true)
         this.isSelect = true;
 
+        this.audioManager.playSFXSound('positive_click_sfx')
     }
 
     public onDeSelect() {
+        this.setDepth(0);
+        this.selectImage.setVisible(false);
         this.stroke.setVisible(false);
+        this.fxGlow.clearFX();
+        this.fxGlow.setActive(false)
         this.isSelect = false;
     }
 
@@ -105,7 +141,7 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
     }
 
     moveToIndex(secondImageIndex: number, moveTo: Math.Vector2) {
-        console.log(this.indexPosition + "-> " + secondImageIndex);
+        //console.log(this.indexPosition + "-> " + secondImageIndex);
         this.indexPosition = secondImageIndex;
         this.isCanClick = false;
         this.scene.tweens.add({
@@ -118,5 +154,6 @@ export class MinigameCPPuzzleImageCellView extends GameObjects.Container {
             }, onComplete: (() => { this.isCanClick = true; this.onDeSelect(); })
         }).play();
 
+        this.audioManager.playSFXSound('jigsaw_puzzle_move_sfx')
     }
 }

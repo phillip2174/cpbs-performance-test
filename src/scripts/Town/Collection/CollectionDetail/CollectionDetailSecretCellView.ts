@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs'
 import { TextAdapter } from '../../../text-adapter/TextAdapter'
 import { SecretRecipeBean } from '../SecretRecipeBean'
 import { RecipePod } from '../../../pod/RecipePod'
+import { BoldText } from '../../../../BoldText/BoldText'
 
 export class CollectionDetailSecretCellView extends GameObjects.Container {
     public static readonly WIDTH_SIZE_BG_MOBILE: number = 311
@@ -76,6 +77,10 @@ export class CollectionDetailSecretCellView extends GameObjects.Container {
                 this.recipePreview.setSecretRecipe(0xe1e1e1)
             }
         })
+
+        this.on('destroy', () => {
+            this.selectedSubscription?.unsubscribe()
+        })
     }
 
     private createUI() {
@@ -96,7 +101,7 @@ export class CollectionDetailSecretCellView extends GameObjects.Container {
             .setOrigin(0.5, 0)
 
         this.rewardPointCellView = new RewardPointCellView(this.scene, this.firstDetailCellBG.width / 2 - 43, 30)
-        this.rewardPointCellView.doInit(0.778)
+        this.rewardPointCellView.createMediumTag()
 
         this.recipePreview = new RecipePreviewView(this.scene, 0, isDesktop ? 130 : 100).setScale(1)
         this.recipePreview.doInit()
@@ -126,19 +131,16 @@ export class CollectionDetailSecretCellView extends GameObjects.Container {
             .setPosition(0, 0)
             .setStyle({ fill: '#585858', fontSize: 24 })
 
-        this.currentRecipeText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('0')
-            .setOrigin(0, 0.5)
-            .setPosition(0, -2)
-            .setStyle({ fill: CollectionDetailSecretCellView.PROGRESS_COLOR_CODE, fontSize: 32 })
+        this.currentRecipeText = new BoldText(
+            this.scene,
+            0,
+            -2,
+            '0',
+            32,
+            CollectionDetailSecretCellView.PROGRESS_COLOR_CODE
+        ).setOrigin(0, 0.5)
 
-        this.goalRecipeText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('/99')
-            .setOrigin(0, 0.5)
-            .setPosition(0, -2)
-            .setStyle({ fill: '#585858', fontSize: 32 })
+        this.goalRecipeText = new BoldText(this.scene, 0, -2, '/99', 32, '#585858').setOrigin(0, 0.5)
 
         this.footerSecondText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded')

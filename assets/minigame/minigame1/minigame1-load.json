@@ -5,6 +5,14 @@
                 "type": "image",
                 "key": "minigame-start-button",
                 "url": "assets/minigame/minigame1/button-cta-game.png"
+            }, {
+                "type": "image",
+                "key": "minigame-free-play-button",
+                "url": "assets/minigame/minigame1/minigame-free-play-button.png"
+            }, {
+                "type": "image",
+                "key": "minigame-background-countdown-ticket",
+                "url": "assets/minigame/minigame1/minigame-background-countdown-ticket.png"
             },
             {
                 "type": "image",
@@ -15,11 +23,6 @@
                 "type": "image",
                 "key": "minigame-1-sub-bg",
                 "url": "assets/minigame/minigame1/minigame-1-sub-bg.png"
-            },
-            {
-                "type": "image",
-                "key": "minigame-1-logo",
-                "url": "assets/minigame/minigame1/minigame-1-logo.png"
             },
             {
                 "type": "image",

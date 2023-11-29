@@ -1,24 +1,19 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
-import { GameObjectConstructor } from '../../../plugins/objects/GameObjectConstructor'
-import { CollectionPod } from '../../Pod/CollectionPod'
-import { TownBuildingPod } from '../../Pod/TownBuildingPod'
-import { PodProvider } from '../../../pod/PodProvider'
-import { Subscription, skip, timer } from 'rxjs'
-import { CollectionPanelState } from '../type/CollectionPanelState'
-import { IngredientPreviewView } from '../../Recipe/IngredientPreviewView'
-import { RecipeBean } from '../RecipeBean'
-import { CookState } from '../type/CookState'
-import { RewardPointCellView } from '../../Recipe/RewardPointCellView'
-import { CollectionDetailCellGroupView } from './CollectionDetailCellGroupView'
-import { TownUIPod } from '../../Pod/TownUIPod'
-import { AnimationController } from '../../AnimationController'
-import { DimButton } from '../../../button/DimButton'
-import { TownUIState } from '../../Type/TownUIState'
+import { Subscription, skip } from 'rxjs'
 import { ScrollViewNormalAndPagination } from '../../../ScrollView/ScrollViewNormalAndPagination'
-import { CollectionDetailCongratCellView } from './CollectionDetailCongratCellView'
 import { Button } from '../../../button/Button'
-import { CollectionDetailSecretCellView } from './CollectionDetailSecretCellView'
+import { DimButton } from '../../../button/DimButton'
+import { GameObjectConstructor } from '../../../plugins/objects/GameObjectConstructor'
+import { PodProvider } from '../../../pod/PodProvider'
+import { AnimationController } from '../../AnimationController'
+import { CollectionPod } from '../../Pod/CollectionPod'
+import { TownUIPod } from '../../Pod/TownUIPod'
 import { CollectionDetailState } from '../type/CollectionDetailState'
+import { CollectionPanelState } from '../type/CollectionPanelState'
+import { CookState } from '../type/CookState'
+import { CollectionDetailCellGroupView } from './CollectionDetailCellGroupView'
+import { CollectionDetailCongratCellView } from './CollectionDetailCongratCellView'
+import { CollectionDetailSecretCellView } from './CollectionDetailSecretCellView'
 
 export class CollectionDetailView extends GameObjects.Container {
     public static readonly SIZE_WIDTH_BG_DESKTOP: number = 528
@@ -100,6 +95,11 @@ export class CollectionDetailView extends GameObjects.Container {
             this.collectionPod.collectionPanelState.value == CollectionPanelState.CollectionDetail,
             false
         )
+
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+            this.recipeSubscription?.unsubscribe()
+        })
     }
 
     private createUI() {
@@ -127,6 +127,7 @@ export class CollectionDetailView extends GameObjects.Container {
             this.scrollView.setOriginChild(0)
             this.scrollView.setInitPosXOffset(5)
             this.scrollView.setOffsetMaxMove(5)
+            this.scrollView.setCanDragOnLimitTotalCell()
 
             this.scrollView?.addChildIntoContainer(this.collectionDetailCellGroupView.setVisible(true))
         } else {
@@ -153,6 +154,7 @@ export class CollectionDetailView extends GameObjects.Container {
             this.scrollView.setOriginChild(0)
             this.scrollView.setInitPosXOffset(5)
             this.scrollView.setOffsetMaxMove(5)
+            this.scrollView.setCanDragOnLimitTotalCell()
 
             this.scrollView?.addChildIntoContainer(this.collectionDetailCellGroupView.setVisible(true))
         }
@@ -279,18 +281,21 @@ export class CollectionDetailView extends GameObjects.Container {
         button.setNineSlice({
             imageAtlasKey: '',
             imageKey: imageKey,
-            leftWidth: 15,
-            rightWidth: 15,
-            topHeight: 15,
-            bottomHeight: 15,
+            leftWidth: 24,
+            rightWidth: 24,
+            topHeight: 21,
+            bottomHeight: 23,
             safeAreaOffset: 0,
         })
 
-        button.setTextStyle({
-            fontFamily: 'DB_HeaventRounded',
-            fill: 'white',
-            fontSize: 22,
-        })
+        button.setTextStyle(
+            {
+                fontFamily: 'DB_HeaventRounded',
+                fill: 'white',
+                fontSize: 22,
+            },
+            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+        )
 
         button.setTextPosition(20, 1.5)
 
@@ -365,22 +370,24 @@ export class CollectionDetailView extends GameObjects.Container {
     }
 
     private setActiveWithDetailState() {
-        let isDesktop = this.scene.sys.game.device.os.desktop
-        let currentState = this.collectionPod.collectionDetailState
+        const isDesktop = this.scene.sys.game.device.os.desktop
+        const currentState = this.collectionPod.collectionDetailState
 
-        let widthBG = isDesktop ? CollectionDetailView.SIZE_WIDTH_BG_DESKTOP : CollectionDetailView.SIZE_WIDTH_BG_MOBILE
-        let offsetUnCook = 60
-        let offsetUnlocked = 140
-        let offsetSpacing = 10
+        const widthBG = isDesktop
+            ? CollectionDetailView.SIZE_WIDTH_BG_DESKTOP
+            : CollectionDetailView.SIZE_WIDTH_BG_MOBILE
+        const offsetUnCook = 60
+        const offsetUnlocked = 140
+        const offsetSpacing = 10
 
-        let offsetResult =
+        const offsetResult =
             currentState == CollectionDetailState.UncookDetail
                 ? offsetUnCook - offsetSpacing
                 : offsetUnlocked - offsetSpacing
 
-        let heightContainer = this.collectionDetailCellGroupView.getBounds().height + offsetResult
+        const heightContainer = this.collectionDetailCellGroupView.getBounds().height + offsetResult
 
-        let heightBG = isDesktop
+        const heightBG = isDesktop
             ? heightContainer >= CollectionDetailView.MAX_HEIGHT_BG_DESKTOP
                 ? CollectionDetailView.MAX_HEIGHT_BG_DESKTOP
                 : heightContainer + offsetSpacing
@@ -397,7 +404,7 @@ export class CollectionDetailView extends GameObjects.Container {
 
                 this.setNewBGNineSlice(widthBG, heightBG)
 
-                let heightScrollViewUncook = heightBG - offsetResult
+                const heightScrollViewUncook = heightBG - offsetResult
 
                 this.headerIcon.setPosition(0, -this.paperBG.height / 2 + 10)
 
@@ -440,7 +447,7 @@ export class CollectionDetailView extends GameObjects.Container {
                 this.collectionDetailSecretCellView.setVisible(false)
 
                 this.setNewBGNineSlice(widthBG, heightBG)
-                let heightScrollViewUnlocked = heightBG - offsetResult
+                const heightScrollViewUnlocked = heightBG - offsetResult
 
                 this.headerIcon.setPosition(0, -this.paperBG.height / 2 + 10)
                 this.buttonContainer.setPosition(0, this.paperBG.height / 2 - 50)

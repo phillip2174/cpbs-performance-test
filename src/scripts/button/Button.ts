@@ -3,6 +3,9 @@ import { timer } from 'rxjs'
 import { TextAdapter } from '../text-adapter/TextAdapter'
 import { ButtonStyleConfig } from './button-style/ButtonStyleConfig'
 import { GameObjects, Tweens, Types } from 'phaser'
+import { ButtonSoundType } from './ButtonSoundType'
+import { AudioManager } from '../Audio/AudioManager'
+import { PodProvider } from '../pod/PodProvider'
 
 export class Button extends Phaser.GameObjects.Container {
     //private static readonly INTERACT_DELAY: number = 1000
@@ -35,6 +38,9 @@ export class Button extends Phaser.GameObjects.Container {
     private onClickUpTweener: Phaser.Tweens.Tween
     private onButtonIdleTweener: Phaser.Tweens.Tween
 
+    private buttonSoundType: ButtonSoundType
+    private audioManager: AudioManager
+
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -43,9 +49,13 @@ export class Button extends Phaser.GameObjects.Container {
         height: number,
         bgKey: string,
         delay: number = 1000,
-        txt: string = ``
+        txt: string = ``,
+        buttonSoundType: ButtonSoundType = ButtonSoundType.Positive
     ) {
         super(scene, x, y)
+
+        this.audioManager = PodProvider.instance.audioManager
+
         this.buttonPositionX = x
         this.buttonPositionY = y
         this.buttonWidth = width
@@ -58,6 +68,8 @@ export class Button extends Phaser.GameObjects.Container {
         this.setBg(null, bgKey)
         this.setButtonSize(width, height)
         this.isButtonTween = true
+
+        this.buttonSoundType = buttonSoundType
 
         this.label = TextAdapter.instance
             .getVectorText(this.scene, 'PSL245pro')
@@ -84,6 +96,21 @@ export class Button extends Phaser.GameObjects.Container {
         this.setInteractionOnButtonPointerUp()
         this.setInteractionOnButtonPointerOut()
         this.setInteractionOnButtonPointerOutside()
+    }
+
+    private playButtonSound() {
+        switch(this.buttonSoundType) {
+            case ButtonSoundType.Positive:
+                this.audioManager.playSFXSound('positive_click_sfx')
+                break
+            case ButtonSoundType.Negative:
+                this.audioManager.playSFXSound('negative_click_sfx')
+                break
+            case ButtonSoundType.Custom:
+                break
+            default:
+                break
+        }
     }
 
     private createTweener(): void {
@@ -132,6 +159,7 @@ export class Button extends Phaser.GameObjects.Container {
                 }
             }
             this.isOnPointerDown = true
+            this.playButtonSound()
         })
     }
 
@@ -274,8 +302,11 @@ export class Button extends Phaser.GameObjects.Container {
         this.label.setOrigin(x, y)
     }
 
-    setTextStyle(style: object) {
+    setTextStyle(style: object, isBold: boolean = false) {
         this.label.setStyle(style)
+        if (isBold) {
+            this.label.setFontFamily('DB_HeaventRounded').setFontStyle('bold')
+        }
     }
 
     setTintColorBackground(color: number) {

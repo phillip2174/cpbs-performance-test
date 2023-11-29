@@ -8,10 +8,10 @@ import { Observable, tap } from 'rxjs'
 import { Billboard3DObjectView } from './Billboard3D/Billboard3DObjectView'
 
 export class IdleObjectGroupView extends GameObjects.GameObject {
-    public static readonly SPINE_PATH: string = `assets/spines/`
     private cloudBigImage: GameObjects.Image
     private cloudSmallImage: GameObjects.Image
     private cloudNarutoImage: GameObjects.Image
+    private cheeseImage: GameObjects.Image
     private peopleGroupE: GameObjects.Image
     private nongsomSprite: GameObjects.Sprite
 
@@ -33,16 +33,13 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
     private hotdogShop: SpineGameObject
     private vegetableLotus: SpineGameObject
 
-    private spineObservable: Observable<any>[]
-
     constructor(scene: Scene) {
         super(scene, 'gameObject')
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(initObservable: Observable<any>[]) {
+    public doInit() {
         console.log('Create idle Object')
-        this.spineObservable = initObservable
         this.createIdleObject()
     }
 
@@ -110,6 +107,10 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
             .setDepth(99)
         this.nongsomSprite.play('idle-nong-som')
 
+        this.cheeseImage = this.scene.add
+            .image(this.scene.cameras.main.centerX - 160, this.scene.cameras.main.centerY + 150, 'cheese')
+            .setDepth(4)
+
         this.setupBillboards()
         this.setupBillboard3D()
         this.setupIdleSpineObjects()
@@ -151,199 +152,192 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
             x: this.scene.cameras.main.centerX + 289,
             y: this.scene.cameras.main.centerY - 214,
             key: 'burger-shrimp',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
-        console.log(this.spineObservable)
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, burgerShrimpConfig).pipe(
-                tap((spine) => {
-                    this.burgerShrimp = spine
-                    this.burgerShrimp.setDepth(9)
-                })
+        this.burgerShrimp = this.scene.add
+            .spine(
+                burgerShrimpConfig.x,
+                burgerShrimpConfig.y,
+                burgerShrimpConfig.key,
+                burgerShrimpConfig.startAnimation,
+                burgerShrimpConfig.isLooping
             )
-        )
+            .setDepth(9)
 
         let bushesConfig = {
             x: this.scene.cameras.main.centerX + 352,
             y: this.scene.cameras.main.centerY - 116,
             key: 'bushes',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'animation',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, bushesConfig).pipe(
-                tap((spine) => {
-                    this.bushes = spine
-                    this.bushes.setDepth(6)
-                })
+        this.bushes = this.scene.add
+            .spine(
+                bushesConfig.x,
+                bushesConfig.y,
+                bushesConfig.key,
+                bushesConfig.startAnimation,
+                bushesConfig.isLooping
             )
-        )
+            .setDepth(7)
 
         let personMascotConfig = {
             x: this.scene.cameras.main.centerX + 433,
             y: this.scene.cameras.main.centerY + 275,
             key: 'person-mascot-2nd-floor',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, personMascotConfig).pipe(
-                tap((spine) => {
-                    this.personMascot2ndFloor = spine
-                    this.personMascot2ndFloor.setDepth(3)
-                })
+        this.personMascot2ndFloor = this.scene.add
+            .spine(
+                personMascotConfig.x,
+                personMascotConfig.y,
+                personMascotConfig.key,
+                personMascotConfig.startAnimation,
+                personMascotConfig.isLooping
             )
-        )
+            .setDepth(6)
 
         let dog7_11Config = {
             x: this.scene.cameras.main.centerX + 491,
             y: this.scene.cameras.main.centerY + 540,
             key: '7-11-dog',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'animation',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, dog7_11Config).pipe(
-                tap((spine) => {
-                    this.dog7_11 = spine
-                    this.dog7_11.setDepth(3)
-                })
+        this.dog7_11 = this.scene.add
+            .spine(
+                dog7_11Config.x,
+                dog7_11Config.y,
+                dog7_11Config.key,
+                dog7_11Config.startAnimation,
+                dog7_11Config.isLooping
             )
-        )
+            .setDepth(7)
 
         let clownConfig = {
             x: this.scene.cameras.main.centerX + 392,
             y: this.scene.cameras.main.centerY + 589,
             key: 'clown',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, clownConfig).pipe(
-                tap((spine) => {
-                    this.clown = spine
-                    this.clown.setDepth(3)
-                })
-            )
-        )
+        this.clown = this.scene.add
+            .spine(clownConfig.x, clownConfig.y, clownConfig.key, clownConfig.startAnimation, clownConfig.isLooping)
+            .setDepth(7)
 
         let peopleGroupAConfig = {
             x: this.scene.cameras.main.centerX + 700,
             y: this.scene.cameras.main.centerY + 612,
             key: 'people-group-a',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, peopleGroupAConfig).pipe(
-                tap((spine) => {
-                    this.peopleGroupA = spine
-                    this.peopleGroupA.setDepth(3)
-                })
+        this.peopleGroupA = this.scene.add
+            .spine(
+                peopleGroupAConfig.x,
+                peopleGroupAConfig.y,
+                peopleGroupAConfig.key,
+                peopleGroupAConfig.startAnimation,
+                peopleGroupAConfig.isLooping
             )
-        )
+            .setDepth(3)
 
         let peopleGroupCConfig = {
             x: this.scene.cameras.main.centerX + 23,
             y: this.scene.cameras.main.centerY + 968,
             key: 'people-group-c',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, peopleGroupCConfig).pipe(
-                tap((spine) => {
-                    this.peopleGroupC = spine
-                    this.peopleGroupC.setDepth(6)
-                })
+        this.peopleGroupC = this.scene.add
+            .spine(
+                peopleGroupCConfig.x,
+                peopleGroupCConfig.y,
+                peopleGroupCConfig.key,
+                peopleGroupCConfig.startAnimation,
+                peopleGroupCConfig.isLooping
             )
-        )
+            .setDepth(8)
 
         let peopleGroupDConfig = {
             x: this.scene.cameras.main.centerX - 528,
             y: this.scene.cameras.main.centerY + 694,
             key: 'people-group-d',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, peopleGroupDConfig).pipe(
-                tap((spine) => {
-                    this.peopleGroupD = spine
-                    this.peopleGroupD.setDepth(3)
-                })
+        this.peopleGroupD = this.scene.add
+            .spine(
+                peopleGroupDConfig.x,
+                peopleGroupDConfig.y,
+                peopleGroupDConfig.key,
+                peopleGroupDConfig.startAnimation,
+                peopleGroupDConfig.isLooping
             )
-        )
+            .setDepth(3)
 
         let hotdogShopConfig = {
             x: this.scene.cameras.main.centerX - 917.5,
             y: this.scene.cameras.main.centerY + 691.5,
             key: 'hotdog-shop',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, hotdogShopConfig).pipe(
-                tap((spine) => {
-                    this.hotdogShop = spine
-                    this.hotdogShop.setDepth(5)
-                })
+        this.hotdogShop = this.scene.add
+            .spine(
+                hotdogShopConfig.x,
+                hotdogShopConfig.y,
+                hotdogShopConfig.key,
+                hotdogShopConfig.startAnimation,
+                hotdogShopConfig.isLooping
             )
-        )
+            .setDepth(5)
 
         let vegetableLotusConfig = {
             x: this.scene.cameras.main.centerX - 553,
             y: this.scene.cameras.main.centerY + 230,
             key: 'vegetable-lotus',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'idle',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, vegetableLotusConfig).pipe(
-                tap((spine) => {
-                    this.vegetableLotus = spine
-                    this.vegetableLotus.setDepth(3)
-                })
+        this.vegetableLotus = this.scene.add
+            .spine(
+                vegetableLotusConfig.x,
+                vegetableLotusConfig.y,
+                vegetableLotusConfig.key,
+                vegetableLotusConfig.startAnimation,
+                vegetableLotusConfig.isLooping
             )
-        )
+            .setDepth(5)
 
         let peopleGroupFConfig = {
             x: this.scene.cameras.main.centerX - 230,
             y: this.scene.cameras.main.centerY + 454,
             key: 'people-group-f',
-            path: IdleObjectGroupView.SPINE_PATH,
             startAnimation: 'animation',
             isLooping: true,
         }
 
-        this.spineObservable.push(
-            ResourceManager.instance.loadSpine(this.scene, peopleGroupFConfig).pipe(
-                tap((spine) => {
-                    this.peopleGroupE = spine
-                    this.peopleGroupE.setDepth(3)
-                })
+        this.peopleGroupF = this.scene.add
+            .spine(
+                peopleGroupFConfig.x,
+                peopleGroupFConfig.y,
+                peopleGroupFConfig.key,
+                peopleGroupFConfig.startAnimation,
+                peopleGroupFConfig.isLooping
             )
-        )
+            .setDepth(5)
     }
 
     private randomIntFromInterval(min, max) {

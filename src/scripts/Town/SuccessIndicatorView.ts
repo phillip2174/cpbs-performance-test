@@ -1,10 +1,11 @@
 import { GameObjects, Scene } from 'phaser'
 import { timer } from 'rxjs'
-import { IngredientBean } from '../Guideline/IngredientBean'
+import { IngredientBean } from '../Ingredient/IngredientBean'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
 import { SuccessIndicatorPod } from './Pod/SuccessIndicatorPod'
 import { SuccessIndicatorState } from './Type/SuccessIndicatorState'
+import { AudioManager } from '../Audio/AudioManager'
 
 export class SuccessIndicatorView extends GameObjects.Container {
     public static readonly DRAW_SPAWN_TIME: number = 300
@@ -25,6 +26,8 @@ export class SuccessIndicatorView extends GameObjects.Container {
     graphicsCircle: GameObjects.Graphics
     maskGraphics: GameObjects.Graphics
 
+    private audioManager: AudioManager
+
     private pod: SuccessIndicatorPod
 
     constructor(scene: Scene, x: number, y: number) {
@@ -34,6 +37,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
 
     public doInit(bean: IngredientBean) {
         this.pod = new SuccessIndicatorPod(this.scene)
+        this.audioManager = PodProvider.instance.audioManager
         this.pod.setBean(bean)
 
         this.pod.currentSuccessIndicatorState.subscribe((state) => {
@@ -111,6 +115,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
                 y: { from: this.particle01Circle.y, to: this.particle01Circle.y - 37 },
                 scale: { from: this.particle01Circle.scale, to: 1.5 },
             },
+            onStart: () => this.audioManager.playSFXSound('collected_ingredient_sfx'),
             onComplete: (x) => {
                 this.scene.add.tween({
                     targets: this.particle01Circle,

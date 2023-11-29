@@ -5,12 +5,18 @@ import { UIUtil } from '../plugins/utils/UIUtil'
 import { TextAdapter } from '../text-adapter/TextAdapter'
 import { Button } from '../button/Button'
 import { AnimationController } from '../Town/AnimationController'
+import { BoldText } from '../../BoldText/BoldText'
 
 export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     public static readonly DELAY_TWEEN: number = 400
     public static readonly DURATION_TWEEN: number = 300
 
     public isDrag: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+    public insideIndexCellArea: number[] = []
+
+    private callBackOnEndScroll: Function
+    private offsetCheckCellOutOfBound: number
+    private divideOutOfBound: number
 
     private scrollViewArea: GameObjects.Rectangle
     private contentContainer: GameObjects.Container
@@ -52,6 +58,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     private firstPosition: number
     private lastPosition: number
 
+    private isCanDragOnLimitSize = false
+    private isCanDragOnLimitTotalCell = false
     private isDragView: boolean = false
     private isDragBar: boolean = false
     private startClickPosition: Phaser.Math.Vector2
@@ -316,6 +324,9 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             this.handleScrollBar()
             this.totalPageText?.setText(`/ ${this.totalCell.toString()}`)
         }
+
+        this.setInsideCellIndex()
+        if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
     }
 
     public addChildIntoContainer(child: any): void {
@@ -391,6 +402,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             }
             this.setNewMinMaxMove()
         }
+
+        this.onUpdatePage()
     }
 
     private createTween() {
@@ -406,6 +419,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             persist: true,
             onComplete: () => {
                 this.setNewMinMaxMove()
+                this.nextButton?.setVisible(true)
+                this.backButton?.setVisible(true)
             },
         })
 
@@ -420,6 +435,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             persist: true,
             onComplete: () => {
                 this.setNewMinMaxMove()
+                this.nextButton?.setVisible(true)
+                this.backButton?.setVisible(true)
             },
         })
 
@@ -505,6 +522,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 this.contentContainer.alpha = 0
             }
 
+            this.nextButton?.setVisible(isActive)
+            this.backButton?.setVisible(isActive)
             if (this.isHaveScrollBar) {
                 this.setActiveScrollBar(false)
             }
@@ -598,9 +617,17 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         return this.maxMoveX
     }
 
-    public setMaskRounded(roundedValue: number = 20, debugMark: boolean = false) {
+    public setMaskRounded(roundedTopValue: number = 20, roundedBottomValue: number = 20, debugMark: boolean = false) {
         this.isRoundedMask = true
-        this.createMaskScrollView(debugMark, roundedValue)
+        this.createMaskScrollView(debugMark, roundedTopValue, roundedBottomValue)
+    }
+
+    public setCanDragScrollSizeLimit() {
+        this.isCanDragOnLimitSize = true
+    }
+
+    public setCanDragOnLimitTotalCell() {
+        this.isCanDragOnLimitTotalCell = true
     }
 
     private setPositionMoveToWithIndex(cellIndex: number) {
@@ -651,7 +678,11 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         this.setActionScrollView()
     }
 
-    private createMaskScrollView(debugMark: boolean = false, roundedValue: number = 20) {
+    private createMaskScrollView(
+        debugMark: boolean = false,
+        roundedTopValue: number = 20,
+        roundedBottomValue: number = 20
+    ) {
         this.contentContainer?.clearMask(true)
         this.masker?.destroy(true)
         this.masker = this.scene.add.graphics().setDepth(this.depthScroll)
@@ -664,7 +695,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 this.yPosition - this.heightScroll / 2,
                 this.widthScroll,
                 this.heightScroll,
-                roundedValue
+                { tl: roundedTopValue, tr: roundedTopValue, br: roundedBottomValue, bl: roundedBottomValue }
             )
         } else {
             this.masker.fillRect(
@@ -713,20 +744,28 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         if (this.isSnap) {
             this.scrollbarTextContainer = this.scene.add.container(this.scrollbarBackground.width / 2 - 40, -3.5)
 
-            this.currentPageText = TextAdapter.instance
-                .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-                .setText(this.currentCellIndex.toString())
-                .setOrigin(1, 0.5)
-                .setPosition(0, 0)
-                .setStyle({ fill: '#FFBF3C', fontSize: 20 })
+            this.currentPageText = new BoldText(
+                this.scene,
+                0,
+                2,
+                this.currentCellIndex.toString(),
+                20,
+                '#FFBF3C',
+                0,
+                0
+            ).setOrigin(1, 0.5)
             // .setPadding(0, -10, 0, 0)
 
-            this.totalPageText = TextAdapter.instance
-                .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-                .setText(`/ ${this.totalCell.toString()}`)
-                .setOrigin(0, 0.5)
-                .setPosition(0, 0)
-                .setStyle({ fill: '#FFFFFF', fontSize: 20 })
+            this.totalPageText = new BoldText(
+                this.scene,
+                0,
+                2,
+                `/ ${this.totalCell.toString()}`,
+                20,
+                '#FFFFFF',
+                0,
+                0
+            ).setOrigin(0, 0.5)
             // .setPadding(0, -10, 0, 0)
 
             this.scrollbarTextContainer.add([this.currentPageText, this.totalPageText])
@@ -753,7 +792,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         )
         this.nextButton.setTintColorBackground(0x0099ff)
 
-        let nextArrow = this.scene.add.image(0, 0, 'arrow-icon').setFlipX(true).setScale(1)
+        let nextArrow = this.scene.add.image(2, 0, 'arrow-icon').setScale(0.5)
         this.nextButton.add(nextArrow)
 
         this.backButton = new Button(
@@ -766,7 +805,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         )
         this.backButton.setTintColorBackground(0x0099ff)
 
-        let backArrow = this.scene.add.image(0, 0, 'arrow-icon').setScale(1)
+        let backArrow = this.scene.add.image(-2, 0, 'arrow-icon').setFlipX(true).setScale(0.5)
         this.backButton.add(backArrow)
 
         this.scrollbarContainer.add([this.nextButton, this.backButton])
@@ -777,6 +816,56 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         }
     }
 
+    public createButtonNextAndBack(
+        xPositionNext: number,
+        yPositionNext: number,
+        xPositionBack: number,
+        yPositionBack: number,
+        buttonSize: number,
+        arrowSize: number = 1
+    ) {
+        this.nextButton = new Button(
+            this.scene,
+            xPositionNext,
+            yPositionNext,
+            buttonSize,
+            buttonSize,
+            'circle-button-background'
+        ).setDepth(this.depthScroll)
+        this.nextButton.setTintColorBackground(0x0099ff)
+
+        let nextArrow = this.scene.add.image(0, 0, 'arrow-icon').setScale(arrowSize)
+        this.nextButton.add(nextArrow)
+
+        this.backButton = new Button(
+            this.scene,
+            xPositionBack,
+            yPositionBack,
+            buttonSize,
+            buttonSize,
+            'circle-button-background'
+        ).setDepth(this.depthScroll)
+        this.backButton.setTintColorBackground(0x0099ff)
+
+        let backArrow = this.scene.add.image(0, 0, 'arrow-icon').setFlipX(true).setScale(arrowSize)
+        this.backButton.add(backArrow)
+
+        if (this.scene.sys.game.device.os.desktop) {
+            this.setTweenIcon(this.nextButton, nextArrow)
+            this.setTweenIcon(this.backButton, backArrow)
+        }
+
+        this.nextButton?.onClick(() => {
+            if (this.currentScrollViewLayer != this.layerScrollView) return
+            this.moveToWithIndex(this.currentCellIndex + 1)
+        })
+
+        this.backButton?.onClick(() => {
+            if (this.currentScrollViewLayer != this.layerScrollView) return
+            this.moveToWithIndex(this.currentCellIndex - 1)
+        })
+    }
+
     private setTweenIcon(button: Button, nextArrow: GameObjects.Image) {
         let hoverIconTween = this.scene.add.tween({
             targets: nextArrow,
@@ -784,8 +873,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             ease: 'cubic.inout',
             props: {
                 scale: {
-                    from: 1,
-                    to: 1.15,
+                    from: nextArrow.scale,
+                    to: nextArrow.scale + 0.15,
                 },
             },
             persist: true,
@@ -797,8 +886,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             ease: 'cubic.inout',
             props: {
                 scale: {
-                    from: 1.15,
-                    to: 1,
+                    from: nextArrow.scale + 0.15,
+                    to: nextArrow.scale,
                 },
             },
             persist: true,
@@ -863,10 +952,12 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         })
 
         this.nextButton?.onClick(() => {
+            if (this.currentScrollViewLayer != this.layerScrollView) return
             this.moveToWithIndex(this.currentCellIndex + 1)
         })
 
         this.backButton?.onClick(() => {
+            if (this.currentScrollViewLayer != this.layerScrollView) return
             this.moveToWithIndex(this.currentCellIndex - 1)
         })
     }
@@ -881,6 +972,26 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         }
 
         this.currentPageText?.setText(this.currentCellIndex.toString())
+    }
+
+    private checkCanDragScrollView(): boolean {
+        if (this.currentScrollViewLayer != this.layerScrollView) return true
+
+        if (!this.isCanDragOnLimitTotalCell) {
+            if (this.totalCell <= 1) return true
+        }
+
+        if (this.isHorizontal) {
+            if (!this.isCanDragOnLimitSize) {
+                if (this.contentContainer.getBounds().width < this.widthScroll) return true
+            }
+        } else {
+            if (!this.isCanDragOnLimitSize) {
+                if (this.contentContainer.getBounds().height < this.heightScroll) return true
+            }
+        }
+
+        return false
     }
 
     private setActionScrollView() {
@@ -905,29 +1016,24 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         if (this.scene.sys.game.device.os.desktop) {
             this.scene.input.on('wheel', (pointer) => {
                 if (this.scrollViewArea.active && this.scrollViewArea.getBounds().contains(pointer.x, pointer.y)) {
-                    if (this.currentScrollViewLayer != this.layerScrollView) return
-                    this.scrollWithWheel(pointer)
+                    if (!this.checkCanDragScrollView()) this.scrollWithWheel(pointer)
                 }
             })
         }
     }
 
     private beginScroll(pointer: Input.Pointer, isScroll: boolean): void {
-        if (this.currentScrollViewLayer != this.layerScrollView) return
-
-        if (this.isHorizontal) {
-            if (this.contentContainer.getBounds().width < this.widthScroll) return
-        } else {
-            if (this.contentContainer.getBounds().height < this.heightScroll) return
-        }
-
-        this.startClickPosition = new Phaser.Math.Vector2(pointer.x, pointer.y)
-        if (isScroll) {
-            this.isDragView = true
-            this.scrollingDisposable = interval(10).subscribe((_) => this.scroll(this.scene.input.activePointer))
-        } else {
-            this.isDragBar = true
-            this.scrollingDisposable = interval(10).subscribe((_) => this.scrollBarMove(this.scene.input.activePointer))
+        if (!this.checkCanDragScrollView()) {
+            this.startClickPosition = new Phaser.Math.Vector2(pointer.x, pointer.y)
+            if (isScroll) {
+                this.isDragView = true
+                this.scrollingDisposable = interval(10).subscribe((_) => this.scroll(this.scene.input.activePointer))
+            } else {
+                this.isDragBar = true
+                this.scrollingDisposable = interval(10).subscribe((_) =>
+                    this.scrollBarMove(this.scene.input.activePointer)
+                )
+            }
         }
     }
 
@@ -937,6 +1043,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
         if (this.isSnap && this.isDrag.value) {
             this.snapCellScroll()
+        } else {
+            if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
         }
 
         this.autoScrollX = false
@@ -973,13 +1081,15 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 this.positionMoveTo = this.positionMoveTo - this.getCellSize()
                 this.currentCellIndex++
                 this.tweenMoveTo()
-            } else if (this.percentWheelMove < 0.55 && this.currentCellIndex > 1) {
+            } else if (this.percentWheelMove < 0.45 && this.currentCellIndex > 1) {
                 this.positionMoveTo = this.positionMoveTo + this.getCellSize()
                 this.currentCellIndex--
                 this.tweenMoveTo()
             } else {
                 this.tweenMoveTo()
             }
+        } else {
+            if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
         }
 
         this.isDrag.next(false)
@@ -991,6 +1101,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
         if (this.isSnap && this.isDrag.value) {
             this.snapCellScrollBar()
+        } else {
+            if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
         }
 
         this.isDragDisposable?.unsubscribe()
@@ -1028,7 +1140,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             this.positionMoveTo = this.positionMoveTo - this.getCellSize()
             this.currentCellIndex++
             this.tweenMoveTo()
-        } else if (this.percentMove < 0.55 && this.currentCellIndex > 1) {
+        } else if (this.percentMove < 0.45 && this.currentCellIndex > 1) {
             this.positionMoveTo = this.positionMoveTo + this.getCellSize()
             this.currentCellIndex--
 
@@ -1048,6 +1160,10 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 props: {
                     x: { from: this.contentContainer.x, to: this.positionMoveTo },
                 },
+                onComplete: () => {
+                    this.setInsideCellIndex()
+                    if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
+                },
             })
         } else {
             this.scene.add.tween({
@@ -1056,6 +1172,10 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 duration: 200,
                 props: {
                     y: { from: this.contentContainer.y, to: this.positionMoveTo },
+                },
+                onComplete: () => {
+                    this.setInsideCellIndex()
+                    if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
                 },
             })
         }
@@ -1070,6 +1190,10 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                     duration: 200,
                     props: {
                         x: { from: this.scrollbar.x, to: resultBarX },
+                    },
+                    onComplete: () => {
+                        this.setInsideCellIndex()
+                        if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
                     },
                 })
             }
@@ -1097,7 +1221,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     }
 
     private scrollBarMove(pointer: Input.Pointer) {
-        if (pointer.leftButtonReleased()) {
+        if (pointer.leftButtonReleased() || pointer.rightButtonReleased() || pointer.rightButtonDown()) {
             this.endScrollBar()
             return
         }
@@ -1158,10 +1282,12 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             this.contentContainer.y = resultView
             this.percentBarMove = this.normalize(this.contentContainer.y, this.firstPosition, this.lastPosition)
         }
+
+        this.setInsideCellIndex()
     }
 
     private scroll(pointer: Input.Pointer): void {
-        if (pointer.leftButtonReleased()) {
+        if (pointer.leftButtonReleased() || pointer.rightButtonReleased() || pointer.rightButtonDown()) {
             this.endScrollView()
             return
         }
@@ -1254,6 +1380,8 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 this.scrollbar.x = resultBarX
             }
         }
+
+        this.setInsideCellIndex()
     }
 
     private scrollWithWheel(pointer: Input.Pointer): void {
@@ -1295,17 +1423,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             let nextValue = this.positionMoveTo - this.getCellSize()
             let previous = this.positionMoveTo + this.getCellSize()
 
-            let minPositionX = this.isHorizontal ? this.firstPosition : this.xPosition
-
             if (this.isHorizontal) {
-                if (this.velocityX != 0) {
-                    if (resultX < this.maxMoveX) {
-                        resultX = this.maxMoveX
-                    } else if (resultX > minPositionX) {
-                        resultX = minPositionX
-                    }
-                }
-
                 if (this.velocityY != 0) {
                     if (resultY < this.maxMoveY) {
                         resultY = this.maxMoveY
@@ -1316,7 +1434,6 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
                 this.percentWheelMove = this.normalize(this.contentContainer.x, previous, nextValue)
             } else {
-                let minPositionY = this.isHorizontal ? this.yPosition : this.firstPosition
                 if (this.velocityX != 0) {
                     if (resultX < this.maxMoveX) {
                         resultX = this.maxMoveX
@@ -1325,19 +1442,12 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                     }
                 }
 
-                if (this.velocityY != 0) {
-                    if (resultY < this.maxMoveY) {
-                        resultY = this.maxMoveY
-                    } else if (resultY > minPositionY) {
-                        resultY = minPositionY
-                    }
-                }
-
                 this.percentWheelMove = this.normalize(this.contentContainer.y, previous, nextValue)
             }
         }
 
         this.contentContainer.setPosition(resultX, resultY)
+
         this.percentMove = this.normalize(this.contentContainer.x, this.firstPosition, this.lastPosition)
 
         if (this.isHaveScrollBar) {
@@ -1362,11 +1472,14 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             }
         }
 
+        this.setInsideCellIndex()
         if (this.isSnap) {
             this.isDragDisposable?.unsubscribe()
             this.isDragDisposable = timer(50).subscribe((x) => {
                 this.endScrollViewWithWheel()
             })
+        } else {
+            if (this.callBackOnEndScroll != undefined) this.callBackOnEndScroll()
         }
     }
 
@@ -1415,6 +1528,58 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
                 this.autoScrollX = false
             }
         }
+    }
+
+    public setCallbackOnEndScroll(callBack: Function, offsetCheckCellOutOfBound: number, divideOutOfBound: number = 1) {
+        this.callBackOnEndScroll = callBack
+        this.offsetCheckCellOutOfBound = offsetCheckCellOutOfBound
+        this.divideOutOfBound = divideOutOfBound
+    }
+
+    public doOnEndScroll(cellArr: any[]) {
+        let activeCell: any[] = []
+        this.insideIndexCellArea.map((line) => {
+            cellArr.forEach((cell) => {
+                cell.setInteractButtonScrollView(false)
+                if (cell.cellPageIndex == line) {
+                    activeCell.push(cell)
+                }
+            })
+        })
+
+        activeCell.forEach((cell) => cell.setInteractButtonScrollView(true))
+    }
+
+    private setInsideCellIndex() {
+        this.insideIndexCellArea = []
+
+        this.contentContainer.getAll().forEach((cell, index) => {
+            const cellCon = cell as GameObjects.Container
+
+            const isInBound = this.isHorizontal
+                ? this.scrollViewArea
+                      .getBounds()
+                      .contains(
+                          cellCon.getBounds().x +
+                              cellCon.getBounds().width / this.divideOutOfBound +
+                              this.offsetCheckCellOutOfBound,
+                          cellCon.getBounds().centerY
+                      )
+                : this.scrollViewArea
+                      .getBounds()
+                      .contains(
+                          cellCon.getBounds().centerX,
+                          cellCon.getBounds().y +
+                              cellCon.getBounds().height / this.divideOutOfBound +
+                              this.offsetCheckCellOutOfBound
+                      )
+
+            if (isInBound) {
+                this.insideIndexCellArea.push(index)
+            }
+        })
+
+        //console.log(this.insideIndexCellArea)
     }
 
     normalize(val: number, min: number, max: number): number {

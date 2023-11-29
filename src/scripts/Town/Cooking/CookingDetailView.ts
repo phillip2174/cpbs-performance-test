@@ -12,6 +12,7 @@ import { CookingDetailSelectRecipeView } from './CookingDetailSelectRecipeView'
 import { CookingDetailState } from './CookingDetailState'
 import { CookingPanelState } from './CookingPanelState'
 import { TownUIPod } from '../Pod/TownUIPod'
+import { AudioManager } from '../../Audio/AudioManager'
 
 export class CookingDetailView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -36,6 +37,8 @@ export class CookingDetailView extends GameObjects.Container {
 
     private isTween: boolean = false
 
+    private audioManager: AudioManager
+
     private cookingPod: CookingPod
     private townUIPod: TownUIPod
 
@@ -47,6 +50,7 @@ export class CookingDetailView extends GameObjects.Container {
     public doInit(): void {
         this.cookingPod = PodProvider.instance.cookingPod
         this.townUIPod = PodProvider.instance.townUIPod
+        this.audioManager = PodProvider.instance.audioManager
 
         this.gameCamera = this.scene.cameras.main
         this.setPosition(this.gameCamera.centerX, this.gameCamera.centerY)
@@ -81,6 +85,11 @@ export class CookingDetailView extends GameObjects.Container {
         })
 
         this.setActiveDetail(this.cookingPod.cookingPanelState.value == CookingPanelState.CookingDetail, false)
+        this.on('destroy', () => {
+            this.cookingPanelStateSubscription?.unsubscribe()
+            this.cookingDetailStateSubscription?.unsubscribe()
+            this.delaySubscription?.unsubscribe()
+        })
     }
 
     private setupCookingDetailUIContainer(): void {
@@ -105,8 +114,6 @@ export class CookingDetailView extends GameObjects.Container {
         this.isTween = true
         if (isTween) {
             if (isActive) {
-                this.setActiveWithDetailState()
-
                 this.dimButton?.setActiveDim(true)
                 this.onCloseTween?.pause()
                 this.onCloseTweenChain?.pause()
@@ -161,6 +168,8 @@ export class CookingDetailView extends GameObjects.Container {
     }
 
     private showComplete(): void {
+        this.audioManager.playSFXSound('win_sfx')
+
         this.cookingDetailSelectRecipeView?.setVisible(false)
         this.cookingDetailCookingAnimationView?.setVisible(false)
         this.cookingDetailCookingCompleteView?.setVisible(true)

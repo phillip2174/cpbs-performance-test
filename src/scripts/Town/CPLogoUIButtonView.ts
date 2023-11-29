@@ -97,7 +97,7 @@ export class CPLogoUIButtonView extends GameObjects.Container {
 
     private setActiveButton(isActive: boolean, isTween: boolean): void {
         if (isTween) {
-            this.onOpenTween.restart()
+            this.onOpenTween?.restart()
             this.setActive(true)
             this.setVisible(true)
         } else {
@@ -109,5 +109,11 @@ export class CPLogoUIButtonView extends GameObjects.Container {
     private createTweens(): void {
         if (!this.isDesktop) return
         this.onOpenTween = AnimationController.instance.tweenOpenContainer(this.scene, this).onOpenTween
+    }
+
+    destroy(fromScene?: boolean): void {
+        this.onOpenTween?.destroy()
+        this.stateSubscription?.unsubscribe()
+        super.destroy(fromScene)
     }
 }

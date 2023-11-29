@@ -50,7 +50,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
         this.townBuildingPod = PodProvider.instance.townbuildingPod
         this.townUIPod = PodProvider.instance.townUIPod
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-        this.setDepth(202)
+        this.setDepth(203)
         this.dimButton = new DimButton(this.scene)
         this.setupButtonGroupUI()
         this.add([this.dimButton, this.buttonGroupUIContainer])
@@ -70,11 +70,15 @@ export class TownUIButtonGroupView extends GameObjects.Container {
                 this.onHide()
             }
         })
+
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+        })
     }
 
     private setupButtonGroupUI(): void {
         this.buttonGroupUIContainer = this.scene.add.container()
-        this.buttonGroupBackground = this.scene.add.image(0, 0, 'ui-button-group-bg').setOrigin(0.5)
+        this.buttonGroupBackground = this.scene.add.image(0, 0, 'ui-button-group-bg').setOrigin(0.5).setScale(1, 1.05)
         this.setupButtons()
         this.setupActionButton()
         this.buttonGroupUIContainer.add(this.buttonGroupBackground)
@@ -110,7 +114,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
             width: 3,
             height: 2,
             cellWidth: 110,
-            cellHeight: 115,
+            cellHeight: 122,
             x: -110,
             y: -55,
         })
@@ -123,35 +127,44 @@ export class TownUIButtonGroupView extends GameObjects.Container {
 
     private setupActionButton(): void {
         this.collectionButton.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.Collection)
-            this.townUIPod.setIsShowGuideline(false)
-            this.townUIPod.setIsShowMenuGroup(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.Collection)
+                this.townUIPod.setIsShowGuideline(false)
+                this.townUIPod.setIsShowMenuGroup(false)
+            }
         })
 
         this.inventoryButton.onClick(() => {
-            this.townUIButtonNotificationManager.setInventoryIsUpdate(false)
-            this.townUIPod.changeUIState(TownUIState.Inventory)
-            this.townUIPod.setIsShowGuideline(false)
-            this.townUIPod.setIsShowMenuGroup(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIButtonNotificationManager.setInventoryIsUpdate(false)
+                this.townUIPod.changeUIState(TownUIState.Inventory)
+                this.townUIPod.setIsShowGuideline(false)
+                this.townUIPod.setIsShowMenuGroup(false)
+            }
         })
 
         this.cookingButton.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.Cooking)
-            this.townUIPod.setIsShowGuideline(false)
-            this.townUIPod.setIsShowMenuGroup(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.Cooking)
+                this.townUIPod.setIsShowGuideline(false)
+                this.townUIPod.setIsShowMenuGroup(false)
+            }
         })
 
         this.dailyLoginButton.onClick(() => {
-            this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
-            this.townUIPod.changeUIState(TownUIState.DailyLogin)
-            this.townUIPod.setIsShowMenuGroup(false)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIButtonNotificationManager.setDailyLoginIsUpdate(false)
+                this.townUIPod.changeUIState(TownUIState.DailyLogin)
+                this.townUIPod.setIsShowMenuGroup(false)
+            }
         })
 
         this.minigameButton.onClick(() => {
-            //TODO Get Pod In Minigame select to set scene to launchScene
-            console.log('go to mini scene')
-            PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPPuzzle)
-            this.scene.scene.start(`SplashLoaddingScene`)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.MiniGameSelect)
+                this.townUIPod.setIsShowGuideline(false)
+                this.townUIPod.setIsShowMenuGroup(false)
+            }
         })
 
         this.closeButton.onClick(() => {

@@ -5,15 +5,13 @@ export class UserBean {
     public firstName: string = 'Phillip'
     public lastName: string = 'Liu'
     public lastLoginTime: number
-    public cpPoint: number = 1200
+    public cpPoint: number = 100100
 
     constructor(userId?: number, firstName?: string, lastName?: string, lastLoginTime?: number, cpPoint?: number) {
-        if (!GameConfig.IS_MOCK_API) {
-            this.userId = userId
-            this.firstName = firstName
-            this.lastName = lastName
-            this.lastLoginTime = lastLoginTime
-            this.cpPoint = cpPoint
-        }
+        this.userId = userId
+        this.firstName = firstName
+        this.lastName = lastName
+        this.lastLoginTime = lastLoginTime
+        this.cpPoint = cpPoint
     }
 }

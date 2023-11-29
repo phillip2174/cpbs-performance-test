@@ -9,6 +9,8 @@ import { DimButton } from '../../button/DimButton'
 import { AnimationController } from '../AnimationController'
 import { TownUIPod } from './../Pod/TownUIPod'
 import { Subscription, skip } from 'rxjs'
+import { ButtonSoundType } from '../../button/ButtonSoundType'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class SettingUIPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -49,7 +51,6 @@ export class SettingUIPanelView extends GameObjects.Container {
 
         this.add([this.dimButton, this.settingsUIContainer])
         this.setupSubscribe()
-        
     }
 
     private setupSubscribe(): void {
@@ -63,6 +64,9 @@ export class SettingUIPanelView extends GameObjects.Container {
         })
 
         this.setFirstActive(this.townUIPod.townUIState.value == TownUIState.Settings)
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+        })
     }
 
     private createTween() {
@@ -120,14 +124,9 @@ export class SettingUIPanelView extends GameObjects.Container {
     private setupSettingsUIContainer(): void {
         this.settingsUIContainer = this.scene.add.container()
         this.buttonGroupBackground = this.scene.add.image(0, 0, 'setting-button-group-bg').setOrigin(0.5)
-        this.settingsText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Settings')
-            .setOrigin(0.5)
-            .setPosition(0, -155.5)
-            .setStyle({ fill: '#2B2B2B', fontSize: 36 })
+        this.settingsText = new BoldText(this.scene, 0, -155.5, 'Settings', 36, '#2B2B2B')
 
-        this.closeButton = new Button(this.scene, 125.5, -180.5, 40, 40, 'close-button')
+        this.closeButton = new Button(this.scene, 125.5, -180.5, 40, 40, 'close-button', 0, '', ButtonSoundType.Negative)
         this.closeButton.onClick(() => {
             PodProvider.instance.townUIPod.changeUIState(TownUIState.MainMenu)
         })

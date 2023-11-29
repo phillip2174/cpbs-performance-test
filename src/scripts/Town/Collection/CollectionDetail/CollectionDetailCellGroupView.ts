@@ -12,12 +12,20 @@ import { CollectionDetailRecipeTweenView } from '../../CollectionDetail/Collecti
 import { RecipePreviewView } from '../../Recipe/RecipePreviewView'
 import { IngredientDescPreviewGroupView } from '../../Recipe/IngredientDescPreviewGroupView'
 import { CollectionDetailState } from '../type/CollectionDetailState'
+import { BoldText } from '../../../../BoldText/BoldText'
 
 export class CollectionDetailCellGroupView extends GameObjects.Container {
+    public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 54
+    public static readonly LENGTH_CUT_TEXT_TITLE_MOBILE: number = 34
+    public static readonly LENGTH_CUT_TEXT_DESC_DESKTOP: number = 71
+    public static readonly LENGTH_CUT_TEXT_DESC_MOBILE: number = 44
+
     public static readonly WIDTH_SIZE_BG_MOBILE: number = 311
     public static readonly WIDTH_SIZE_BG_DESKTOP: number = 480
-    public static readonly HEIGHT_FIRST_MIN_BG: number = 250
+    public static readonly HEIGHT_FIRST_MIN_BG: number = 240
     public static readonly HEIGHT_SECOND_MIN_BG: number = 65
+    public static readonly HEIGHT_TITLE: number = 22
+    public static readonly HEIGHT_DESC: number = 18
 
     public static readonly TEXT_OFFSET_MOBILE: number = 16
     public static readonly TEXT_OFFSET_DESKTOP: number = 20
@@ -27,7 +35,9 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     private recipePreview: RecipePreviewView
     private ingredientPreview: IngredientPreviewView
     private rewardPointCellView: RewardPointCellView
+    private recipeNameMockPosition: GameObjects.Rectangle
     private recipeNameText: GameObjects.Text
+    private recipeDescMockPosition: GameObjects.Rectangle
     private recipeDescText: GameObjects.Text
 
     private secondContainer: GameObjects.Container
@@ -35,6 +45,8 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     private headerText: GameObjects.Text
 
     private ingredientDescContainer: GameObjects.Container
+
+    private isDesktop: boolean = false
 
     private selectedSubscription: Subscription
 
@@ -46,6 +58,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     }
 
     public doInit() {
+        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
         this.collectionPod = PodProvider.instance.collectionPod
         this.setCellWithState()
 
@@ -81,7 +94,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
             .setOrigin(0.5, 0)
 
         this.rewardPointCellView = new RewardPointCellView(this.scene, this.firstDetailCellBG.width / 2, 25)
-        this.rewardPointCellView.doInit()
+        this.rewardPointCellView.createMediumTag()
 
         this.recipePreview = new RecipePreviewView(this.scene, 0, 90).setScale(1)
         this.recipePreview.doInit()
@@ -90,12 +103,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
         this.ingredientPreview = new IngredientPreviewView(this.scene, 0, 180)
         this.ingredientPreview.doInit()
 
-        this.recipeNameText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('????????????')
-            .setOrigin(0, 0.5)
-            .setPosition(0, 225)
-            .setStyle({ fill: '#2B2B2B', fontSize: 22 })
+        this.recipeNameText = new BoldText(this.scene, 0, 225, '????????????', 22, '#2B2B2B').setOrigin(0, 0.5)
 
         this.recipeNameText.width = this.recipeNameText.getBounds().width
         this.recipeNameText.height = this.recipeNameText.getBounds().height
@@ -103,21 +111,31 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
         this.recipeDescText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded')
             .setText('????????????')
-            .setOrigin(0, 0)
+            .setOrigin(0, 0.5)
             .setPosition(0, 230)
             .setStyle({ fill: '#585858', fontSize: 18 })
 
         const positionXText = this.scene.sys.game.device.os.desktop
             ? -this.firstDetailCellBG.width / 2 + CollectionDetailCellGroupView.TEXT_OFFSET_DESKTOP
             : -this.firstDetailCellBG.width / 2 + CollectionDetailCellGroupView.TEXT_OFFSET_MOBILE
-        this.recipeNameText.setPosition(positionXText, 225)
+        this.recipeNameText.setPosition(positionXText, 230)
         this.recipeDescText.setPosition(positionXText, 230)
+
+        this.recipeNameMockPosition = this.scene.add
+            .rectangle(positionXText, 210, this.firstDetailCellBG.width, 22, 0xff00ff, 0)
+            .setOrigin(0, 0)
+
+        this.recipeDescMockPosition = this.scene.add
+            .rectangle(positionXText, 210, this.firstDetailCellBG.width - 30, 18, 0xff0000, 0)
+            .setOrigin(0, 0)
 
         this.firstContainer.add([
             this.firstDetailCellBG,
             this.rewardPointCellView,
             this.recipePreview,
             this.ingredientPreview,
+            this.recipeNameMockPosition,
+            this.recipeDescMockPosition,
             this.recipeNameText,
             this.recipeDescText,
         ])
@@ -161,13 +179,42 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
         this.selectedSubscription = this.collectionPod.currentDetailRecipeSelected.subscribe((bean) => {
             this.recipePreview.setRecipePreviewMaster(bean.id)
             this.ingredientPreview.setPreviewView(bean, 0.77)
-            this.rewardPointCellView.setPointRewardCell(bean, 0.778)
+            this.rewardPointCellView.setPointCell(bean.rewardPoint.toString())
             this.rewardPointCellView.setPosition(
                 this.firstDetailCellBG.width / 2 - this.rewardPointCellView.width / 2 - 10,
                 this.rewardPointCellView.y
             )
-            this.recipeNameText.setText(bean.title)
-            this.recipeDescText.setText(bean.description)
+
+            const title = TextAdapter.splitThaiStringByLegth(
+                bean.title,
+                this.isDesktop
+                    ? CollectionDetailCellGroupView.LENGTH_CUT_TEXT_TITLE_DESKTOP
+                    : CollectionDetailCellGroupView.LENGTH_CUT_TEXT_TITLE_MOBILE
+            )
+            this.recipeNameText.setText(title)
+            this.recipeNameText.height = 0
+            this.recipeNameText.height =
+                (this.isDesktop
+                    ? CollectionDetailCellGroupView.HEIGHT_TITLE
+                    : CollectionDetailCellGroupView.HEIGHT_TITLE + 2) * title.length //+ (title.length > 1 ? CollectionDetailCellGroupView.HEIGHT_TITLE_OFFSET : 0) //22 * title.length
+            this.recipeNameMockPosition.setSize(this.firstDetailCellBG.width - 30, this.recipeNameText.height)
+
+            const description = TextAdapter.splitThaiStringByLegth(
+                bean.description,
+                this.isDesktop
+                    ? CollectionDetailCellGroupView.LENGTH_CUT_TEXT_DESC_DESKTOP
+                    : CollectionDetailCellGroupView.LENGTH_CUT_TEXT_DESC_MOBILE
+            )
+            this.recipeDescText.setText(description)
+            this.recipeDescText.height =
+                (this.isDesktop
+                    ? CollectionDetailCellGroupView.HEIGHT_DESC
+                    : CollectionDetailCellGroupView.HEIGHT_DESC + 0.5) * description.length
+            this.recipeDescMockPosition.setSize(this.firstDetailCellBG.width - 30, this.recipeDescText.height)
+            this.recipeDescMockPosition.y = 220 + this.recipeNameMockPosition.height
+
+            Phaser.Display.Align.In.LeftCenter(this.recipeNameText, this.recipeNameMockPosition)
+            Phaser.Display.Align.In.LeftCenter(this.recipeDescText, this.recipeDescMockPosition)
 
             if (bean.userRecipeBean) {
                 this.recipePreview.setCellWithRecipeType(bean.type)
@@ -180,6 +227,10 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
                 this.resizeBackgroundWithDesc(false)
             }
         })
+
+        this.on('destroy', () => {
+            this.selectedSubscription?.unsubscribe()
+        })
     }
 
     private createIngredientDesc(bean: RecipeBean) {
@@ -191,12 +242,13 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     }
 
     public resizeBackgroundWithDesc(setSecondCell: boolean) {
-        this.recipeDescText.height = this.recipeDescText.getBounds().height
-
-        this.firstDetailCellBG.height = CollectionDetailCellGroupView.HEIGHT_FIRST_MIN_BG + this.recipeDescText.height
+        this.firstDetailCellBG.height =
+            CollectionDetailCellGroupView.HEIGHT_FIRST_MIN_BG +
+            this.recipeNameMockPosition.height +
+            this.recipeDescMockPosition.height
 
         if (setSecondCell) {
-            this.secondContainer.y = this.firstContainer.getBounds().height
+            this.secondContainer.y = this.firstDetailCellBG.height + 8
 
             this.secondDetailCellBG.height =
                 CollectionDetailCellGroupView.HEIGHT_SECOND_MIN_BG + this.ingredientDescContainer.getBounds().height
@@ -204,6 +256,14 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+    }
+
+    public getHeightBGFirst(): number {
+        return this.firstDetailCellBG.height + 8
+    }
+
+    public getHeightBGsecond(): number {
+        return this.secondDetailCellBG.height
     }
 
     private setActiveElement(isActive: boolean) {

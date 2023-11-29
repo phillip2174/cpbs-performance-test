@@ -8,6 +8,8 @@ import { TownUIPod } from './Pod/TownUIPod'
 import { TownUIButtonNotificationManager } from './TownUIButtonNotificationManager'
 import { ButtonNotificationView } from './ButtonNotificationView'
 import { TownUIButtonType } from './Type/TownUIButtonType'
+import { ButtonSoundType } from '../button/ButtonSoundType'
+import { BoldText } from '../../BoldText/BoldText'
 
 export class TownUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
@@ -453,6 +455,17 @@ export class TownUIButtonView extends GameObjects.Container {
                 this.setButtonSelectState(state.toString() == this.buttonType.toString())
             })
         }
+
+        this.on('destroy', () => {
+            this.uiStateDisposable?.unsubscribe()
+            this.cookingNotificationDisposable?.unsubscribe()
+            this.minigameNotificationDisposable?.unsubscribe()
+            this.inventoryNotificationDisposable?.unsubscribe()
+            this.menuGroupNotificationDisposable?.unsubscribe()
+            this.dailyLoginNotificationDisposable?.unsubscribe()
+            this.collectionsNotificationDisposable?.unsubscribe()
+            this.notificationNotificationDisposable?.unsubscribe()
+        })
     }
 
     private setButtonSelectState(isSelected: boolean): void {
@@ -479,10 +492,7 @@ export class TownUIButtonView extends GameObjects.Container {
     private setupButtonWithText(iconKey: string, buttonText: string): void {
         this.buttonNotification = new ButtonNotificationView(this.scene)
         this.buttonIcon = this.scene.add.image(0, 0, iconKey + TownUIButtonView.ICON_IMAGE_KEY).setOrigin(0.5)
-        this.buttonText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(buttonText)
-            .setOrigin(0.5)
+        this.buttonText = new BoldText(this.scene, 0, 0, buttonText)
 
         if (this.isUseMobileBg) {
             this.backgroundButton = new Button(this.scene, 0, 0, 64, 64, 'ui-button-bg-mobile', this.clickDelay)
@@ -492,8 +502,8 @@ export class TownUIButtonView extends GameObjects.Container {
         } else {
             this.backgroundButton = new Button(this.scene, 0, 0, 101, 92, 'ui-button-bg-desktop', this.clickDelay)
             this.buttonNotification.doInit(35, -34)
-            this.buttonIcon.setPosition(0, -27)
-            this.buttonText.setPosition(-0.5, 23).setStyle({ fill: '#585858', fontSize: 16 })
+            this.buttonIcon.setPosition(0, -32)
+            this.buttonText.setPosition(-0.5, 18).setStyle({ fill: '#585858', fontSize: 16 })
             this.setDepth(202)
         }
 
@@ -501,14 +511,9 @@ export class TownUIButtonView extends GameObjects.Container {
     }
 
     private setupCloseButton(iconKey: string, buttonText: string): void {
-        this.backgroundButton = new Button(this.scene, 0, 0, 101, 92, 'close-button-bg', this.clickDelay)
+        this.backgroundButton = new Button(this.scene, 0, 0, 101, 92, 'close-button-bg', this.clickDelay, '', ButtonSoundType.Negative)
         this.buttonIcon = this.scene.add.image(0, -13, iconKey + TownUIButtonView.ICON_IMAGE_KEY).setOrigin(0.5)
-        this.buttonText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText(buttonText)
-            .setOrigin(0.5)
-            .setPosition(-0.5, 23)
-            .setStyle({ fill: '#585858', fontSize: 16 })
+        this.buttonText = new BoldText(this.scene, -0.5, 23, buttonText, 16, '#585858')
         this.add([this.backgroundButton, this.buttonIcon, this.buttonText])
     }
 

@@ -1,0 +1,181 @@
+{
+    "spine-load-data": {
+        "files": [
+            {
+                "type": "spine",
+                "key": "train-body",
+                "jsonURL": "assets/spines/train-body.json",
+                "atlasURL": "assets/spines/train-body.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "7-11-cat",
+                "jsonURL": "assets/spines/7-11-cat.json",
+                "atlasURL": "assets/spines/7-11-cat.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "7-11-dog",
+                "jsonURL": "assets/spines/7-11-dog.json",
+                "atlasURL": "assets/spines/7-11-dog.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "7-11-door",
+                "jsonURL": "assets/spines/7-11-door.json",
+                "atlasURL": "assets/spines/7-11-door.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "burger-shrimp",
+                "jsonURL": "assets/spines/burger-shrimp.json",
+                "atlasURL": "assets/spines/burger-shrimp.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "bushes",
+                "jsonURL": "assets/spines/bushes.json",
+                "atlasURL": "assets/spines/bushes.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "cloud-ham",
+                "jsonURL": "assets/spines/cloud-ham.json",
+                "atlasURL": "assets/spines/cloud-ham.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "clown",
+                "jsonURL": "assets/spines/clown.json",
+                "atlasURL": "assets/spines/clown.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "cp-foodtruck",
+                "jsonURL": "assets/spines/cp-foodtruck.json",
+                "atlasURL": "assets/spines/cp-foodtruck.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "fire-hydrant",
+                "jsonURL": "assets/spines/fire-hydrant.json",
+                "atlasURL": "assets/spines/fire-hydrant.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "flower-bush",
+                "jsonURL": "assets/spines/flower-bush.json",
+                "atlasURL": "assets/spines/flower-bush.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "food-box",
+                "jsonURL": "assets/spines/food-box.json",
+                "atlasURL": "assets/spines/food-box.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "hotdog-shop",
+                "jsonURL": "assets/spines/hotdog-shop.json",
+                "atlasURL": "assets/spines/hotdog-shop.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "makro-door",
+                "jsonURL": "assets/spines/makro-door.json",
+                "atlasURL": "assets/spines/makro-door.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "people-group-a",
+                "jsonURL": "assets/spines/people-group-a.json",
+                "atlasURL": "assets/spines/people-group-a.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "people-group-b",
+                "jsonURL": "assets/spines/people-group-b.json",
+                "atlasURL": "assets/spines/people-group-b.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "people-group-c",
+                "jsonURL": "assets/spines/people-group-c.json",
+                "atlasURL": "assets/spines/people-group-c.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "people-group-d",
+                "jsonURL": "assets/spines/people-group-d.json",
+                "atlasURL": "assets/spines/people-group-d.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "people-group-f",
+                "jsonURL": "assets/spines/people-group-f.json",
+                "atlasURL": "assets/spines/people-group-f.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "person-mascot-2nd-floor",
+                "jsonURL": "assets/spines/person-mascot-2nd-floor.json",
+                "atlasURL": "assets/spines/person-mascot-2nd-floor.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "red-umbrella-with-people",
+                "jsonURL": "assets/spines/red-umbrella-with-people.json",
+                "atlasURL": "assets/spines/red-umbrella-with-people.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "red-umbrella",
+                "jsonURL": "assets/spines/red-umbrella.json",
+                "atlasURL": "assets/spines/red-umbrella.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "sauce-bottle",
+                "jsonURL": "assets/spines/sauce-bottle.json",
+                "atlasURL": "assets/spines/sauce-bottle.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "tree",
+                "jsonURL": "assets/spines/tree.json",
+                "atlasURL": "assets/spines/tree.atlas",
+                "preMultipliedAlpha": true
+            },
+            {
+                "type": "spine",
+                "key": "vegetable-lotus",
+                "jsonURL": "assets/spines/vegetable-lotus.json",
+                "atlasURL": "assets/spines/vegetable-lotus.atlas",
+                "preMultipliedAlpha": true
+            }
+        ]
+    }
+}

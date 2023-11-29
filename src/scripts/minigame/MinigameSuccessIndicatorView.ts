@@ -1,5 +1,6 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
+import { PodProvider } from '../pod/PodProvider'
 
 export class MinigameSuccessIndicatorView extends GameObjects.Container {
     public static readonly SIZE_DESKTOP: number = 132
@@ -60,7 +61,7 @@ export class MinigameSuccessIndicatorView extends GameObjects.Container {
                             from: 0,
                             to: this.successIndicator.alpha,
                         },
-                    },
+                    }
                 },
                 {
                     duration: 500,

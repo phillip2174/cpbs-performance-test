@@ -5,6 +5,8 @@ import { PodProvider } from '../../pod/PodProvider'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { CookingPod } from '../Pod/CookingPod'
 import { CookingDetailState } from './CookingDetailState'
+import { AudioManager } from '../../Audio/AudioManager'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class CookingDetailCookingAnimationView extends GameObjects.Container {
     private cookingAnimationBackground: GameObjects.NineSlice
@@ -12,11 +14,16 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
     private cookingLoadingTextSprite: GameObjects.Sprite
     private cookingText: GameObjects.Text
 
+    private cookingSFX: Phaser.Sound.BaseSound
+
     private isDesktop: boolean
 
     private stateSubscription: Subscription
 
+    private audioManager: AudioManager
+
     private cookingPod: CookingPod
+    cookingDetailStateSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene)
@@ -24,8 +31,13 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
     }
 
     public doInit(): void {
+        this.audioManager = PodProvider.instance.audioManager
         this.cookingPod = PodProvider.instance.cookingPod
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+
+        this.cookingSFX = this.audioManager.createSFXSoundObject('cooking_sound_effect', true)
+        this.cookingSFX.stop()
+
         this.setupCookingAnimationUI()
         this.setupSubscribe()
     }
@@ -46,12 +58,14 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
 
         this.cookingLoadingSprite = this.scene.add.sprite(0, -30, 'loading-cooking-loop')
 
-        this.cookingText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setOrigin(0.5)
-            .setText('COOKING')
-            .setStyle({ fill: '#585858', fontSize: 36 })
-            .setPosition(-20, this.cookingAnimationBackground.height / 2 - 65)
+        this.cookingText = new BoldText(
+            this.scene,
+            -20,
+            this.cookingAnimationBackground.height / 2 - 65,
+            'COOKING',
+            36,
+            '#585858'
+        )
 
         this.cookingLoadingTextSprite = this.scene.add.sprite(
             this.cookingText.width / 2,
@@ -69,14 +83,22 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
     }
 
     private setupSubscribe(): void {
-        this.cookingPod.cookingDetailState.subscribe((state) => {
+        this.cookingDetailStateSubscription = this.cookingPod.cookingDetailState.subscribe((state) => {
             if (state == CookingDetailState.CookingAnimation) {
+                this.cookingSFX.play()
+
                 this.cookingLoadingSprite.play('loading-cooking-loop')
                 this.cookingLoadingTextSprite.play('loading-text-loop')
             } else {
+                this.cookingSFX.stop()
+
                 this.cookingLoadingSprite?.stop()
                 this.cookingLoadingTextSprite?.stop()
             }
+        })
+
+        this.on('destroy', () => {
+            this.cookingDetailStateSubscription?.unsubscribe()
         })
     }
 }

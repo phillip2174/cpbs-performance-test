@@ -6,8 +6,11 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { MinigameCPPuzzleImageGroupView } from './MinigameCPPuzzleImageGroupView'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { MinigameState } from '../MinigameState'
-import { TimeBarView } from '../../../time-bar/TimeBarView'
+import { TimeBarView } from '../../../bar/TimeBarView'
 import { HeaderScoreView } from '../HeaderScroeView'
+import { PodProvider } from '../../pod/PodProvider'
+import { BoldText } from '../../../BoldText/BoldText'
+import { AudioManager } from '../../Audio/AudioManager'
 
 export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     private group: GameObjects.Container
@@ -21,6 +24,8 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     minigameCPPuzzlePreviewImage: MinigameCPPuzzleImageGroupView
     countdownText: GameObjects.Text
 
+    private audioManager: AudioManager
+
     private timeBarView: TimeBarView
 
     constructor(scene: Scene) {
@@ -30,11 +35,12 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
 
     public doInit(pod: MinigameScenePod): void {
         this.scenePod = pod
+        this.audioManager = PodProvider.instance.audioManager
         this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
         this.group = this.scene.add.container(centerX, centerY)
-        this.group.setDepth(0);
+        this.group.setDepth(0)
 
         this.setUpImage()
         this.setUpButton()
@@ -60,7 +66,8 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
                     //this.showUI();
                     break
                 case MinigameState.Completed:
-                    this.setImageCanClick(false);
+                    this.minigameCPPuzzlePreviewImage.reset()
+                    this.setImageCanClick(false)
                     //this.showUI();
                     break
                 case MinigameState.Setting:
@@ -72,11 +79,14 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     }
 
     public showUI() {
-        console.log(this)
         this.group.setActive(true)
         this.group.setVisible(true)
-
-        this.timeBarView.startTimeBar(60000)
+        this.minigameCPPuzzlePreviewImage.setVisible(true);
+        this.minigameCPPuzzlePreviewImage.setActive(true);
+        this.timeBarView.startTimeBar(60000, false, false)
+        this.minigameCPPuzzlePreviewImage.setVisible(true)
+        this.minigameCPPuzzlePreviewImage.setActive(true)
+        this.timeBarView.startTimeBar(60000, false, false)
         this.timeBarView.setActiveTimeBar(true)
         this.timeBarView.pauseTimebar()
     }
@@ -84,12 +94,13 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     public hideUI() {
         this.group.setActive(false)
         this.group.setVisible(false)
-
+        this.minigameCPPuzzlePreviewImage.setVisible(false)
+        this.minigameCPPuzzlePreviewImage.setActive(false)
         this.timeBarView.setActiveTimeBar(false)
     }
 
     public setGameStart() {
-        this.timeBarView.startTimeBar(60000, true)
+        this.timeBarView.startTimeBar(60000, true, true)
     }
 
     private createTimeBar() {
@@ -120,9 +131,11 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         }
 
         this.timeBarView.addCallBack(() => {
-            this.scenePod.score = 0;
-            this.scenePod.textScore =  "00:00s";
-            this.scenePod.sceneState.next(MinigameState.Completed)
+            this.scenePod.score = 0
+            this.scenePod.textScore = '00:00s'
+            this.scenePod.setSceneState(MinigameState.Completed)
+            console.error('lose')
+            this.audioManager.playSFXSound('lose_sfx')
         })
     }
 
@@ -157,15 +170,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
 
         this.groupBeforeStart.add([this.dim])
 
-        this.countdownText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('Start in : 03s')
-            .setOrigin(0.5)
-            .setPosition(0, this.isDesktop ? 330 : this.subBg.height / 2 - 0)
-            .setStyle({
-                fill: '#ffffff',
-                fontSize: 28,
-            })
+        this.countdownText = new BoldText(this.scene, 0, this.isDesktop ? 330 : 310, 'Start in : 03s', 28)
         this.groupBeforeStart.add(this.countdownText)
 
         this.groupBeforeStart.setActive(false)
@@ -178,17 +183,23 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         )
         this.minigameCPPuzzlePreviewImage.doInit(this.scenePod)
         this.minigameCPPuzzlePreviewImage.setCallBackOnFinish(() => {
-            this.timeBarView.pauseTimebar();
+            this.timeBarView.pauseTimebar()
             this.scenePod.score = this.timeBarView.getCurrentTime()
-            this.scenePod.textScore = this.convertMsToMinutesSeconds( this.timeBarView.getCurrentTime()) + "s";
-            this.scenePod.sceneState.next(MinigameState.Completed);
-        });
+            this.scenePod.textScore = this.convertMsToMinutesSeconds(this.timeBarView.getCurrentTime()) + 's'
+            this.minigameCPPuzzlePreviewImage
+                .tweenShowFullImage()
+                .pipe(delay(1500))
+                .subscribe((_) => {
+                    this.scenePod.setSceneState(MinigameState.Completed)
+                })
+        })
     }
 
     private setUpButton() {}
 
     private startGame() {
         this.groupBeforeStart.setVisible(true)
+        this.audioManager.playSFXSound('minigame_countdown_sfx')
         this.scene.tweens
             .addCounter({
                 from: 4,
@@ -215,13 +226,12 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
             .subscribe((_) => {
                 this.groupBeforeStart.setVisible(false)
                 console.log('Finish')
-                this.scenePod.sceneState.next(MinigameState.GameStart)
+                this.scenePod.setSceneState(MinigameState.GameStart)
             })
     }
 
-    setImageCanClick(isCanClick : boolean)
-    {
-        this.minigameCPPuzzlePreviewImage.pod.canClick = isCanClick;
+    setImageCanClick(isCanClick: boolean) {
+        this.minigameCPPuzzlePreviewImage.pod.canClick = isCanClick
     }
 
     onUpdate() {

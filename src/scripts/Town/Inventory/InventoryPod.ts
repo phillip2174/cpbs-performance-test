@@ -10,8 +10,12 @@ export class InventoryPod {
     public inventoryFilterState: BehaviorSubject<InventoryFilterType> = new BehaviorSubject<InventoryFilterType>(
         InventoryFilterType.All
     )
+    public inventoryFilterNotifications: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
     public isAlreadyOpen: boolean = false
+
+    private showNotificationItems: InventoryItemBean[] = []
     private inventoryRepository: InventoryRepository
+    private lastOpenTime: number
 
     constructor() {
         this.inventoryRepository = RepositoryProvider.instance.inventoryRepository
@@ -21,7 +25,8 @@ export class InventoryPod {
         if (this.inventoryItemBeans == undefined || this.inventoryItemBeans == null) {
             return this.inventoryRepository.getInventoryItemData().pipe(
                 map((inventoryItems) => {
-                    this.inventoryItemBeans = inventoryItems
+                    this.inventoryItemBeans = inventoryItems.filter((item) => item.amount > 0)
+                    this.sortInventoryItemsWithUpdatedDate()
                     console.log('inventoryItemBeans Count: ' + this.inventoryItemBeans.length)
                     console.log(this.inventoryItemBeans)
 
@@ -29,12 +34,33 @@ export class InventoryPod {
                 })
             )
         } else {
+            this.inventoryItemBeans = this.inventoryItemBeans.filter((item) => item.amount > 0)
+            this.sortInventoryItemsWithUpdatedDate()
             return of(this.getInventoryItemBeansByType(inventoryFilterType))
         }
     }
 
     public changeInventoryFilterState(filterState: InventoryFilterType): void {
         this.inventoryFilterState.next(filterState)
+    }
+
+    public updateLastOpenTime(openTime: number): void {
+        this.lastOpenTime = openTime
+    }
+
+    public checkIsShowItemNotification(inventoryItemBean: InventoryItemBean): boolean {
+        return this.showNotificationItems.includes(inventoryItemBean)
+    }
+
+    public pushFilterNotification(): void {
+        this.showNotificationItems = this.inventoryItemBeans?.filter((item) => item.updatedDate >= this.lastOpenTime)
+        let showNotificationFilterTypes: string[] = []
+
+        this.showNotificationItems?.forEach((notiItem) => {
+            showNotificationFilterTypes.push(notiItem.type.toUpperCase())
+        })
+
+        this.inventoryFilterNotifications.next(showNotificationFilterTypes)
     }
 
     private getInventoryItemBeansByType(inventoryFilterType: InventoryFilterType): InventoryItemBean[] {
@@ -54,5 +80,13 @@ export class InventoryPod {
             case InventoryFilterType.Noodle:
                 return this.inventoryItemBeans.filter((bean) => bean.type == IngredientType.Noodles)
         }
+    }
+
+    private sortInventoryItemsWithUpdatedDate(): void {
+        let updatedItems = this.inventoryItemBeans.filter((item) => item.updatedDate >= this.lastOpenTime)
+        updatedItems.forEach((notiItem) => {
+            this.inventoryItemBeans.splice(this.inventoryItemBeans.indexOf(notiItem), 1)
+            this.inventoryItemBeans.push(notiItem)
+        })
     }
 }

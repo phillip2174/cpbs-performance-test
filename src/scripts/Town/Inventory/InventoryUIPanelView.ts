@@ -1,19 +1,19 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
-import { Subscription, skip, tap, timer } from 'rxjs'
-import { GameConfig } from '../../GameConfig'
+import { Subscription, skip, tap } from 'rxjs'
 import { ScrollViewNormalAndPagination } from '../../ScrollView/ScrollViewNormalAndPagination'
-import { Button } from '../../button/Button'
+import { DimButton } from '../../button/DimButton'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../../pod/PodProvider'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
+import { AnimationController } from '../AnimationController'
 import { TownUIPod } from '../Pod/TownUIPod'
 import { TownUIState } from '../Type/TownUIState'
+import { InventoryFilterType } from './InventoryFilterType'
+import { InventoryFilterView } from './InventoryFilterView'
 import { InventoryPod } from './InventoryPod'
 import { InventorySlotCellView } from './InventorySlotCellView'
-import { DimButton } from '../../button/DimButton'
-import { AnimationController } from '../AnimationController'
-import { InventoryFilterView } from './InventoryFilterView'
-import { InventoryFilterType } from './InventoryFilterType'
+import { APILoadingManager } from '../../api-loading/APILoadingManager'
+import { BoldText } from '../../../BoldText/BoldText'
 
 export class InventoryUIPanelView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -74,6 +74,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
                 this.setActiveContainer(true)
                 this.townUIPod.setIsFinishChangeUITween(true)
             } else {
+                this.inventoryPod.pushFilterNotification()
                 this.setActiveContainer(false)
             }
         })
@@ -88,6 +89,11 @@ export class InventoryUIPanelView extends GameObjects.Container {
         })
 
         this.setActiveContainer(this.townUIPod.townUIState.value == TownUIState.Inventory, false)
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+            this.scrollViewLayerSubscription?.unsubscribe()
+            this.filterSubscription?.unsubscribe()
+        })
     }
 
     private setActionInventory() {
@@ -103,6 +109,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
         this.isTween = isTween
         if (isTween) {
             if (isActive) {
+                this.inventoryPod.updateLastOpenTime(+(new Date().getTime() / 1000).toFixed(0))
                 this.dimButton.setActiveDim(true, !this.townUIPod.isFinishChangeUITween)
                 this.onCloseTween?.pause()
                 this.onCloseTweenChain?.pause()
@@ -126,7 +133,10 @@ export class InventoryUIPanelView extends GameObjects.Container {
                 this.dimButton.setActiveDim(false, !this.townUIPod.isFinishChangeUITween)
             }
         } else {
-            if (isActive) this.townUIPod.setLayerScrollView(InventoryUIPanelView.SCROLL_VIEW_LAYER)
+            if (isActive) {
+                this.townUIPod.setLayerScrollView(InventoryUIPanelView.SCROLL_VIEW_LAYER)
+                this.inventoryPod.updateLastOpenTime(+(new Date().getTime() / 1000).toFixed(0))
+            }
             this.setActive(isActive)
             this.setVisible(isActive)
             this.dimButton.setActiveDim(isActive, false)
@@ -160,10 +170,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
         this.inventoryHeaderContainer = this.scene.add.container()
         this.inventoryHeaderBackground = this.scene.add.image(0, 0, 'header-background').setOrigin(0.5)
         this.inventoryHeaderIcon = this.scene.add.image(0, 0, 'inventory-icon-header').setOrigin(0.5)
-        this.inventoryHeaderText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('MY INVENTORY')
-            .setOrigin(0.5)
+        this.inventoryHeaderText = new BoldText(this.scene, 0, 0, 'MY INVENTORY')
 
         if (this.isDesktop) {
             this.inventoryHeaderContainer.setPosition(0, -this.inventoryBackground.height / 2)
@@ -381,6 +388,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
         inventoryFilterType: InventoryFilterType
     ): void {
         //TODO : Fetch data with isAlreadyOpen
+        APILoadingManager.instance.showMiniLoading()
         this.inventoryPod
             .getInventoryItemData(inventoryFilterType)
             .pipe(
@@ -399,13 +407,23 @@ export class InventoryUIPanelView extends GameObjects.Container {
                         }
                     }
 
+                    if (!this.inventoryPod.isAlreadyOpen) {
+                        this.inventoryPod.pushFilterNotification()
+                    }
+
                     for (let j = 0; j < itemBean.length; j++) {
                         this.inventorySlotCellViews[j].setIngredientInCell(itemBean[j])
+                        if (this.inventoryPod.checkIsShowItemNotification(itemBean[j])) {
+                            this.inventorySlotCellViews[j].setNotificationVisible(true)
+                        }
                     }
 
                     this.paginationScrollView?.setActiveScrollView(true, this.isTween)
                     this.isTween = true
+
                     this.inventoryPod.isAlreadyOpen = true
+
+                    APILoadingManager.instance.hideMiniLoading()
                 })
             )
             .subscribe()

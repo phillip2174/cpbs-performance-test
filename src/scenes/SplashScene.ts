@@ -14,9 +14,24 @@ export class SplashScene extends Scene {
 
     preload(): void {
         console.log('start SplashScene')
+
+        this.add
+            .rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x2b2b2b, 1)
+            .setOrigin(0)
+            .setInteractive()
+
         this.initWindowEvents()
         this.loadAsset()
-        this.loadUserData()
+
+        // @ts-ignore: Unreachable code error
+        PodProvider.instance.audioManager.doInit(
+        // @ts-ignore: Unreachable code error
+            this.game.bgmAudioManager,
+        // @ts-ignore: Unreachable code error
+            this.game.sfxAudioManager,
+        // @ts-ignore: Unreachable code error
+            this.game.ambientAudioManager
+        )
     }
 
     private loadAsset() {
@@ -27,7 +42,7 @@ export class SplashScene extends Scene {
 
     private createLoader(): void {
         this.load.on('complete', () => {
-            this.onCompleteLoadBootAsset()
+            this.loadUserData()
         })
     }
 
@@ -42,10 +57,13 @@ export class SplashScene extends Scene {
     }
 
     private loadUserData(): void {
-        let userPod = PodProvider.instance.userPod
+        const userPod = PodProvider.instance.userPod
+        const tutorialManager = PodProvider.instance.tutorialManager
+        tutorialManager.getTutorialData()
         this.userDataSubscription = userPod.getUserBean().subscribe((_) => {
             userPod.checkFirstLoginOfTheDay()
             this.userDataSubscription?.unsubscribe()
+            this.onCompleteLoadBootAsset()
         })
     }
 
