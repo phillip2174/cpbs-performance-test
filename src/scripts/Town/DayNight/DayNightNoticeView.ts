@@ -10,6 +10,8 @@ import { TownTimeState } from '../Type/TownTimeState'
 import { AnimationController } from '../AnimationController'
 import { TownDayNightPod } from '../../pod/TownDayNightPod'
 import { TownUIState } from '../Type/TownUIState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { AudioManager } from '../../Audio/AudioManager'
 
 export class DayNightNoticeView extends GameObjects.Container {
     public static readonly ICON_KEY: string = 'day-night-notice-'
@@ -35,6 +37,8 @@ export class DayNightNoticeView extends GameObjects.Container {
 
     private townDayNightPod: TownDayNightPod
 
+    private audioManager: AudioManager
+
     private countdownFinishSubscription: Subscription
 
     private isDesktop: boolean
@@ -42,11 +46,12 @@ export class DayNightNoticeView extends GameObjects.Container {
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         GameObjectConstructor(scene, this)
-        this.isDesktop = scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
     }
 
     public doInit(): void {
         this.townDayNightPod = PodProvider.instance.townDayNightPod
+        this.audioManager = PodProvider.instance.audioManager
         this.dimButton = new DimButton(this.scene)
         this.noticeUIContainer = this.scene.add.container()
 
@@ -136,7 +141,7 @@ export class DayNightNoticeView extends GameObjects.Container {
         ).setScale(0.5)
 
         if (this.isDesktop) {
-            if (this.scene.sys.game.device.os.macOS) {
+            if (DeviceChecker.instance.isMacOS()) {
                 this.startDescText = TextAdapter.instance
                     .getVectorText(this.scene, 'DB_HeaventRounded_Med')
                     .setText('????????????')
@@ -225,6 +230,8 @@ export class DayNightNoticeView extends GameObjects.Container {
                 this.onOpenTween.restart()
                 this.onOpenTweenChain?.restart()
 
+                this.audioManager.playSFXSound('day_night_alert_sfx')
+
                 this.setActive(true)
                 this.setVisible(true)
             } else {
@@ -267,7 +274,7 @@ export class DayNightNoticeView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, 3)

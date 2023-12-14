@@ -16,18 +16,19 @@ export class CloseErrorRule implements IErrorAlertRule {
         errorDialogScene: Scene,
         error: ErrorObject,
         retryAction: () => any,
-        cancelAction: () => any,
+        cancelAction: () => any
     ): AlertDialogue {
         const errorAlertDialogue = AlertDialogue.showConfirmPopup(
             errorDialogScene,
-            'Code ' + error.code,
+            error.header,
             '\n' + error.message,
             () => {
                 cancelAction()
             },
-            '',
+            'TRY AGAIN',
+            true
         )
-        errorAlertDialogue.getHeader().setColor('#AAAAAA').setFontSize(50)
+        errorAlertDialogue.getHeader().setColor('#2B2B2B').setFontSize(22)
         return errorAlertDialogue
     }
 }

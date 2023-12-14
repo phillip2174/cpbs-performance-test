@@ -7,6 +7,7 @@ import { PodProvider } from '../../pod/PodProvider'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { RecipeFilterType } from '../Recipe/RecipeFilterType'
 import { BoldText } from '../../../BoldText/BoldText'
+import { IScrollViewCallBack } from '../../ScrollView/IScrollViewCallBack'
 
 export class CookingFilterCellView extends GameObjects.Container implements IScrollViewCallBack {
     public cellPageIndex: number
@@ -91,9 +92,14 @@ export class CookingFilterCellView extends GameObjects.Container implements IScr
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+
+        if (!PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+            this.buttonFilter.setCanInteract(false, false)
+        }
     }
 
     public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (!PodProvider.instance.tutorialManager.isCompletedTutorial()) return
         if (isCanInteract) {
             // this.setVisible(true)
             this.buttonFilter.setCanInteract(true, false)

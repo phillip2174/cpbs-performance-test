@@ -55,5 +55,124 @@
                 "buttonWidth": 170
             }
         ]
+    },
+    {
+        "tutorialID": 3,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-3",
+        "headerText": ["นี่คือห้องครัวของคุณ!"],
+        "desc1Text": ["เมื่อเก็บวัตถุดิบได้ตามที่กำหนด นี่คือ", "ที่ที่จะใช้สำหรับปรุงอาหาร"],
+        "desc2Text": ["เลือกเมนูที่ต้องการปรุง"],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "เข้าใจแล้ว",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 140
+            }
+        ]
+    },
+    {
+        "tutorialID": 4,
+        "characterImageKey": "tutorial-character-4",
+        "contentImageKey": "content-panel-4",
+        "headerText": ["เมนู"],
+        "desc1Text": ["สามารถดูได้ง่ายๆ ว่าเมนูไหน", "พร้อมปรุงแล้วบ้าง"],
+        "desc2Text": ["เมนูที่พร้อมปรุง"],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "เข้าใจแล้ว",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 140
+            }
+        ]
+    },
+    {
+        "tutorialID": 5,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-5",
+        "headerText": ["ปลดล็อกเมนู"],
+        "desc1Text": ["ต้องไปปลดล็อกเมนูใหม่ที่ COLLECTIONS", "เพื่อลุ้นรับโบนัสสุดพิเศษ"],
+        "desc2Text": ["โดยเลือก COLLECT REWARD ", "เพื่อไปยัง COLLECTIONS"],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "เข้าใจแล้ว",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 140
+            }
+        ]
+    },
+    {
+        "tutorialID": 6,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-6",
+        "headerText": ["COLLECTIONS"],
+        "desc1Text": ["นี่คือสมุดสะสมเมนู เข้ามาปลดล็อก", "เมนูใหม่ๆเพื่อลุ้นรับโบนัสสุดพิเศษ"],
+        "desc2Text": ["กดที่นี่ เพื่อปลดล็อกเมนูใหม่"],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "เข้าใจแล้ว",
+                "buttonColorCode": "#0099FF",
+                "buttonWidth": 140
+            }
+        ]
+    },
+    {
+        "tutorialID": 7,
+        "characterImageKey": "tutorial-character-2",
+        "contentImageKey": "content-panel-7_2",
+        "headerText": ["สำเร็จ! ได้รับเมนูแรกแล้ว"],
+        "desc1Text": ["รีบสะสมวัตถุดิบ แล้วปรุงเมนูอื่นๆ เพื่อรับ", " Point อีกจำนวนมาก"],
+        "desc2Text": [],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "จะทำให้ดีที่สุด! (รับ+50 Point)",
+                "buttonColorCode": "#29CC6A",
+                "buttonWidth": 247
+            }
+        ]
+    },
+    {
+        "tutorialID": 8,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-8",
+        "headerText": ["เข้าสู่ระบบ"],
+        "desc1Text": [
+            "ตอนนี้คุณมี 1 เมนู “แกงเขียวหวาน” และ",
+            " 50 Points โปรดเข้าสู่ระบบเพื่อ",
+            "เก็บรักษาคะแนนของคุณ!"
+        ],
+        "desc2Text": [],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "ย้อนกลับ",
+                "buttonColorCode": "#EE843C",
+                "buttonWidth": 127
+            },
+            {
+                "buttonText": "เข้าสู่ระบบ",
+                "buttonColorCode": "#29CC6A",
+                "buttonWidth": 127
+            }
+        ]
+    },
+    {
+        "tutorialID": 9,
+        "characterImageKey": "tutorial-character-3",
+        "contentImageKey": "content-panel-8",
+        "headerText": ["ยืนยันไม่เข้าสู่ระบบตอนนี้!"],
+        "desc1Text": ["ถ้ายังไม่เข้าสู่ระบบตอนนี้ คะแนนโบนัส", "50 Points อาจจะหายไป!"],
+        "desc2Text": [],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "เข้าสู่ระบบ",
+                "buttonColorCode": "#29CC6A",
+                "buttonWidth": 127
+            },
+            {
+                "buttonText": "ยืนยัน",
+                "buttonColorCode": "#EE843C",
+                "buttonWidth": 127
+            }
+        ]
     }
 ]

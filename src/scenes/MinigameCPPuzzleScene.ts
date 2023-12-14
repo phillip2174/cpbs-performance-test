@@ -13,6 +13,7 @@ import { PodProvider } from '../scripts/pod/PodProvider'
 import { MinigameResultUIMiniView } from '../scripts/minigame/MinigameResultUIMiniView'
 import { MinigameState } from '../scripts/minigame/MinigameState'
 import { SettingMinigameUIPanelView } from '../scripts/Town/Settings/SettingMinigameUIPanelView'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
 
 export class MinigameCPPuzzleScene extends Scene {
     minigameScenePod: MinigameScenePod
@@ -33,10 +34,11 @@ export class MinigameCPPuzzleScene extends Scene {
     preload(): void {
         console.log('start MinigameCPPuzzle')
         ResourceManager.instance.setResourceLoaderScene(this)
+        DeviceChecker.instance.doInit(this)
     }
 
     create(): void {
-        this.minigameScenePod =  new MinigameScenePod() 
+        this.minigameScenePod = new MinigameScenePod()
         this.minigameScenePod.setSceneState(MinigameState.StartMenu)
         this.minigameScenePod.setGameId(1)
         this.minigameMenuUIView = new MinigameMenuUIView(this)
@@ -45,11 +47,11 @@ export class MinigameCPPuzzleScene extends Scene {
         this.minigameResultUIView = new MinigameResultUIView(this)
         this.minigameResultUIMiniView = new MinigameResultUIMiniView(this)
 
-        this.minigameMenuUIView.doInit(1,this.minigameScenePod)
+        this.minigameMenuUIView.doInit(1, this.minigameScenePod)
         this.minigameStartMenuUIView.doInit(1, this.minigameScenePod)
         this.minigameCPuzzleGameplayUIView.doInit(this.minigameScenePod)
-        this.minigameResultUIView.doInit('TIME',this.minigameScenePod)
-        this.minigameResultUIMiniView.doInit('TIME',this.minigameScenePod)
+        this.minigameResultUIView.doInit('TIME', this.minigameScenePod)
+        this.minigameResultUIMiniView.doInit('TIME', this.minigameScenePod)
 
         this.settingUIPanelView = new SettingMinigameUIPanelView(this)
         this.settingUIPanelView.doInit(this.minigameScenePod)

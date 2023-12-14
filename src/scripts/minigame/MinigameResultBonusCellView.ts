@@ -10,6 +10,7 @@ import { MinigameCPPuzzleImageGroupPod } from './minigame-1-cp-puzzle/MinigameCP
 import { Observable, Observer, tap } from 'rxjs'
 import { TextAdapter } from '../text-adapter/TextAdapter'
 import { BoldText } from '../../BoldText/BoldText'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class MinigameResultBonusCellView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
@@ -26,7 +27,7 @@ export class MinigameResultBonusCellView extends GameObjects.Container {
 
     public doInit(x: number, y: number): void {
         this.setPosition(x, y)
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.isDesktop
             ? (this.bg = this.scene.add.nineslice(0, 0, 'white-ingredient-bg', '', 80, 80, 16, 16, 15, 15))
             : (this.bg = this.scene.add.nineslice(0, 0, 'white-ingredient-bg', '', 80, 80, 16, 16, 15, 15))
@@ -53,7 +54,7 @@ export class MinigameResultBonusCellView extends GameObjects.Container {
         this.itemCountText = new BoldText(
             this.scene,
             0,
-            this.isDesktop ? this.bg.height / 2 + 15 : this.bg.height / 2 + 25,
+            this.isDesktop ? this.bg.height / 2 + 15 : this.bg.height / 2 + 15,
             '+' + this.bean.amount.toString(),
             28,
             '#F19D63'

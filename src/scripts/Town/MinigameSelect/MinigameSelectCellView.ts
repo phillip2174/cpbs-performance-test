@@ -1,25 +1,35 @@
-import { GameObjects, Scene } from 'phaser'
+import { GameObjects, Scene, Tweens } from 'phaser'
 import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstructor'
 import { Button } from '../../button/Button'
 import { PodProvider } from '../../pod/PodProvider'
 import { SceneState } from '../../../scenes/SceneState'
 import { APILoadingManager } from '../../api-loading/APILoadingManager'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameSelectCellView extends GameObjects.Container {
     private minigameBackground: GameObjects.Image
     private logoIconMinigame: GameObjects.Image
     private playButton: Button
+    private iconPlayImage: GameObjects.Image
 
     private isDesktop: boolean = false
 
     private audioManager: AudioManager
+    private onHoverButtonBackground: Tweens.Tween
+    private onLeaveButtonBackground: Tweens.Tween
+
+    private onHoverButtonIcon: Tweens.TweenChain
+    private onLeaveButtonIcon: Tweens.TweenChain
+
+    private onHoverButtonText: Tweens.TweenChain
+    private onLeaveButtonText: Tweens.TweenChain
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         GameObjectConstructor(scene, this)
 
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
     }
 
     public doInit(miniGameID: number) {
@@ -60,10 +70,24 @@ export class MinigameSelectCellView extends GameObjects.Container {
             this.audioManager.stopBGMSound()
         })
 
+        if (this.isDesktop) {
+            this.playButton.on('pointerover', () => {
+                this.onHoverButton()
+            })
+
+            this.playButton.on('pointerout', () => {
+                this.onLeaveButton()
+            })
+        }
+
         this.add([this.minigameBackground, this.logoIconMinigame, this.playButton])
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+
+        if (this.isDesktop) {
+            this.createTween()
+        }
     }
 
     private createButton(
@@ -94,11 +118,157 @@ export class MinigameSelectCellView extends GameObjects.Container {
         button.setTextPosition(-button.width / 2 + button.label.width / 2 + 25, 1)
 
         if (iconKey != undefined || iconKey != '') {
-            let icon = this.scene.add.image(0, 0, iconKey)
-            icon.setPosition(button.width / 2 - icon.width / 2 - 22, -1)
-            button.add(icon)
+            this.iconPlayImage = this.scene.add.image(0, 0, iconKey)
+            this.iconPlayImage.setPosition(button.width / 2 - this.iconPlayImage.width / 2 - 22, -1)
+            button.add(this.iconPlayImage)
         }
 
         return button
+    }
+
+    private onHoverButton(): void {
+        this.onLeaveButtonBackground?.pause()
+        this.onLeaveButtonIcon?.pause()
+        this.onLeaveButtonText?.pause()
+
+        this.onHoverButtonBackground?.restart()
+        this.onHoverButtonIcon?.restart()
+        this.onHoverButtonText?.restart()
+    }
+
+    private onLeaveButton(): void {
+        this.onHoverButtonBackground?.pause()
+        this.onHoverButtonIcon?.pause()
+        this.onHoverButtonText?.pause()
+
+        this.onLeaveButtonBackground?.restart()
+        this.onLeaveButtonIcon?.restart()
+        this.onLeaveButtonText?.restart()
+    }
+
+    private createTween() {
+        this.onHoverButtonBackground = this.scene.add.tween({
+            targets: this.playButton.backgroundSlice,
+            duration: 0,
+            props: {
+                texture: { value: 'minigame-play-button-tween' },
+            },
+            ease: 'cubic.inout',
+            paused: true,
+            persist: true,
+        })
+
+        this.onLeaveButtonBackground = this.scene.add.tween({
+            targets: this.playButton.backgroundSlice,
+            duration: 0,
+            props: {
+                texture: { value: 'minigame-play-button' },
+            },
+            ease: 'cubic.inout',
+            paused: true,
+            persist: true,
+        })
+
+        this.onLeaveButtonIcon = this.scene.tweens.chain({
+            tweens: [
+                {
+                    targets: this.iconPlayImage,
+                    duration: 320,
+                    props: { x: { from: this.iconPlayImage.x - 100, to: this.iconPlayImage.x + 15 } },
+                    ease: 'Expo.easeOut',
+                },
+                {
+                    targets: this.iconPlayImage,
+                    duration: 230,
+                    props: { x: { from: this.iconPlayImage.x + 15, to: this.iconPlayImage.x - 2 } },
+                    ease: 'Cubic.easeOut',
+                },
+
+                {
+                    targets: this.iconPlayImage,
+                    duration: 200,
+                    props: { x: { from: this.iconPlayImage.x - 2, to: this.iconPlayImage.x + 1 } },
+                    ease: 'Expo.easeOut',
+                },
+
+                {
+                    targets: this.iconPlayImage,
+                    duration: 100,
+                    props: { x: { from: this.iconPlayImage.x + 1, to: this.iconPlayImage.x } },
+                    ease: 'Expo.easeOut',
+                },
+            ],
+            paused: true,
+            persist: true,
+        })
+
+        this.onHoverButtonIcon = this.scene.tweens.chain({
+            tweens: [
+                {
+                    targets: this.iconPlayImage,
+                    duration: 320,
+                    props: { x: { from: this.iconPlayImage.x, to: this.iconPlayImage.x - 118 } },
+                    ease: 'Expo.easeOut',
+                },
+                {
+                    targets: this.iconPlayImage,
+                    duration: 230,
+                    props: { x: { from: this.iconPlayImage.x - 118, to: this.iconPlayImage.x - 98 } },
+                    ease: 'Cubic.easeOut',
+                },
+                {
+                    targets: this.iconPlayImage,
+                    duration: 200,
+                    props: { x: { from: this.iconPlayImage.x - 98, to: this.iconPlayImage.x - 101 } },
+                    ease: 'Expo.easeOut',
+                },
+                {
+                    targets: this.iconPlayImage,
+                    duration: 100,
+                    props: { x: { from: this.iconPlayImage.x - 101, to: this.iconPlayImage.x - 100 } },
+                    ease: 'Expo.easeOut',
+                },
+            ],
+            paused: true,
+            persist: true,
+        })
+
+        this.onHoverButtonText = this.scene.tweens.chain({
+            tweens: [
+                {
+                    targets: this.playButton.label,
+                    duration: 300,
+                    props: { x: { from: this.playButton.label.x, to: this.playButton.label.x + 45 } },
+                    ease: 'Expo.easeOut',
+                },
+                {
+                    targets: this.playButton.label,
+                    duration: 100,
+                    props: { x: { from: this.playButton.label.x + 45, to: this.playButton.label.x + 40 } },
+                    ease: 'Cubic.easeOut',
+                },
+            ],
+            paused: true,
+            persist: true,
+        })
+
+        this.onLeaveButtonText = this.scene.tweens.chain({
+            tweens: [
+                {
+                    targets: this.playButton.label,
+                    duration: 300,
+                    props: { x: { from: this.playButton.label.x + 40, to: this.playButton.label.x - 5 } },
+                    ease: 'Expo.easeOut',
+                },
+                {
+                    targets: this.playButton.label,
+                    duration: 100,
+                    props: { x: { from: this.playButton.label.x - 5, to: this.playButton.label.x } },
+                    ease: 'Cubic.easeOut',
+                },
+            ],
+            paused: true,
+            persist: true,
+        })
     }
 }

@@ -5,6 +5,7 @@ import { RecipeBean } from '../Collection/RecipeBean'
 import { InventoryPod } from '../Inventory/InventoryPod'
 import { IngredientPreviewCellView } from './IngredientPreviewCellView'
 import { IngredientBean } from './../../Ingredient/IngredientBean'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class IngredientPreviewView extends GameObjects.Container {
     public static readonly NOT_READY_COLOR_CODE: number = 0xfdf3ec
@@ -30,7 +31,7 @@ export class IngredientPreviewView extends GameObjects.Container {
 
     public doInit() {
         this.inventoryPod = PodProvider.instance.inventoryPod
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setDepth(204)
         this.createUI()

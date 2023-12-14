@@ -9,6 +9,7 @@ import { DailyLoginCollectState } from './DailyLoginCollectState'
 import { DailyLoginRewardPreviewView } from './DailyLoginRewardPreviewView'
 import { AudioManager } from '../../Audio/AudioManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class DailyLoginCellView extends GameObjects.Container {
     public static readonly BG_WIDTH_BIG_DESKTOP: number = 243
@@ -53,12 +54,11 @@ export class DailyLoginCellView extends GameObjects.Container {
     }
 
     public doInit(dailyLoginBean: DailyLoginBean) {
-        if (this.scene.sys.game.device.os.desktop) {
-            this.isDesktop = true
+        this.isDesktop = DeviceChecker.instance.isDesktop()
+        if (this.isDesktop) {
             this.stampMaxScale = DailyLoginCellView.STAMP_MAX_SCALE_DESKTOP
             this.stampMinScale = DailyLoginCellView.STAMP_MIN_SCALE_DESKTOP
         } else {
-            this.isDesktop = false
             this.stampMaxScale = DailyLoginCellView.STAMP_MAX_SCALE_MOBILE
             this.stampMinScale = DailyLoginCellView.STAMP_MIN_SCALE_MOBILE
         }

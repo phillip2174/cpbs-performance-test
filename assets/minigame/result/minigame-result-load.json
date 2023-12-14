@@ -5,7 +5,8 @@
                 "type": "image",
                 "key": "minigame-result-back",
                 "url": "assets/minigame/result/minigame-result-back-button.png"
-            },   {
+            },
+            {
                 "type": "image",
                 "key": "minigame-result-bg",
                 "url": "assets/minigame/result/minigame-result-bg.png"
@@ -34,6 +35,11 @@
                 "type": "image",
                 "key": "minigame-result-play-again",
                 "url": "assets/minigame/result/minigame-result-play-again-button.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-free-play",
+                "url": "assets/minigame/result/minigame-result-free-play-button.png"
             },
             {
                 "type": "image",
@@ -69,6 +75,11 @@
                 "type": "image",
                 "key": "ticket-use-effect",
                 "url": "assets/minigame/result/ticket-use-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-alert",
+                "url": "assets/minigame/result/minigame-result-alert.png"
             }
         ]
     }

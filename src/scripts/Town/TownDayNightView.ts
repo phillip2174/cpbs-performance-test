@@ -64,17 +64,6 @@ export class TownDayNightView extends GameObjects.GameObject {
 
     private ShowReloadPopup(): void {
         this.cameraPod.setInteractCamera(false)
-        AlertDialogue.showConfirmPopup(
-            this.scene,
-            'Warning',
-            'Your current time is not\n the same as the server! \nPlease reload the page!',
-            () => {
-                this.cameraPod.setInteractCamera(true)
-                //Reload page when integrate with backend
-                //location.reload()
-            },
-            'OK'
-        )
     }
 
     private setupNightLights(): void {

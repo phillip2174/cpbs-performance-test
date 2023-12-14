@@ -13,6 +13,7 @@ import { CollectionDetailState } from '../type/CollectionDetailState'
 import { RecipeBean } from '../RecipeBean'
 import { TagBonusView } from '../../Recipe/TagBonusView'
 import { RecipePod } from '../../../pod/RecipePod'
+import { DeviceChecker } from '../../../plugins/DeviceChecker'
 
 export class CollectionDetailCongratCellView extends GameObjects.Container {
     public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 45
@@ -60,7 +61,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
     public doInit() {
         this.collectionPod = PodProvider.instance.collectionPod
         this.recipePod = PodProvider.instance.recipePod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.createUI()
         this.createTween()
@@ -84,7 +85,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
 
     private createUI() {
         this.congratContainer = this.scene.add.container(0, 0)
-        const isDesktop = this.scene.sys.game.device.os.desktop
+        const isDesktop = DeviceChecker.instance.isDesktop()
         let sizeWidthBG = isDesktop
             ? CollectionDetailCongratCellView.WIDTH_SIZE_BG_DESKTOP
             : CollectionDetailCongratCellView.WIDTH_SIZE_BG_MOBILE
@@ -121,7 +122,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.collectionDetailRecipeTweenView = new CollectionDetailRecipeTweenView(
             this.scene,
             0,
-            this.scene.sys.game.device.os.desktop ? 340 : 320
+            DeviceChecker.instance.isDesktop() ? 340 : 320
         )
         this.collectionDetailRecipeTweenView.doInit()
 
@@ -222,7 +223,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
                 .rectangle(
                     0,
                     0,
-                    this.firstDetailCellBG.width - (this.scene.sys.game.device.os.desktop ? 100 : 80),
+                    this.firstDetailCellBG.width - (DeviceChecker.instance.isDesktop() ? 100 : 80),
                     24,
                     0xff0000,
                     0
@@ -253,9 +254,9 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.tagContainer.setPosition(0, this.congratDescTextContainer.y + this.congratDescTextContainer.height - 10)
 
         if (maxArrIndex > 0) {
-            this.collectionDetailRecipeTweenView.setPosition(0, this.scene.sys.game.device.os.desktop ? 340 : 320)
+            this.collectionDetailRecipeTweenView.setPosition(0, DeviceChecker.instance.isDesktop() ? 340 : 320)
         } else {
-            this.collectionDetailRecipeTweenView.setPosition(0, this.scene.sys.game.device.os.desktop ? 320 : 300)
+            this.collectionDetailRecipeTweenView.setPosition(0, DeviceChecker.instance.isDesktop() ? 320 : 300)
         }
     }
 
@@ -279,7 +280,9 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
             }
         })
 
-        this.on('destroy', () => { this.selectedSubscription?.unsubscribe() })
+        this.on('destroy', () => {
+            this.selectedSubscription?.unsubscribe()
+        })
     }
 
     private createTween() {
@@ -341,7 +344,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
                             to: 1,
                         },
                     },
-                    onComplete: () => { },
+                    onComplete: () => {},
                     ease: 'linear',
                 },
             ],

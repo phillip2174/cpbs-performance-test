@@ -4,7 +4,7 @@ import { TownUIPod } from '../Pod/TownUIPod'
 import { PodProvider } from '../../pod/PodProvider'
 import { DimButton } from '../../button/DimButton'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
-import { Subscription, concatMap, map, skip, tap, timer } from 'rxjs'
+import { Observable, Subscription, concatMap, delay, forkJoin, map, skip, tap, timer } from 'rxjs'
 import { TownUIState } from '../Type/TownUIState'
 import { CookingRecipeCellView } from './CookingRecipeCellView'
 import { RecipeBean } from '../Collection/RecipeBean'
@@ -25,6 +25,10 @@ import { CookingDetailState } from './CookingDetailState'
 import { CookingPanelState } from './CookingPanelState'
 import { APILoadingManager } from '../../api-loading/APILoadingManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
+import { TutorialState } from '../../../Tutorial/TutorialState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CookingUIPanelView extends GameObjects.Container {
     public static readonly COOKING_BG_KEY: string = 'cooking-bg-'
@@ -60,6 +64,7 @@ export class CookingUIPanelView extends GameObjects.Container {
     private cookingPod: CookingPod
     private recipePod: RecipePod
     private inventoryPod: InventoryPod
+    private tutorialManager: TutorialManager
 
     private isDesktop: boolean = false
 
@@ -89,11 +94,12 @@ export class CookingUIPanelView extends GameObjects.Container {
         this.cookingPod = PodProvider.instance.cookingPod
         this.recipePod = PodProvider.instance.recipePod
         this.inventoryPod = PodProvider.instance.inventoryPod
+        this.tutorialManager = PodProvider.instance.tutorialManager
 
         this.gameCamera = this.scene.cameras.main
         this.setPosition(this.gameCamera.centerX, this.gameCamera.centerY)
         this.setDepth(200)
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setupUI()
         this.setupSubscribes()
@@ -102,7 +108,7 @@ export class CookingUIPanelView extends GameObjects.Container {
     }
 
     private setupUI(): void {
-        this.dimButton = new DimButton(this.scene, 0.5, true)
+        this.dimButton = new DimButton(this.scene, 0.5, true, 'cooking-bg')
         this.cookingDetailView = new CookingDetailView(this.scene)
         this.cookingDetailView.doInit()
         this.setupCookingUIContainer()
@@ -119,21 +125,27 @@ export class CookingUIPanelView extends GameObjects.Container {
             }
         })
 
-        this.stateCookingDetailSubscription = this.cookingPod.cookingDetailState.subscribe((detailState) => {
-            if (detailState == CookingDetailState.CookingComplete) {
-                this.scrollViewCreateCellWithFilter(RecipeFilterType.All)
-                this.findNotificationReadyCell()
-                this.scrollViewCreateCellWithFilter(this.cookingPod.cookingFilterState.value)
-            }
-        })
-
         this.scrollViewLayerSubscription = this.townUIPod.layerScrollView.subscribe((currentScrollViewLayer) => {
             this.scrollView?.updateCurrentLayer(currentScrollViewLayer)
             this.cookingFilterView?.updateCurrentScrollViewLayer(currentScrollViewLayer)
         })
 
         this.stateFilterSubscription = this.cookingPod.cookingFilterState.subscribe((state) => {
-            if (this.townUIPod.townUIState.value == TownUIState.Cooking) this.scrollViewCreateCellWithFilter(state)
+            if (this.townUIPod.townUIState.value == TownUIState.Cooking) this.scrollViewCreateCellWithFilter(state, 0)
+        })
+
+        this.stateCookingDetailSubscription = this.cookingPod.cookingDetailState.subscribe((detailState) => {
+            if (detailState == CookingDetailState.CookingComplete) {
+                if (this.tutorialManager.isCompletedTutorial()) {
+                    this.doOnReloadCooking()
+                } else if (
+                    this.tutorialManager.tutorialStepID.value == TutorialStepState.CompleteCooking &&
+                    this.cookingPod.isAlreadyOpen &&
+                    !this.tutorialManager.isCompletedTutorial()
+                ) {
+                    this.doOnReloadCooking()
+                }
+            }
         })
 
         this.scrollView?.isDrag.subscribe((x) => {
@@ -161,6 +173,11 @@ export class CookingUIPanelView extends GameObjects.Container {
             this.currentUnlockedSelectedSubscription?.unsubscribe()
             this.currentReadySelectedSubscription?.unsubscribe()
         })
+    }
+
+    private doOnReloadCooking() {
+        this.scrollViewCreateCellWithFilter(RecipeFilterType.All, 0, true)
+        this.scrollViewCreateCellWithFilter(this.cookingPod.cookingFilterState.value, 100)
     }
 
     private setupCookingUIContainer(): void {
@@ -300,7 +317,7 @@ export class CookingUIPanelView extends GameObjects.Container {
         )
 
         this.positionTextRect = this.scene.add
-            .rectangle(0, this.scene.sys.game.device.os.macOS ? 0 : 2, 30, 15, 0xff00ff, 0)
+            .rectangle(0, DeviceChecker.instance.isMacOS() ? 0 : 2, 30, 15, 0xff00ff, 0)
             .setOrigin(1, 0.5)
 
         this.textContainer = this.scene.add.container(0, 0)
@@ -346,15 +363,17 @@ export class CookingUIPanelView extends GameObjects.Container {
             spacing
         )
 
-        this.midLineImage.y = this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS ? -1 : -2
+        this.midLineImage.y = DeviceChecker.instance.isAppleOS() ? -1 : -2
 
         this.updateWidthBGCount()
     }
 
     private setupActions(): void {
         this.dimButton.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.MainMenu)
-            this.townUIPod.setIsShowGuideline(true)
+            if (this.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.MainMenu)
+                this.townUIPod.setIsShowGuideline(true)
+            }
         })
     }
 
@@ -395,30 +414,44 @@ export class CookingUIPanelView extends GameObjects.Container {
         }
     }
 
-    private scrollViewCreateCellWithFilter(filter: RecipeFilterType) {
-        this.scrollView?.clearAll()
-        this.cookingRecipeCellViews = []
-        this.scrollView?.bringToFirst(false)
-
+    private scrollViewCreateCellWithFilter(
+        filter: RecipeFilterType,
+        delayLoad: number = 400,
+        isFindNoti: boolean = false
+    ) {
         APILoadingManager.instance.showMiniLoading()
         this.inventoryPod
             .getInventoryItemData(InventoryFilterType.All)
             .pipe(
+                delay(this.isDesktop ? 0 : delayLoad),
                 concatMap((_) => this.recipePod.getUserRecipeData()),
                 concatMap((_) => this.recipePod.getRecipeData(filter)),
                 map((beanFilter) => {
                     return this.recipePod.mapUserUnlockedSecretToType(beanFilter, filter)
                 }),
                 tap((beanFilterWithUser) => {
+                    this.scrollView?.clearAll()
+                    this.cookingRecipeCellViews = []
+                    this.scrollView?.bringToFirst(false)
+
                     this.createCellPage(beanFilterWithUser)
-                }),
-                tap(() => {
+
                     this.setCellCookingWithUser()
                     this.setReadyAndCompletedText()
-                    if (!this.cookingPod.isAlreadyOpen) this.findNotificationReadyCell()
+                    if (!this.cookingPod.isAlreadyOpen || isFindNoti) this.findNotificationReadyCell()
 
                     this.scrollView?.setActiveScrollView(true, this.isTween)
                     this.isTween = true
+
+                    if (!this.tutorialManager.isCompletedTutorial()) {
+                        if (
+                            this.tutorialManager.tutorialStepID.value == TutorialStepState.CompleteCooking &&
+                            !this.cookingPod.isAlreadyOpen
+                        ) {
+                            this.tutorialManager.currentActionOnClick()
+                        }
+                    }
+
                     this.cookingPod.isAlreadyOpen = true
 
                     APILoadingManager.instance.hideMiniLoading()
@@ -511,17 +544,22 @@ export class CookingUIPanelView extends GameObjects.Container {
     }
 
     private updateWidthBGCount() {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.currentCompletedImage.width =
                 this.currentCompletedText.width + this.midLineImage.width + this.currentReadyText.width + 40
 
             Phaser.Actions.AlignTo(this.textContainer.getAll(), Phaser.Display.Align.LEFT_CENTER, 10)
-            this.midLineImage.y = this.scene.sys.game.device.os.macOS ? -1 : -2
+            this.midLineImage.y = DeviceChecker.instance.isMacOS() ? -1 : -2
         }
     }
 
     private createTween(): void {
-        let tweens = AnimationController.instance.tweenOpenContainer(this.scene, this.cookingUIContainer, () => {})
+        let tweens = AnimationController.instance.tweenOpenContainer(this.scene, this.cookingUIContainer, () => {
+            if (!this.tutorialManager.isCompletedTutorial(true, TutorialStepState.WelcomeToCooking)) {
+                PodProvider.instance.tutorialManager.updateCurrentToNextTutorial()
+                PodProvider.instance.tutorialManager.setTutorialState(TutorialState.CountDown)
+            }
+        })
 
         this.onOpenTween = tweens.onOpenTween
         this.onOpenTweenChain = tweens.onOpenTweenChain

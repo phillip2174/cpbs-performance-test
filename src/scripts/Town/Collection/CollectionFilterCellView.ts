@@ -8,6 +8,8 @@ import { RecipeFilterType } from '../Recipe/RecipeFilterType'
 import { Subscription } from 'rxjs'
 import { BoldText } from '../../../BoldText/BoldText'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { IScrollViewCallBack } from '../../ScrollView/IScrollViewCallBack'
 
 export class CollectionFilterCellView extends GameObjects.Container implements IScrollViewCallBack {
     public cellPageIndex: number
@@ -51,7 +53,7 @@ export class CollectionFilterCellView extends GameObjects.Container implements I
 
         this.filterText = new BoldText(this.scene, 0, -4, filterType.toString(), 22)
 
-        let isDesktop = this.scene.sys.game.device.os.desktop
+        let isDesktop = DeviceChecker.instance.isDesktop()
         this.filterBackground = this.scene.add
             .nineslice(
                 0,
@@ -113,9 +115,14 @@ export class CollectionFilterCellView extends GameObjects.Container implements I
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+
+        if (!PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+            this.buttonFilter.setCanInteract(false, false)
+        }
     }
 
     public setInteractButtonScrollView(isCanInteract: boolean) {
+        if (!PodProvider.instance.tutorialManager.isCompletedTutorial()) return
         if (isCanInteract) {
             // this.setVisible(true)
             this.buttonFilter.setCanInteract(true, false)
@@ -150,7 +157,7 @@ export class CollectionFilterCellView extends GameObjects.Container implements I
             }
         })
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.buttonFilter.on('pointerover', () => {
                 this.onHoverButton()
             })
@@ -172,7 +179,7 @@ export class CollectionFilterCellView extends GameObjects.Container implements I
     }
 
     private createTween() {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.onHoverBackgroundTween = this.scene.add.tween({
                 targets: this.filterBackground,
                 duration: 300,

@@ -11,6 +11,7 @@ import { Observable, Observer, tap } from 'rxjs'
 import { TextAdapter } from '../text-adapter/TextAdapter'
 import { MinigameResultBonusCellView } from './MinigameResultBonusCellView'
 import { BoldText } from '../../BoldText/BoldText'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class MinigameResultBonusView extends GameObjects.Container {
     private bg: GameObjects.NineSlice
@@ -29,7 +30,7 @@ export class MinigameResultBonusView extends GameObjects.Container {
 
     public doInit(x: number, y: number): void {
         this.setPosition(x, y)
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.bg = this.scene.add.nineslice(0, 0, 'minigame-result-reward-bg', '', 100, 100, 15, 15, 15, 15)
         this.text = new BoldText(this.scene, 0, this.isDesktop ? -60 : -55, 'REWARDS', 24, '#2B2B2B')
         this.add([this.bg, this.text])
@@ -69,9 +70,9 @@ export class MinigameResultBonusView extends GameObjects.Container {
 
         let x = -this.bonusContainer.getBounds().width / 2 + cellWidth / 2
 
-        this.bonusContainer.setPosition(x, 0)
+        this.bonusContainer.setPosition(x + (this.isDesktop ? 0 : 4.5 * (bean.list.length - 1)), 0)
         //this.rectMockPosition.setPosition( this.bonusContainer.x - cellWidth/2,this.bonusContainer.y).setSize(containerWidth,this.bonusContainer.getBounds().height).setOrigin(0,0.5)
-        this.bg.setSize(containerWidth + (this.isDesktop ? 33 : 40), cellHeight + (this.isDesktop ? 40 : 50))
+        this.bg.setSize(containerWidth + 33, cellHeight + 40)
 
         this.bonusContainer.setScale(this.isDesktop ? 1 : 0.9)
     }

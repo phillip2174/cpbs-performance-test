@@ -12,6 +12,8 @@ import { APILoadingManager } from '../api-loading/APILoadingManager'
 import { PodProvider } from '../pod/PodProvider'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 import { AudioManager } from '../Audio/AudioManager'
+import { FlatMessageManager } from '../flat-message/FlatMessageManager'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class MinigameStartMenuUIView extends GameObjects.Container {
     private startButton: Button
@@ -29,6 +31,8 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
 
     private audioManager: AudioManager
 
+    private sceneStateSubscription: Subscription
+
     constructor(scene: Scene) {
         super(scene, scene.cameras.main.centerX, scene.cameras.main.centerY)
         GameObjectConstructor(scene, this)
@@ -36,27 +40,25 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
         APILoadingManager.instance.doInit(this.scene, 1)
         APILoadingManager.instance.showSceneLoading(PodProvider.instance.splashPod.launchScene)
 
+        FlatMessageManager.instance.doInit(this.scene)
+
         timer(400).subscribe((_) => {
-            ResourceManager.instance.loadPackJson(
-                'minigame-cp-audio-load',
-                `assets/town/json/minigame-cp-audio-load.json`
-            ).subscribe(onFinished => {
-                APILoadingManager.instance.hideSceneLoading()
+            ResourceManager.instance
+                .loadPackJson('minigame-cp-audio-load', `assets/town/json/minigame-cp-audio-load.json`)
+                .subscribe((onFinished) => {
+                    APILoadingManager.instance.hideSceneLoading()
 
-                this.audioManager = PodProvider.instance.audioManager
+                    this.audioManager = PodProvider.instance.audioManager
 
-                this.audioManager.playBGMSound(
-                    'minigame_bgm',
-                    true,
-                )
-            })
+                    this.audioManager.playBGMSound('minigame_bgm', true)
+                })
         })
     }
 
     public doInit(minigameId: number, pod: MinigameScenePod): void {
         this.scenePod = pod
         this.minigameId = minigameId
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setUpImage()
         this.setUpButton()
@@ -65,9 +67,13 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
             this.setScale(0.73)
         }
 
-        this.scenePod.sceneState.subscribe((state) => {
+        this.sceneStateSubscription = this.scenePod.sceneState.subscribe((state) => {
             if (state == MinigameState.StartMenu) this.showUI()
             else this.hideUI()
+        })
+
+        this.on('destroy', () => {
+            this.sceneStateSubscription?.unsubscribe()
         })
     }
 
@@ -95,6 +101,7 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
     public hideUI() {
         this.setActive(false)
         this.setVisible(false)
+        this.countdownTicket.stopCountDown()
     }
 
     private setUpImage() {
@@ -179,6 +186,7 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
         this.countdownTicket = new MinigameTicketTimerView(this.scene)
         this.countdownTicket.doInit(0, 280)
         this.countdownTicket.setVisible(false)
+
         this.countdownTicket.setCallBack(() => {
             this.showUI()
         })
@@ -187,7 +195,7 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
 
     private onClickStart() {
         if (this.isPlay) return
-        var isAnimate = this.scenePod.ticket > 0
+        var isAnimate = this.scenePod.ticket.value > 0
         APILoadingManager.instance.showMiniLoading()
         this.scenePod.startGame().subscribe((startResult) => {
             this.setTextTicket(startResult.ticketLeft, isAnimate, () => {

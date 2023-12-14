@@ -13,6 +13,8 @@ import { CookingDetailState } from './CookingDetailState'
 import { CookingPanelState } from './CookingPanelState'
 import { TownUIPod } from '../Pod/TownUIPod'
 import { AudioManager } from '../../Audio/AudioManager'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
 
 export class CookingDetailView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -41,6 +43,7 @@ export class CookingDetailView extends GameObjects.Container {
 
     private cookingPod: CookingPod
     private townUIPod: TownUIPod
+    private tutorialManager: TutorialManager
 
     constructor(scene: Scene) {
         super(scene)
@@ -51,6 +54,7 @@ export class CookingDetailView extends GameObjects.Container {
         this.cookingPod = PodProvider.instance.cookingPod
         this.townUIPod = PodProvider.instance.townUIPod
         this.audioManager = PodProvider.instance.audioManager
+        this.tutorialManager = PodProvider.instance.tutorialManager
 
         this.gameCamera = this.scene.cameras.main
         this.setPosition(this.gameCamera.centerX, this.gameCamera.centerY)
@@ -58,12 +62,14 @@ export class CookingDetailView extends GameObjects.Container {
 
         this.dimButton = new DimButton(this.scene)
         this.dimButton.onClick(() => {
-            if (
-                this.cookingPod.cookingDetailState.value == CookingDetailState.CookingSelectRecipe ||
-                this.cookingPod.cookingDetailState.value == CookingDetailState.CookingComplete
-            ) {
-                this.townUIPod.setLayerScrollView(CookingDetailView.SCROLL_VIEW_LAYER)
-                this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
+            if (this.tutorialManager.isCompletedTutorial()) {
+                if (
+                    this.cookingPod.cookingDetailState.value == CookingDetailState.CookingSelectRecipe ||
+                    this.cookingPod.cookingDetailState.value == CookingDetailState.CookingComplete
+                ) {
+                    this.townUIPod.setLayerScrollView(CookingDetailView.SCROLL_VIEW_LAYER)
+                    this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
+                }
             }
         })
 

@@ -9,6 +9,7 @@ import { MinigameStartMenuUIView } from '../scripts/minigame/MinigameStartMenuUI
 import { MinigameResultUIView } from '../scripts/minigame/MinigameResultUIView'
 import { MinigameResultUIMiniView } from '../scripts/minigame/MinigameResultUIMiniView'
 import { SettingMinigameUIPanelView } from '../scripts/Town/Settings/SettingMinigameUIPanelView'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
 
 export class MinigameCPOrderScene extends Scene {
     private minigameScenePod: MinigameScenePod
@@ -26,6 +27,7 @@ export class MinigameCPOrderScene extends Scene {
     public preload(): void {
         console.log('Start MinigameCPOrder')
         ResourceManager.instance.setResourceLoaderScene(this)
+        DeviceChecker.instance.doInit(this)
     }
 
     public create(): void {

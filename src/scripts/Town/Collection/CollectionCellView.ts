@@ -16,6 +16,8 @@ import { AnimationController } from '../AnimationController'
 import { RecipePod } from '../../pod/RecipePod'
 import { ButtonNotificationView } from '../ButtonNotificationView'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { IScrollViewCallBack } from '../../ScrollView/IScrollViewCallBack'
 
 export class CollectionCellView extends GameObjects.Container implements IScrollViewCallBack {
     public static readonly LENGTH_CUT_TEXT: number = 16
@@ -95,7 +97,7 @@ export class CollectionCellView extends GameObjects.Container implements IScroll
 
         const title = TextAdapter.splitThaiStringByLegth(bean.title, CollectionCellView.LENGTH_CUT_TEXT)
 
-        if (this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS) {
+        if (DeviceChecker.instance.isAppleOS()) {
             this.nameText = TextAdapter.instance
                 .getVectorText(this.scene, 'DB_HeaventRounded_Med')
                 .setText(bean.secretUnlock ? 'เมนูลับมาสเตอร์เชฟ' : title.length > 1 ? `${title[0]}...` : title[0])
@@ -201,6 +203,10 @@ export class CollectionCellView extends GameObjects.Container implements IScroll
                     this.collectionPod.changeState(CollectionPanelState.CollectionDetail)
                 }
                 this.onClickUpTweener?.restart()
+
+                if (DeviceChecker.instance.isDesktop()) {
+                    this.onLeaveButton()
+                }
             },
             () => {
                 this.onClickDownTweener?.restart()
@@ -210,7 +216,7 @@ export class CollectionCellView extends GameObjects.Container implements IScroll
             }
         )
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.cellButton.on('pointerover', () => {
                 this.onHoverButton()
             })
@@ -246,7 +252,7 @@ export class CollectionCellView extends GameObjects.Container implements IScroll
             paused: true,
         })
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             let tweenOnHover = AnimationController.instance.tweenHoverButton(this.scene, undefined, () => {
                 this.nameText?.setStyle({ fill: '#EE843C' })
             })

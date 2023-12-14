@@ -1,5 +1,6 @@
 import { GameObjects, Scene, Tweens } from 'phaser'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class ButtonNotificationView extends GameObjects.Container {
     public static readonly ICON_TWEEN_EASE: string = 'linear'
@@ -21,7 +22,7 @@ export class ButtonNotificationView extends GameObjects.Container {
         this.notificationIcon = this.scene.add.image(0, 0, 'button-notification-icon')
         this.add([this.notificationBg, this.notificationIcon])
         this.setPosition(x, y)
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.createOnHoverTweens()
             this.createOnLeaveTweens()
         }

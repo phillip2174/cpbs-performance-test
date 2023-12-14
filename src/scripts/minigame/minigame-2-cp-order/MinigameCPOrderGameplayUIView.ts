@@ -14,6 +14,7 @@ import { MinigameCPOrderPod } from './MinigameCPOrderPod'
 import { MinigameCPOrderCountdownView } from './MinigameCPOrderCountdownView'
 import { BoldText } from '../../../BoldText/BoldText'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
     public static readonly MAX_LIFE_COUNT: number = 3
@@ -63,13 +64,14 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
     }
 
     public doInit(): void {
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.cameraCenterX = this.scene.cameras.main.centerX
         this.cameraCenterY = this.scene.cameras.main.centerY
         this.scenePod = PodProvider.instance.minigameScenePod
         this.minigamePod = PodProvider.instance.minigameCPOrderPod
         this.audioManager = PodProvider.instance.audioManager
 
+        this.minigamePod.currentOrderCount.next(0)
         this.setupUIContainer()
         this.setupSubscribe()
 
@@ -187,6 +189,7 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
                     this.characterView.playCharacterMoveTween()
                     break
                 case MinigameState.GameStart:
+                    this.orderTimer.setTimebarProperties('clock_ticking_fast_sfx', 1000, 2, false)
                     this.orderTimer.startTimeBar(MinigameCPOrderGameplayUIView.ORDER_TIME_LIMIT, true, true)
                     break
                 case MinigameState.Completed:
@@ -225,7 +228,7 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
         this.timerZeroSubscription = this.minigamePod.isTimerZero.pipe(skip(1)).subscribe((isZero) => {
             if (isZero) {
                 this.minigamePod.setOrderFailMark()
-                this.audioManager.playSFXSound('order_incorrect_sfx')
+                this.audioManager.playSFXSound('order_click_sfx')
             }
         })
 
@@ -233,6 +236,7 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
             if (isChange && this.lifeCount.getCurrentLifeCount() > 0) {
                 this.orderTimer.pauseTimebar()
                 this.timerDelaySubscription = timer(950).subscribe((_) => {
+                    this.orderTimer.setTimebarProperties('clock_ticking_fast_sfx', 1000, 2, false)
                     this.orderTimer.startTimeBar(MinigameCPOrderGameplayUIView.ORDER_TIME_LIMIT, true, true)
                     this.isNotifyTimeRunOut = false
                     this.timerDelaySubscription?.unsubscribe()
@@ -241,12 +245,12 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
         })
 
         this.on('destroy', () => {
+            this.sceneStateSubscription?.unsubscribe()
+            this.orderCountSubscription?.unsubscribe()
             this.changeOrderSubscription?.unsubscribe()
             this.timerZeroSubscription?.unsubscribe()
             this.lifeCountSubscription?.unsubscribe()
-            this.sceneStateSubscription?.unsubscribe()
-            this.orderCountSubscription?.unsubscribe()
-            this.orderCountSubscription?.unsubscribe()
+            this.timerRunOutSubscription?.unsubscribe()
         })
     }
 
@@ -260,6 +264,8 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
         this.lifeCount.resetAllLifeCount()
         this.minigamePod.currentOrderCount.next(0)
         this.minigamePod.servedOrderCount = 0
+        this.minigamePod.clearCurrentOrderMarkStates()
+        this.minigamePod.setIsClickable(true)
         this.countdownView.startCountdown(() => this.menuCellGroupView.updateCells())
     }
 

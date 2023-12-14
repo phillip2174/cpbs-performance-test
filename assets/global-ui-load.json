@@ -235,6 +235,21 @@
                 "type": "image",
                 "key": "ui-notice-bg",
                 "url": "assets/global_ui/ui-notice-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "flat-message-bg",
+                "url": "assets/global_ui/flat-message-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "alert-icon",
+                "url": "assets/global_ui/alert-icon.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-play-button-tween",
+                "url": "assets/global_ui/minigame-play-button-tween.png"
             }
         ]
     }

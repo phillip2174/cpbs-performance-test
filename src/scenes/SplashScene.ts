@@ -1,8 +1,11 @@
 import { Scene } from 'phaser'
-import { Subscription } from 'rxjs'
+import { Subscription, concatMap } from 'rxjs'
 import { ResourceManager } from '../scripts/plugins/resource-loader/ResourceManager'
 import { UIUtil } from '../scripts/plugins/utils/UIUtil'
 import { PodProvider } from '../scripts/pod/PodProvider'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
+import { UrlManager } from '../scripts/plugins/url-manager/UrlManager'
+import { UserType } from '../scripts/User/UserType'
 
 export class SplashScene extends Scene {
     private userDataSubscription: Subscription
@@ -14,7 +17,7 @@ export class SplashScene extends Scene {
 
     preload(): void {
         console.log('start SplashScene')
-
+        DeviceChecker.instance.doInit(this)
         this.add
             .rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x2b2b2b, 1)
             .setOrigin(0)
@@ -25,11 +28,11 @@ export class SplashScene extends Scene {
 
         // @ts-ignore: Unreachable code error
         PodProvider.instance.audioManager.doInit(
-        // @ts-ignore: Unreachable code error
+            // @ts-ignore: Unreachable code error
             this.game.bgmAudioManager,
-        // @ts-ignore: Unreachable code error
+            // @ts-ignore: Unreachable code error
             this.game.sfxAudioManager,
-        // @ts-ignore: Unreachable code error
+            // @ts-ignore: Unreachable code error
             this.game.ambientAudioManager
         )
     }
@@ -42,6 +45,24 @@ export class SplashScene extends Scene {
 
     private createLoader(): void {
         this.load.on('complete', () => {
+            let url = UrlManager.getParam()
+            console.log(url)
+
+            if (url.userType != undefined || url.userType != null) {
+                console.log(url.userType)
+                const userPod = PodProvider.instance.userPod
+                userPod.userLoginType = UserType[url.userType]
+            }
+
+            const tutorialManager = PodProvider.instance.tutorialManager
+
+            if (url.isCompletedTutorial != null || url.isCompletedTutorial != undefined) {
+                console.log(url.isCompletedTutorial)
+                tutorialManager.getTutorialData(true, JSON.parse(url.isCompletedTutorial))
+            } else {
+                tutorialManager.getTutorialData(false)
+            }
+
             this.loadUserData()
         })
     }
@@ -58,13 +79,15 @@ export class SplashScene extends Scene {
 
     private loadUserData(): void {
         const userPod = PodProvider.instance.userPod
-        const tutorialManager = PodProvider.instance.tutorialManager
-        tutorialManager.getTutorialData()
-        this.userDataSubscription = userPod.getUserBean().subscribe((_) => {
-            userPod.checkFirstLoginOfTheDay()
-            this.userDataSubscription?.unsubscribe()
-            this.onCompleteLoadBootAsset()
-        })
+
+        this.userDataSubscription = userPod
+            .getUserBean()
+            .pipe(concatMap((_) => userPod.getUserCPPoint()))
+            .subscribe((_) => {
+                userPod.checkFirstLoginOfTheDay()
+                this.userDataSubscription?.unsubscribe()
+                this.onCompleteLoadBootAsset()
+            })
     }
 
     private onCompleteLoadBootAsset(): void {

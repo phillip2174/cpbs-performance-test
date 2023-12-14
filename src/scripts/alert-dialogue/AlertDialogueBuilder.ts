@@ -3,9 +3,9 @@ import { AlertDialogueView } from './AlertDialogueView'
 export class AlertDialogueBuilder {
     static alertDialogueView: AlertDialogueView
 
-    static create(scene: Scene): AlertDialogueBuilder {
+    static create(scene: Scene, callBackOnShow: Function, callBackOnHide: Function): AlertDialogueBuilder {
         let dialogueBuilder = new AlertDialogueBuilder()
-        AlertDialogueBuilder.alertDialogueView = new AlertDialogueView(scene)
+        AlertDialogueBuilder.alertDialogueView = new AlertDialogueView(scene, callBackOnShow, callBackOnHide)
         return dialogueBuilder
     }
 
@@ -14,10 +14,27 @@ export class AlertDialogueBuilder {
     }
 
     setDescription(description: string): AlertDialogueBuilder {
-        AlertDialogueBuilder.alertDialogueView.createDescriptionText(
-            description,
-        )
+        AlertDialogueBuilder.alertDialogueView.createDescriptionText(description)
         return this
+    }
+
+    setIcon(isShowIcon: boolean = false): AlertDialogueBuilder {
+        if (isShowIcon) AlertDialogueBuilder.alertDialogueView.createIconAlert()
+        return this
+    }
+
+    handleContentPosition(): AlertDialogueBuilder {
+        AlertDialogueBuilder.alertDialogueView.handleContentPosition()
+        return this
+    }
+
+    addActionDimButton(onClickCallback?: () => any): AlertDialogueBuilder {
+        AlertDialogueBuilder.alertDialogueView.addActionDimButton(onClickCallback)
+        return this
+    }
+
+    getIcon() {
+        return AlertDialogueBuilder.alertDialogueView.getIcon()
     }
 
     setDescriptionAlign(align: string) {
@@ -34,36 +51,18 @@ export class AlertDialogueBuilder {
         return AlertDialogueBuilder.alertDialogueView.getHeader()
     }
 
-    setYesButton(
-        onClickCallback?: () => any,
-        textInButton: string = ``,
-    ): AlertDialogueBuilder {
-        AlertDialogueBuilder.alertDialogueView.createYesButton(
-            onClickCallback,
-            textInButton,
-        )
+    setYesButton(onClickCallback?: () => any, textInButton: string = ``): AlertDialogueBuilder {
+        AlertDialogueBuilder.alertDialogueView.createYesButton(onClickCallback, textInButton)
         return this
     }
 
-    setNoButton(
-        onClickCallback?: () => any,
-        textInButton: string = ``,
-    ): AlertDialogueBuilder {
-        AlertDialogueBuilder.alertDialogueView.createNoButton(
-            onClickCallback,
-            textInButton,
-        )
+    setNoButton(onClickCallback?: () => any, textInButton: string = ``): AlertDialogueBuilder {
+        AlertDialogueBuilder.alertDialogueView.createNoButton(onClickCallback, textInButton)
         return this
     }
 
-    setConfirmButton(
-        onClickCallback?: () => any,
-        textInButton: string = ``,
-    ): AlertDialogueBuilder {
-        AlertDialogueBuilder.alertDialogueView.createConfirmButton(
-            onClickCallback,
-            textInButton,
-        )
+    setConfirmButton(onClickCallback?: () => any, textInButton: string = ``): AlertDialogueBuilder {
+        AlertDialogueBuilder.alertDialogueView.createConfirmButton(onClickCallback, textInButton)
         return this
     }
 

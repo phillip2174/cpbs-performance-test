@@ -8,6 +8,7 @@ import { InventoryFilterCellView } from './InventoryFilterCellView'
 import { InventoryFilterType } from './InventoryFilterType'
 import { Subscription, skip, timer } from 'rxjs'
 import { TownUIState } from '../Type/TownUIState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class InventoryFilterView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -29,7 +30,7 @@ export class InventoryFilterView extends GameObjects.Container {
         this.inventoryPod = PodProvider.instance.inventoryPod
         this.setPosition(x, y)
         this.setDepth(depth)
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.createFilterCellsDesktop()
         } else {
             this.createFilterCellsMobile(widthBG)
@@ -145,14 +146,14 @@ export class InventoryFilterView extends GameObjects.Container {
         })
 
         this.setActiveFilter(this.townUIPod.townUIState.value == TownUIState.Inventory, false)
-        
+
         this.on('destroy', () => {
             this.stateDisposable?.unsubscribe()
         })
     }
 
     private setActiveFilter(isActive: boolean, isTween: boolean = true) {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             if (isActive) {
                 this.inventoryPod.changeInventoryFilterState(InventoryFilterType.All)
 

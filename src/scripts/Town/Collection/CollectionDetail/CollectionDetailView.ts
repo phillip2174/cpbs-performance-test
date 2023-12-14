@@ -14,6 +14,9 @@ import { CookState } from '../type/CookState'
 import { CollectionDetailCellGroupView } from './CollectionDetailCellGroupView'
 import { CollectionDetailCongratCellView } from './CollectionDetailCongratCellView'
 import { CollectionDetailSecretCellView } from './CollectionDetailSecretCellView'
+import { TutorialManager } from '../../../Manager/TutorialManager'
+import { TutorialState } from '../../../../Tutorial/TutorialState'
+import { DeviceChecker } from '../../../plugins/DeviceChecker'
 
 export class CollectionDetailView extends GameObjects.Container {
     public static readonly SIZE_WIDTH_BG_DESKTOP: number = 528
@@ -48,9 +51,11 @@ export class CollectionDetailView extends GameObjects.Container {
     private recipeSubscription: Subscription
 
     private isTween: boolean = false
+    private isDesktop: boolean
 
     private townUIPod: TownUIPod
     private collectionPod: CollectionPod
+    private tutorialManager: TutorialManager
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
@@ -60,6 +65,8 @@ export class CollectionDetailView extends GameObjects.Container {
     public doInit() {
         this.collectionPod = PodProvider.instance.collectionPod
         this.townUIPod = PodProvider.instance.townUIPod
+        this.tutorialManager = PodProvider.instance.tutorialManager
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setDepth(203)
         this.createUI()
@@ -103,7 +110,7 @@ export class CollectionDetailView extends GameObjects.Container {
     }
 
     private createUI() {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.createUIDesktop()
 
             this.scrollView = new ScrollViewNormalAndPagination(this.scene)
@@ -232,7 +239,7 @@ export class CollectionDetailView extends GameObjects.Container {
     }
 
     private createButtonGroup() {
-        let isDesktopOffset = this.scene.sys.game.device.os.desktop ? 16 : 0
+        let isDesktopOffset = this.isDesktop ? 16 : 0
 
         this.buttonContainer = this.scene.add.container(0, this.paperBG.height / 2 - 45)
 
@@ -294,7 +301,7 @@ export class CollectionDetailView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(20, 1.5)
@@ -370,7 +377,7 @@ export class CollectionDetailView extends GameObjects.Container {
     }
 
     private setActiveWithDetailState() {
-        const isDesktop = this.scene.sys.game.device.os.desktop
+        const isDesktop = this.isDesktop
         const currentState = this.collectionPod.collectionDetailState
 
         const widthBG = isDesktop
@@ -521,13 +528,21 @@ export class CollectionDetailView extends GameObjects.Container {
             paused: true,
         })
 
-        let tweensOpen = AnimationController.instance.tweenOpenContainer(this.scene, this.detailContainer, () => {})
+        let tweensOpen = AnimationController.instance.tweenOpenContainer(this.scene, this.detailContainer, () => {
+            if (!this.tutorialManager.isCompletedTutorial()) {
+                this.tutorialManager.updateCurrentToNextTutorial()
+                this.tutorialManager.saveCheckPointTutorialAndCompleted(7, false)
+            }
+        })
         this.onOpenScaleTween = tweensOpen.onOpenTweenChain
         this.onOpenTween = tweensOpen.onOpenTween
 
         let tweenClose = AnimationController.instance.tweenCloseContainer(this.scene, this.detailContainer, () => {
             this.setActive(false)
             this.setVisible(false)
+            if (!this.tutorialManager.isCompletedTutorial()) {
+                this.tutorialManager.setTutorialState(TutorialState.CountDown)
+            }
         })
 
         this.onCloseTween = tweenClose.onCloseTween

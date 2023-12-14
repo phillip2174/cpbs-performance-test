@@ -3,6 +3,7 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { IngredientDesc } from '../Collection/IngredientDescBean'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class IngredientDescPreviewGroupView extends GameObjects.Container {
     public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 42
@@ -40,7 +41,7 @@ export class IngredientDescPreviewGroupView extends GameObjects.Container {
     public createUI(ingredientDesc: IngredientDesc, isFirstCell: boolean) {
         let cellRecipe = this.scene.add.container(0, 0)
 
-        const isDesktop = this.scene.sys.game.device.os.desktop
+        const isDesktop = DeviceChecker.instance.isDesktop()
         const title = TextAdapter.splitThaiStringByLegth(
             ingredientDesc.title,
             isDesktop

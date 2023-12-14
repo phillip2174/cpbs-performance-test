@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser'
-import { Observable, concat, concatAll, takeLast } from 'rxjs'
+import { Observable, Subscription, concat, concatAll, delay, takeLast } from 'rxjs'
 import { Button } from '../button/Button'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { MinigameResultBean } from './MinigameResultBean'
@@ -10,16 +10,46 @@ import { MinigameResultBonusView } from './MinigameResultBonusView'
 import { MinigameResultStarView } from './MinigameResultStarView'
 import { MinigameResultUIView } from './MinigameResultUIView'
 import { BoldText } from '../../BoldText/BoldText'
+import { MinigameResultTicketUIView } from './MinigameResultTicketUIView'
+import { APILoadingManager } from '../api-loading/APILoadingManager'
+import { GameConfig } from '../GameConfig'
 
 export class MinigameResultUIMiniView extends MinigameResultUIView {
     protected setSubscribe() {
-        this.scenePod.sceneState.subscribe((state) => {
+        this.sceneStateSubscription =   this.scenePod.sceneState.subscribe((state) => {
             if (state == MinigameState.Completed && !this.scenePod.isPlayOnline) this.showUI()
             else this.hideUI()
         })
+        
+        this.ticketSubscription = this.scenePod.ticket.subscribe((ticket) => {
+
+            this.minigameResultTicketUIView.setTextTicket(ticket, false)
+
+            if (ticket == 0) {
+                this.playAgainButton.background.setTexture('minigame-result-free-play').setSize(this.isDesktop ?  190 : 168,48)
+                this.minigameResultTicketUIView.setUICountdown()
+                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.90)
+            } else {
+                this.playAgainButton.background.setTexture('minigame-result-play-again').setSize(this.isDesktop ?  202 : 178,48)
+                this.minigameResultTicketUIView.setUITicket()
+                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 0.93 : 0.85)
+            }
+        })
+
+        this.minigameResultTicketUIView.setCallBack( () => 
+            this.scenePod.getTicket(true).subscribe()
+        );
+
+
+        this.on('destroy', () => {
+            this.ticketSubscription?.unsubscribe()
+            this.sceneStateSubscription?.unsubscribe()
+        })
     }
 
-    protected onShowScore() {}
+    protected onShowScore() {
+
+    }
 
     protected setUpUI() {
         this.dim = this.scene.add.rectangle(
@@ -33,8 +63,8 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
         this.dim.setInteractive()
         //this.group.add(this.dim)
 
-        this.bg = this.scene.add.image(0, 70, 'minigame-result-bg-mini')
-        this.bg.setScale(this.isDesktop ? 1 : 0.75, this.isDesktop ? 1 : 0.9)
+        this.bg = this.scene.add.image(0, this.isDesktop ? -170 : -150, 'minigame-result-bg-mini').setOrigin(0.5,0)
+        this.bg.setScale(this.isDesktop ? 1 : 0.75, this.isDesktop ? 1 : 0.8 )
         this.group.add(this.bg)
 
         this.starGroup = this.scene.add.container(0, this.isDesktop ? -105 : -90)
@@ -77,16 +107,16 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
         )
         this.group.add(this.backButton)
         this.backButton.onClick(() => {
-            this.scenePod.setSceneState(MinigameState.StartMenu)
+            this.OnClickBackButton()
         })
 
         this.playAgainButton = new Button(
             this.scene,
             this.isDesktop ? 80 : 60,
             145,
-            this.isDesktop ? 216 : 178,
+            this.isDesktop ?   190 : 168,
             48,
-            'minigame-result-play-again',
+            'minigame-result-free-play',
             0,
             ''
         )
@@ -94,23 +124,32 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
         this.playAgainButton.setTextSize(24)
         this.group.add(this.playAgainButton)
         this.playAgainButton.onClick(() => {
-            if (this.isPlay) return
-            this.scenePod.startGame().subscribe((startResult) => {
-                this.hideUI()
-                this.scenePod.setSceneState(MinigameState.BeforeStart)
-            })
+            this.OnClickPlayAgainButton()
         })
+
+        this.minigameResultTicketUIView = new MinigameResultTicketUIView(this.scene, 0, this.isDesktop ? 220 : 210, this.scenePod)
+        this.group.add(this.minigameResultTicketUIView)
+        this.minigameResultTicketUIView.setUICountdown()
     }
 
+
     protected OnClickBackButton() {
+        if (this.isClickButton) return
+        this.isClickButton = true
         this.scenePod.setSceneState(MinigameState.StartMenu)
     }
 
     protected OnClickPlayAgainButton() {
-        if (this.isPlay) return
-        this.scenePod.startGame().subscribe((startResult) => {
-            this.hideUI()
-            this.scenePod.setSceneState(MinigameState.BeforeStart)
-        })
+        if (this.isPlay || this.isClickButton) return
+        this.isClickButton = true
+        APILoadingManager.instance.showMiniLoading()
+        this.scenePod
+            .startGame()
+            .pipe(delay(GameConfig.IS_MOCK_API ? 1500 : 0))
+            .subscribe((startResult) => {
+                APILoadingManager.instance.hideMiniLoading()
+                this.hideUI()
+                this.scenePod.setSceneState(MinigameState.BeforeStart)
+            })
     }
 }

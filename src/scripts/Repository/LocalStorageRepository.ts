@@ -1,12 +1,15 @@
 import { TutorialSaveBean } from '../../Tutorial/TutorialSaveBean'
 import { GameConfig } from '../GameConfig'
 import { UserIngredientBean } from '../Ingredient/UserIngredientBean'
+import { InventoryItemBean } from '../Town/Inventory/InventoryItemBean'
 import { SettingDataBean } from '../Town/Settings/SettingDataBean'
 
 export class LocalStorageRepository {
     public settingDataBean: SettingDataBean
     private tutorialSaveBean: TutorialSaveBean
     private userIngredientBeans: UserIngredientBean[]
+    private inventoryItemBean: InventoryItemBean[]
+    private userCPPoint: number
 
     public getSettingData(): SettingDataBean {
         let settingData = localStorage.getItem('settingData')
@@ -53,7 +56,7 @@ export class LocalStorageRepository {
     }
 
     public getUserIngredientBeansData(isCompletedTutorial: boolean): UserIngredientBean[] {
-        localStorage.removeItem('userIngredientBeans')
+        //localStorage.removeItem('userIngredientBeans')
 
         const userIngredient = localStorage.getItem('userIngredientBeans')
         if (userIngredient == null || userIngredient == undefined) {
@@ -67,9 +70,58 @@ export class LocalStorageRepository {
     }
 
     public saveUserIngredientBeansData(userIngredient: UserIngredientBean): void {
-        this.userIngredientBeans.push(userIngredient)
+        if (!this.userIngredientBeans.some((x) => x.id == userIngredient.id))
+            this.userIngredientBeans.push(userIngredient)
         console.log('Saved UserIngredientBeans')
         console.log(this.userIngredientBeans)
         localStorage.setItem('userIngredientBeans', JSON.stringify(this.userIngredientBeans))
+    }
+
+    public getInventoryBeansData(): InventoryItemBean[] {
+        //localStorage.removeItem('inventoryItemBean')
+
+        const inventoryItemBean = localStorage.getItem('inventoryItemBean')
+        if (inventoryItemBean == null || inventoryItemBean == undefined) {
+            this.inventoryItemBean = []
+            this.saveInventoryBeansData(this.inventoryItemBean)
+        } else {
+            this.inventoryItemBean = JSON.parse(inventoryItemBean)
+        }
+        console.log(this.inventoryItemBean)
+        return this.inventoryItemBean
+    }
+
+    public saveInventoryBeansData(inventoryBeans: InventoryItemBean[]): void {
+        this.inventoryItemBean = inventoryBeans
+        console.log('Saved inventoryItemBean')
+        console.log(this.inventoryItemBean)
+        localStorage.setItem('inventoryItemBean', JSON.stringify(this.inventoryItemBean))
+    }
+
+    public getUserCPPoint(isCompletedTutorial: boolean): number {
+        //localStorage.removeItem('userCPPoint')
+
+        const userCPPoint = localStorage.getItem('userCPPoint')
+        if (userCPPoint == null || userCPPoint == undefined) {
+            this.userCPPoint = 0
+            this.saveTutorialData()
+        } else {
+            this.userCPPoint = JSON.parse(userCPPoint)
+        }
+        console.log(this.userCPPoint)
+        return this.userCPPoint
+    }
+
+    public saveUserCPPoint(userCPPoint: number): void {
+        this.userCPPoint = userCPPoint
+        console.log('Saved UserCPPoint')
+        console.log(this.userCPPoint)
+        localStorage.setItem('userCPPoint', JSON.stringify(this.userCPPoint))
+    }
+
+    public clearAllTutorialDataSave() {
+        localStorage.removeItem('userIngredientBeans')
+        localStorage.removeItem('inventoryItemBean')
+        localStorage.removeItem('userCPPoint')
     }
 }

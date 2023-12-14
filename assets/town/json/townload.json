@@ -234,6 +234,16 @@
                 "url": "assets/town/kitchen-bg-cropped.png"
             },
             {
+                "type": "image",
+                "key": "collection-bg",
+                "url": "assets/town/collection-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cooking-bg",
+                "url": "assets/town/cooking-bg.png"
+            },
+            {
                 "type": "spritesheet",
                 "key": "loading-cooking",
                 "url": "assets/town/loading-cooking.png",

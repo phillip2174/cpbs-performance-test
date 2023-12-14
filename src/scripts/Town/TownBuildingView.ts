@@ -44,80 +44,78 @@ export class TownBuildingView extends GameObjects.GameObject {
         this.ingredientObjectManager.clearIngredientRandomPoolList()
         this.keyT = this.scene.input.keyboard.addKey('T')
 
-        this.townBuildingPod
-            .getUserIngredientData()
-            .pipe(
-                concatMap((_) => this.townBuildingPod.getCurrentHiddenIngredientData()),
-                concatMap((_) => this.townBuildingPod.getIngredientObjectsDataPosition()),
-                concatMap((_) => this.townBuildingPod.getInteractableObjectsDataPosition()),
-                concatMap((_) => this.townBuildingPod.getNextHiddenIngredientData()),
-                map((_) => {
-                    // if (GameConfig.DEBUG_OBJECT) {
-                    //     this.mockingTown = this.scene.add
-                    //         .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'mock-cp-town')
-                    //         .setDepth(99)
-                    //         .setAlpha(0.5)
-                    // }
+        let observableInit: Observable<any>[] = []
+        observableInit.push(this.townBuildingPod.getUserIngredientData())
+        observableInit.push(this.townBuildingPod.getCurrentHiddenIngredientData())
+        observableInit.push(this.townBuildingPod.getIngredientObjectsDataPosition())
+        observableInit.push(this.townBuildingPod.getInteractableObjectsDataPosition())
+        observableInit.push(this.townBuildingPod.getNextHiddenIngredientData())
 
-                    this.createBackgroundAndGround()
+        forkJoin(observableInit).subscribe(() => {
+            // if (GameConfig.DEBUG_OBJECT) {
+            //     this.mockingTown = this.scene.add
+            //         .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'mock-cp-town')
+            //         .setDepth(99)
+            //         .setAlpha(0.5)
+            // }
 
-                    this.cameraPod.setCameraBound(
-                        this.rangeMapRectangleBackground.getTopLeft().x,
-                        this.rangeMapRectangleBackground.getTopLeft().y,
-                        this.rangeMapRectangleBackground.width,
-                        this.rangeMapRectangleBackground.height
-                    )
+            this.createBackgroundAndGround()
 
-                    let idleObjectGroupView = new IdleObjectGroupView(this.scene)
-                    idleObjectGroupView.doInit()
-
-                    this.townBuildingPod.interactableObjects.forEach((object) => {
-                        let objectView: IngredientObjectView = new IngredientObjectView(this.scene, object)
-                        objectView.setPositionContainer()
-                        objectView.doInit()
-                    })
-
-                    let trainIngredientObject = new IngredientObjectView(
-                        this.scene,
-                        this.townBuildingPod.ingredientObjects[this.townBuildingPod.ingredientObjects.length - 1],
-                        true
-                    )
-                    trainIngredientObject.doInit()
-                    this.ingredientObjectManager.addIngredientObjectToRandomPool(trainIngredientObject)
-
-                    let trainObject = new TrainObjectWithIngredientView(
-                        this.scene,
-                        this.scene.cameras.main.centerX,
-                        this.scene.cameras.main.centerY
-                    )
-                    trainObject.doInit(trainIngredientObject)
-
-                    this.townBuildingPod.ingredientObjects
-                        .slice(0, this.townBuildingPod.ingredientObjects.length - 1)
-                        .forEach((object) => {
-                            let objectView: IngredientObjectView = new IngredientObjectView(this.scene, object, true)
-                            objectView.setPositionContainer()
-                            objectView.doInit()
-                            this.ingredientObjectManager.addIngredientObjectToRandomPool(objectView)
-                        })
-
-                    if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
-                        IngredientObjectManager.instance.randomIngredientIdToIngredientObject(
-                            this.townBuildingPod.getIngredientBeanNotFoundWithUser()
-                        )
-                    } else {
-                        IngredientObjectManager.instance.setIngredientObjectTutorial(
-                            this.townBuildingPod.currentHiddenIngredientBeans,
-                            this.townBuildingPod.getIngredientBeanNotFoundWithUser()
-                        )
-                    }
-
-                    this.townBuildingPod.setFirstLoad()
-                    this.cameraPod.setInteractCamera(true)
-                    APILoadingManager.instance.hideSceneLoading()
-                })
+            this.cameraPod.setCameraBound(
+                this.rangeMapRectangleBackground.getTopLeft().x,
+                this.rangeMapRectangleBackground.getTopLeft().y,
+                this.rangeMapRectangleBackground.width,
+                this.rangeMapRectangleBackground.height
             )
-            .subscribe((_) => {})
+
+            let idleObjectGroupView = new IdleObjectGroupView(this.scene)
+            idleObjectGroupView.doInit()
+
+            this.townBuildingPod.interactableObjects.forEach((object) => {
+                let objectView: IngredientObjectView = new IngredientObjectView(this.scene, object)
+                objectView.setPositionContainer()
+                objectView.doInit()
+            })
+
+            let trainIngredientObject = new IngredientObjectView(
+                this.scene,
+                this.townBuildingPod.ingredientObjects[this.townBuildingPod.ingredientObjects.length - 1],
+                true
+            )
+            trainIngredientObject.doInit()
+            this.ingredientObjectManager.addIngredientObjectToRandomPool(trainIngredientObject)
+
+            let trainObject = new TrainObjectWithIngredientView(
+                this.scene,
+                this.scene.cameras.main.centerX,
+                this.scene.cameras.main.centerY
+            )
+            trainObject.doInit(trainIngredientObject)
+
+            this.townBuildingPod.ingredientObjects
+                .slice(0, this.townBuildingPod.ingredientObjects.length - 1)
+                .forEach((object) => {
+                    let objectView: IngredientObjectView = new IngredientObjectView(this.scene, object, true)
+                    objectView.setPositionContainer()
+                    objectView.doInit()
+                    this.ingredientObjectManager.addIngredientObjectToRandomPool(objectView)
+                })
+
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                IngredientObjectManager.instance.randomIngredientIdToIngredientObject(
+                    this.townBuildingPod.getIngredientBeanNotFoundWithUser()
+                )
+            } else {
+                IngredientObjectManager.instance.setIngredientObjectTutorial(
+                    this.townBuildingPod.currentHiddenIngredientBeans,
+                    this.townBuildingPod.getIngredientBeanNotFoundWithUser()
+                )
+            }
+
+            this.townBuildingPod.setFirstLoad()
+            this.cameraPod.setInteractCamera(true)
+            APILoadingManager.instance.hideSceneLoading()
+        })
     }
 
     public createBackgroundAndGround() {
@@ -140,7 +138,7 @@ export class TownBuildingView extends GameObjects.GameObject {
         this.fenceImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'fence-day')
             .setScale(1)
-            .setDepth(2)
+            .setDepth(3)
 
         this.buildingImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building')

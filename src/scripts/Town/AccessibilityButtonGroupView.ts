@@ -43,8 +43,10 @@ export class AccessibilityButtonGroupView extends GameObjects.Container {
 
     private setupButtons(): void {
         this.cpCityButton.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.MainMenu)
-            this.townUIPod.setIsShowGuideline(true)
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                this.townUIPod.changeUIState(TownUIState.MainMenu)
+                this.townUIPod.setIsShowGuideline(true)
+            }
         })
 
         this.menuGroupButton.onClick(() => {

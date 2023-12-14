@@ -16,34 +16,30 @@ export class RewardPointCellView extends GameObjects.Container {
     private iconSize: number
     private offsetHeightext: number
 
-    private isDesktop: boolean = false
-
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         GameObjectConstructor(scene, this)
     }
 
     private createTag(sizeIndex: number, iconSize: number, fontSize: number) {
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
-
         this.sizeIndex = sizeIndex
         this.iconSize = iconSize
 
         switch (sizeIndex) {
             case 0:
                 this.backgroundReward = this.scene.add
-                    .nineslice(0, 0, 'small-tag', '', 45, 18, 10, 11, 8, 9)
+                    .nineslice(0, 0, 'small-tag', '', 45, 19, 10, 11, 8, 9)
                     .setTint(0xffe2a5)
                 break
             case 1:
                 this.backgroundReward = this.scene.add
-                    .nineslice(0, 0, 'medium-tag', '', 65, 28, 13, 13, 12, 12)
+                    .nineslice(0, 0, 'medium-tag', '', 65, 29, 13, 13, 12, 12)
                     .setTint(0xffe2a5)
 
                 break
             case 2:
                 this.backgroundReward = this.scene.add
-                    .nineslice(0, 0, 'large-tag', '', 80, 36, 20, 20, 18, 17)
+                    .nineslice(0, 0, 'large-tag', '', 80, 37, 20, 20, 18, 17)
                     .setTint(0xffe2a5)
                 break
         }
@@ -86,13 +82,12 @@ export class RewardPointCellView extends GameObjects.Container {
     }
 
     private handleSizeAndTextWithIndex() {
-        let isNotWindow = this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS
         switch (this.sizeIndex) {
             case 0:
-                this.handleSize(11, 8, -3.5, isNotWindow ? -2.5 : -2)
+                this.handleSize(11, 8, -3.5, -3)
                 break
             case 1:
-                this.handleSize(16, 11, -4.5, isNotWindow ? -3 : -1)
+                this.handleSize(16, 11, -4.5, -3)
                 break
             case 2:
                 this.handleSize(17, 14, -6.5, -3)

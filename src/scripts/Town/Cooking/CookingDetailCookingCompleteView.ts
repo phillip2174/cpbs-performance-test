@@ -13,6 +13,9 @@ import { TownUIState } from '../Type/TownUIState'
 import { CollectionPod } from './../Pod/CollectionPod'
 import { CookingPod } from './../Pod/CookingPod'
 import { CookingPanelState } from './CookingPanelState'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { TutorialState } from '../../../Tutorial/TutorialState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CookingDetailCookingCompleteView extends GameObjects.Container {
     public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 40
@@ -36,6 +39,7 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
     private townUIPod: TownUIPod
 
     private recipeBean: RecipeBean
+    private tutorialManager: TutorialManager
 
     private currnetRecipeBeanSubscription: Subscription
 
@@ -49,7 +53,8 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
         this.collectionPod = PodProvider.instance.collectionPod
         this.townUIPod = PodProvider.instance.townUIPod
         this.recipePod = PodProvider.instance.recipePod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.tutorialManager = PodProvider.instance.tutorialManager
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setupCookingCompleteUI()
         this.setupButtonListeners()
@@ -144,10 +149,20 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
 
     private setupButtonListeners(): void {
         this.viewCollectionButton.onClick(() => {
-            this.collectionPod.setCurrentDetailSelectedRecipe(this.recipePod.getRecipeBeanWithID(this.recipeBean.id))
-            this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
-            this.townUIPod.changeUIState(TownUIState.Collection)
-            this.collectionPod.changeState(CollectionPanelState.CollectionDetail)
+            if (this.tutorialManager.isCompletedTutorial()) {
+                this.collectionPod.setCurrentDetailSelectedRecipe(
+                    this.recipePod.getRecipeBeanWithID(this.recipeBean.id)
+                )
+                this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
+                this.townUIPod.changeUIState(TownUIState.Collection)
+                this.collectionPod.changeState(CollectionPanelState.CollectionDetail)
+            } else {
+                this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
+                this.townUIPod.changeUIState(TownUIState.Collection)
+
+                this.tutorialManager.updateCurrentToNextTutorial()
+                this.tutorialManager.setTutorialState(TutorialState.CountDown)
+            }
         })
     }
 
@@ -177,7 +192,7 @@ export class CookingDetailCookingCompleteView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(15, 2)

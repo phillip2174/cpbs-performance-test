@@ -2,6 +2,8 @@ import { GameObjects, Scene, Tweens } from 'phaser'
 import { Button } from '../button/Button'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { TownUIButtonType } from './Type/TownUIButtonType'
+import { DeviceChecker } from '../plugins/DeviceChecker'
+import { PodProvider } from '../pod/PodProvider'
 
 export class TownUICircleButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
@@ -52,7 +54,7 @@ export class TownUICircleButtonView extends GameObjects.Container {
 
         this.setPosition(x, y)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.createHoverLeaveTweens()
             this.CheckHoverOnButton()
         }
@@ -62,7 +64,9 @@ export class TownUICircleButtonView extends GameObjects.Container {
 
     public onClick(callback: Function, holdCallback: Function = null): void {
         this.callback = callback
-        this.holdCallback = holdCallback
+        this.holdCallback = () => {
+            PodProvider.instance.cameraControlPod.setIsHoldingButton(true)
+        }
     }
 
     public setInteractable(isInteractable: boolean): void {
@@ -139,8 +143,18 @@ export class TownUICircleButtonView extends GameObjects.Container {
     }
 
     private addButtonClickListener(): void {
-        this.backgroundButton.onClick(() => {
-            if (this.callback != null) this.callback()
-        })
+        this.backgroundButton.onClick(
+            () => {
+                PodProvider.instance.cameraControlPod.setIsHoldingButton(false)
+                if (this.callback != undefined || this.callback != null) {
+                    this.callback()
+                }
+            },
+            () => {
+                if (this.holdCallback != undefined || this.holdCallback != null) {
+                    this.holdCallback()
+                }
+            }
+        )
     }
 }

@@ -6,6 +6,7 @@ import { TownUIState } from './Type/TownUIState'
 import { AnimationController } from './AnimationController'
 import { TownUIPod } from './Pod/TownUIPod'
 import { PodProvider } from '../pod/PodProvider'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class CPLogoUIButtonView extends GameObjects.Container {
     private cpLogoImage: GameObjects.Image
@@ -28,7 +29,7 @@ export class CPLogoUIButtonView extends GameObjects.Container {
 
     public doInit(x: number, y: number): void {
         this.townUIPod = PodProvider.instance.townUIPod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setPosition(x, y)
         this.setupUI()
         this.setupButtonListener()
@@ -70,7 +71,7 @@ export class CPLogoUIButtonView extends GameObjects.Container {
     private setupSubscribe(): void {
         if (!this.isDesktop) return
         this.stateSubscription = this.townUIPod.townUIState.pipe(skip(1)).subscribe((state) => {
-            if (state != TownUIState.MainMenu && state != TownUIState.DailyLogin && state != TownUIState.Settings) {
+            if (this.checkIsStateUseDimSprite(state)) {
                 if (!this.townUIPod.isFinishChangeUITween) {
                     this.setActiveButton(true, true)
                 }
@@ -81,11 +82,7 @@ export class CPLogoUIButtonView extends GameObjects.Container {
             }
         })
 
-        if (
-            this.townUIPod.townUIState.value != TownUIState.MainMenu &&
-            this.townUIPod.townUIState.value != TownUIState.DailyLogin &&
-            this.townUIPod.townUIState.value != TownUIState.Settings
-        ) {
+        if (this.checkIsStateUseDimSprite(this.townUIPod.townUIState.value)) {
             this.setActiveButton(true, false)
         } else if (
             this.townUIPod.townUIState.value == TownUIState.MainMenu ||
@@ -93,6 +90,16 @@ export class CPLogoUIButtonView extends GameObjects.Container {
         ) {
             this.setActiveButton(true, false)
         }
+    }
+
+    private checkIsStateUseDimSprite(state: TownUIState): boolean {
+        return (
+            state != TownUIState.MainMenu &&
+            state != TownUIState.DailyLogin &&
+            state != TownUIState.Settings &&
+            state != TownUIState.CompleteIngredients &&
+            state != TownUIState.NextIngredients
+        )
     }
 
     private setActiveButton(isActive: boolean, isTween: boolean): void {

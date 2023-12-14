@@ -7,6 +7,7 @@ import { CookingPod } from '../Pod/CookingPod'
 import { CookingDetailState } from './CookingDetailState'
 import { AudioManager } from '../../Audio/AudioManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CookingDetailCookingAnimationView extends GameObjects.Container {
     private cookingAnimationBackground: GameObjects.NineSlice
@@ -33,7 +34,7 @@ export class CookingDetailCookingAnimationView extends GameObjects.Container {
     public doInit(): void {
         this.audioManager = PodProvider.instance.audioManager
         this.cookingPod = PodProvider.instance.cookingPod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.cookingSFX = this.audioManager.createSFXSoundObject('cooking_sound_effect', true)
         this.cookingSFX.stop()

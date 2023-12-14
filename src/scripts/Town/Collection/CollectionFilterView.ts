@@ -10,6 +10,7 @@ import { TownUIPod } from '../Pod/TownUIPod'
 import { TownUIState } from '../Type/TownUIState'
 import { CollectionFilterCellView } from './CollectionFilterCellView'
 import { RecipeFilterType } from '../Recipe/RecipeFilterType'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CollectionFilterView extends GameObjects.Container {
     private collectionFilterCellContainer: GameObjects.Container
@@ -35,7 +36,7 @@ export class CollectionFilterView extends GameObjects.Container {
         this.collectionPod = PodProvider.instance.collectionPod
         this.townUIPod = PodProvider.instance.townUIPod
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.createFilterDesktop(widthBG, positionYFilter, depth)
         } else {
             this.createFilterMobile(widthBG, positionYFilter, depth)
@@ -49,13 +50,13 @@ export class CollectionFilterView extends GameObjects.Container {
             }
         })
 
-       this.dragSubscription =  this.scrollView?.isDrag.subscribe((x) => {
+        this.dragSubscription = this.scrollView?.isDrag.subscribe((x) => {
             this.collectionPod.isDragScrollViewFilter = x
         })
 
         this.setActiveFilter(this.townUIPod.townUIState.value == TownUIState.Collection, false)
-        
-        this.on('destroy',() => {
+
+        this.on('destroy', () => {
             this.stateSubscription?.unsubscribe()
             this.dragSubscription?.unsubscribe()
         })
@@ -147,7 +148,7 @@ export class CollectionFilterView extends GameObjects.Container {
     }
 
     private setActiveFilter(isActive: boolean, isTween: boolean = true) {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             if (isActive) {
                 this.collectionPod.changeStateFilter(RecipeFilterType.All)
                 // this.setVisible(true)

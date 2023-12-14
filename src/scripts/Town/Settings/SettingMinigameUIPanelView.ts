@@ -62,6 +62,10 @@ export class SettingMinigameUIPanelView extends GameObjects.Container {
             }
         })
 
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+        })
+
         this.setFirstActive(this.pod.settingState.value)
     }
 

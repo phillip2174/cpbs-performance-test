@@ -14,6 +14,7 @@ import { InventoryPod } from './InventoryPod'
 import { InventorySlotCellView } from './InventorySlotCellView'
 import { APILoadingManager } from '../../api-loading/APILoadingManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class InventoryUIPanelView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -57,11 +58,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
         this.inventoryPod = PodProvider.instance.inventoryPod
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
         this.setDepth(200)
-        if (this.scene.sys.game.device.os.desktop) {
-            this.isDesktop = true
-        } else {
-            this.isDesktop = false
-        }
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setupUI(width, height)
         this.createTween()
         this.setupSubscribe()

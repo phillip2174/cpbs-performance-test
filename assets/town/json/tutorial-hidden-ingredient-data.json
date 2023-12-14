@@ -1,14 +1,12 @@
 [
     {
         "id": 22,
-        "amount": 1,
-        "townTimeState": "Day",
-        "isFound": false
+        "name": "ingredient-22",
+        "amount": 1
     },
     {
         "id": 12,
-        "amount": 1,
-        "townTimeState": "Day",
-        "isFound": false
+        "name": "ingredient-12",
+        "amount": 1
     }
 ]

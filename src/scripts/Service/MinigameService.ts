@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs'
 import { MinigameResultBean } from '../minigame/MinigameResultBean'
 
 export class MinigameService {
-    private mockTicket = 3
+    private mockTicket = 1
 
     getTicket(id: number): Observable<number> {
         return of(this.mockTicket)
@@ -54,8 +54,8 @@ export class MinigameService {
 
         var minigameResultBean = new MinigameResultBean(result, [
             new MinigameBonusBean(true, 0, 10),
-            //new MinigameBonusBean(false, 2, 1),
-            //new MinigameBonusBean(false, 4, 100),
+            new MinigameBonusBean(false, 2, 1),
+            new MinigameBonusBean(false, 4, 100),
         ])
         return of(minigameResultBean)
     }

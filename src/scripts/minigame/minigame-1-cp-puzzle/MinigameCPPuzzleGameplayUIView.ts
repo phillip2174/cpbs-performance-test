@@ -11,6 +11,7 @@ import { HeaderScoreView } from '../HeaderScroeView'
 import { PodProvider } from '../../pod/PodProvider'
 import { BoldText } from '../../../BoldText/BoldText'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     private group: GameObjects.Container
@@ -36,7 +37,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     public doInit(pod: MinigameScenePod): void {
         this.scenePod = pod
         this.audioManager = PodProvider.instance.audioManager
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
         this.group = this.scene.add.container(centerX, centerY)
@@ -81,8 +82,8 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     public showUI() {
         this.group.setActive(true)
         this.group.setVisible(true)
-        this.minigameCPPuzzlePreviewImage.setVisible(true);
-        this.minigameCPPuzzlePreviewImage.setActive(true);
+        this.minigameCPPuzzlePreviewImage.setVisible(true)
+        this.minigameCPPuzzlePreviewImage.setActive(true)
         this.timeBarView.startTimeBar(60000, false, false)
         this.minigameCPPuzzlePreviewImage.setVisible(true)
         this.minigameCPPuzzlePreviewImage.setActive(true)
@@ -100,6 +101,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     }
 
     public setGameStart() {
+        this.timeBarView.setTimebarProperties('clock_ticking_01_sfx', 1000, 1, true, 'clock_ticking_fast_sfx')
         this.timeBarView.startTimeBar(60000, true, true)
     }
 

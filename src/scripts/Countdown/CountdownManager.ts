@@ -11,6 +11,7 @@ import { CameraControlPod } from '../camera/CameraControlPod'
 import { BoldText } from '../../BoldText/BoldText'
 import { TownUIPod } from '../Town/Pod/TownUIPod'
 import { TownUIState } from '../Town/Type/TownUIState'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class CountdownManager extends GameObjects.Container {
     private static readonly TIMER_BACKGROUND_KEY: string = 'timer-'
@@ -42,7 +43,7 @@ export class CountdownManager extends GameObjects.Container {
         this.townUIPod = PodProvider.instance.townUIPod
         this.townDayNightPod = PodProvider.instance.townDayNightPod
         this.countdownTimerPod = PodProvider.instance.countdownTimerPod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setPosition(x, y)
         this.setupTimerBackgroundAndIcon()
@@ -84,10 +85,12 @@ export class CountdownManager extends GameObjects.Container {
             .image(0, 0, CountdownManager.TIMER_BACKGROUND_KEY + 'day')
             .setOrigin(0.5)
             .setScale(1)
+            .setInteractive()
 
         this.countdownTimerIcon = this.scene.add
             .image(this.countdownTimerBackground.x - 48, -12, 'day' + CountdownManager.TIMER_ICON_KEY)
             .setOrigin(0.5)
+            .setInteractive()
 
         this.add([this.countdownTimerBackground, this.countdownTimerIcon])
     }

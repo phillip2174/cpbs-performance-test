@@ -16,11 +16,11 @@ export class RetryYesNoErrorRule implements IErrorAlertRule {
         errorDialogScene: Scene,
         error: ErrorObject,
         retryAction: () => any,
-        cancelAction: () => any,
+        cancelAction: () => any
     ): AlertDialogue {
         const errorAlertDialogue = AlertDialogue.showYesNoPopup(
             errorDialogScene,
-            'Code ' + error.code,
+            error.header,
             '\n' + error.message,
             () => {
                 retryAction()
@@ -28,10 +28,11 @@ export class RetryYesNoErrorRule implements IErrorAlertRule {
             () => {
                 cancelAction()
             },
-            '',
-            '',
+            'TRY AGAIN',
+            'CLOSE',
+            true
         )
-        errorAlertDialogue.getHeader().setColor('#AAAAAA').setFontSize(50)
+        errorAlertDialogue.getHeader().setColor('#2B2B2B').setFontSize(22)
         return errorAlertDialogue
     }
 }

@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs'
 import { AnimationController } from './AnimationController'
 import { DimButton } from '../button/DimButton'
 import { SceneState } from '../../scenes/SceneState'
+import { TutorialStepState } from '../../Tutorial/TutorialStepState'
 
 export class TownUIButtonGroupView extends GameObjects.Container {
     private dimButton: DimButton
@@ -127,7 +128,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
 
     private setupActionButton(): void {
         this.collectionButton.onClick(() => {
-            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+            if (PodProvider.instance.tutorialManager.isCompletedTutorial(true, TutorialStepState.CompleteCooking)) {
                 this.townUIPod.changeUIState(TownUIState.Collection)
                 this.townUIPod.setIsShowGuideline(false)
                 this.townUIPod.setIsShowMenuGroup(false)
@@ -144,7 +145,12 @@ export class TownUIButtonGroupView extends GameObjects.Container {
         })
 
         this.cookingButton.onClick(() => {
-            if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+            if (
+                PodProvider.instance.tutorialManager.isCompletedTutorial(
+                    true,
+                    TutorialStepState.CompletedCollectedIngredient
+                )
+            ) {
                 this.townUIPod.changeUIState(TownUIState.Cooking)
                 this.townUIPod.setIsShowGuideline(false)
                 this.townUIPod.setIsShowMenuGroup(false)

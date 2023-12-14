@@ -4,6 +4,7 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { PodProvider } from '../../pod/PodProvider'
 import { BubbleMenuMarkState } from './BubbleMenuMarkState'
 import { MinigameCPOrderPod } from './MinigameCPOrderPod'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPOrderBubbleMenuCellView extends GameObjects.Container {
     public static readonly ICON_KEY: string = 'recipe-'
@@ -40,7 +41,7 @@ export class MinigameCPOrderBubbleMenuCellView extends GameObjects.Container {
     }
 
     public doInit(cellId: number, recipeId: number, x: number, y: number): void {
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.cellId = cellId
         this.recipeId = recipeId
         this.minigamePod = PodProvider.instance.minigameCPOrderPod

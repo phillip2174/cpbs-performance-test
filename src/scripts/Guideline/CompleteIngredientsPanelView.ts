@@ -9,10 +9,14 @@ import { DimButton } from './../button/DimButton'
 import { GuideLineUIManager } from './GuideLineUIManager'
 import { TownUIPod } from '../Town/Pod/TownUIPod'
 import { TownUIState } from '../Town/Type/TownUIState'
-import { Subscription } from 'rxjs'
+import { Subscription, timer } from 'rxjs'
 import { AnimationController } from '../Town/AnimationController'
 import { AnimationStarView } from './../Town/AnimationStarView'
 import { IngredientBean } from '../Ingredient/IngredientBean'
+import { DeviceChecker } from '../plugins/DeviceChecker'
+import { AudioManager } from '../Audio/AudioManager'
+import { AlertDialogue } from '../alert-dialogue/AlertDialogue'
+import { FlatMessageManager } from '../flat-message/FlatMessageManager'
 
 export class CompleteIngredientsPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -48,6 +52,8 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
     private townUIPod: TownUIPod
     private guidelineUIManager: GuideLineUIManager
 
+    private audioManager: AudioManager
+
     private uiStateSubscription: Subscription
 
     private isDesktop: boolean
@@ -58,8 +64,9 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
     }
 
     public doInit(): void {
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.townUIPod = PodProvider.instance.townUIPod
+        this.audioManager = PodProvider.instance.audioManager
         this.guidelineUIManager = PodProvider.instance.guideLineUIManager
         this.dimButton = new DimButton(this.scene)
         this.setupIngredientBeans()
@@ -158,7 +165,7 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
     }
 
     private setupTextsDesktop(): void {
-        if (this.scene.sys.game.device.os.macOS) {
+        if (DeviceChecker.instance.isMacOS()) {
             this.startDescText = TextAdapter.instance
                 .getVectorText(this.scene, 'DB_HeaventRounded_Med')
                 .setText('สำเร็จ! คุณเก็บวัตถุดิบในช่วงกลางวันครบแล้ว')
@@ -323,6 +330,8 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
                 this.onOpenTween.restart()
                 this.onOpenTweenChain?.restart()
 
+                this.audioManager.playSFXSound('complete_ingredients_alert_sfx')
+
                 this.setActive(true)
                 this.setVisible(true)
             } else {
@@ -365,7 +374,7 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, 3)
@@ -414,14 +423,14 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
                 },
                 {
                     targets: this.lightRayEffectImage,
-                    duration: 80,
+                    ease: `Sine.easeInOut`,
+                    duration: 800,
+                    yoyo: true,
+                    loop: -1,
                     props: {
-                        scale: {
-                            from: this.isDesktop ? 1.1 : 0.85,
-                            to: this.isDesktop ? 1 : 0.75,
-                        },
+                        scale: { from: this.isDesktop ? 1.1 : 0.85, to: this.isDesktop ? 1 : 0.75 },
+                        alpha: { from: 1, to: 0.8 },
                     },
-                    ease: 'linear',
                 },
             ],
             persist: true,

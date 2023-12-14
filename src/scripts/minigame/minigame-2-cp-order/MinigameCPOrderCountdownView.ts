@@ -6,6 +6,7 @@ import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { MinigameState } from '../MinigameState'
 import { BoldText } from '../../../BoldText/BoldText'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPOrderCountdownView extends GameObjects.Container {
     private startTextImage: GameObjects.Image
@@ -28,7 +29,7 @@ export class MinigameCPOrderCountdownView extends GameObjects.Container {
     }
 
     public doInit(x: number, y: number): void {
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.audioManager = PodProvider.instance.audioManager
 
         this.startTextImage = this.scene.add

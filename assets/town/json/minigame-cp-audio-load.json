@@ -27,6 +27,12 @@
             },
             {
                 "type": "audio",
+                "key": "clock_ticking_fast_sfx",
+                "url": "assets/audio/sfx/minigame/clock_ticking_fast_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
                 "key": "jigsaw_puzzle_move_sfx",
                 "url": "assets/audio/sfx/minigame/jigsaw_puzzle_move_sfx.mp3",
                 "autoDecode": true
@@ -81,14 +87,8 @@
             },
             {
                 "type": "audio",
-                "key": "order_correct_sfx",
-                "url": "assets/audio/sfx/minigame/order-minigame/order_correct_sfx.mp3",
-                "autoDecode": true
-            },
-            {
-                "type": "audio",
-                "key": "order_incorrect_sfx",
-                "url": "assets/audio/sfx/minigame/order-minigame/order_incorrect_sfx.mp3",
+                "key": "order_click_sfx",
+                "url": "assets/audio/sfx/minigame/order-minigame/order_click_sfx.mp3",
                 "autoDecode": true
             },
             {

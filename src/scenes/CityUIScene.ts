@@ -1,5 +1,5 @@
 import { Input, Scene } from 'phaser'
-import { Subscription } from 'rxjs'
+import { Subscription, timer } from 'rxjs'
 import { CollectionView } from '../scripts/Town/Collection/CollectionView'
 import { InventoryUIPanelView } from '../scripts/Town/Inventory/InventoryUIPanelView'
 import { TownBuildingPod } from '../scripts/Town/Pod/TownBuildingPod'
@@ -19,6 +19,11 @@ import { TutorialManager } from '../scripts/Manager/TutorialManager'
 import { TutorialView } from '../Tutorial/TutorialView'
 import { GameConfig } from '../scripts/GameConfig'
 import { NextIngredientsPanelView } from './../scripts/Guideline/NextIngredientsPanelView'
+import { FlatMessageManager } from '../scripts/flat-message/FlatMessageManager'
+import { ErrorAlertFactory } from '../error-factory/ErrorAlertFactory'
+import { TutorialStepState } from '../Tutorial/TutorialStepState'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
+import { UserType } from '../scripts/User/UserType'
 
 export class CityUIScene extends Scene {
     private townUIView: TownUIView
@@ -50,9 +55,24 @@ export class CityUIScene extends Scene {
         APILoadingManager.instance.doInit(this, 1)
         APILoadingManager.instance.showSceneLoading(SceneState.TownScene)
 
+        DeviceChecker.instance.doInit(this)
+        FlatMessageManager.instance.doInit(this)
+        ErrorAlertFactory.instance.init()
+
+        this.checkAndSetDefaultStateUI()
+
         this.scene.launch('TownScene')
         this.firstInitSubscription = this.townBuildingPod.firstInit.subscribe((_) => {
-            if (!this.tutorialManager.tutorialSaveBean.isCompletedTutorial && GameConfig.IS_START_WITH_TUTORIAL) {
+            if (
+                (!this.tutorialManager.tutorialSaveBean.isCompletedTutorial && GameConfig.IS_START_WITH_TUTORIAL) ||
+                (this.tutorialManager.tutorialSaveBean.isCompletedTutorial &&
+                    GameConfig.IS_START_WITH_TUTORIAL &&
+                    PodProvider.instance.userPod.userLoginType == UserType.Guest)
+            ) {
+                if (this.tutorialManager.tutorialSaveBean.isCompletedTutorial) {
+                    this.tutorialManager.updateStep(this.tutorialManager.maxTutorialStep)
+                }
+
                 this.tutorialView = new TutorialView(this)
                 this.tutorialView.doInit()
             }
@@ -99,5 +119,21 @@ export class CityUIScene extends Scene {
 
             this.firstInitSubscription?.unsubscribe()
         })
+    }
+
+    private checkAndSetDefaultStateUI() {
+        if (!this.tutorialManager.isCompletedTutorial()) {
+            switch (this.tutorialManager.tutorialStepID.value) {
+                case TutorialStepState.WelcomeToCooking:
+                case TutorialStepState.SelectCooking:
+                case TutorialStepState.CompleteCooking:
+                    PodProvider.instance.townUIPod.changeUIState(TownUIState.Cooking)
+                    break
+                case TutorialStepState.WelcomeToCollection:
+                case TutorialStepState.CompleteCollection:
+                    PodProvider.instance.townUIPod.changeUIState(TownUIState.Collection)
+                    break
+            }
+        }
     }
 }

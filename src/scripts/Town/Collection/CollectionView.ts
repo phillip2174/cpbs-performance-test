@@ -22,6 +22,10 @@ import { CollectionPanelState } from './type/CollectionPanelState'
 import { RecipePod } from '../../pod/RecipePod'
 import { APILoadingManager } from '../../api-loading/APILoadingManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { TutorialState } from '../../../Tutorial/TutorialState'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CollectionView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -65,6 +69,7 @@ export class CollectionView extends GameObjects.Container {
     private collectionPod: CollectionPod
     private recipePod: RecipePod
     private townUIPod: TownUIPod
+    private tutorialManager: TutorialManager
 
     private onOpenTween: Tweens.Tween
     private onOpenTweenChain: Tweens.TweenChain
@@ -81,6 +86,7 @@ export class CollectionView extends GameObjects.Container {
         this.collectionPod = PodProvider.instance.collectionPod
         this.townUIPod = PodProvider.instance.townUIPod
         this.recipePod = PodProvider.instance.recipePod
+        this.tutorialManager = PodProvider.instance.tutorialManager
         this.setDepth(200)
         this.setupUI()
         this.setInteractiveObject()
@@ -241,7 +247,7 @@ export class CollectionView extends GameObjects.Container {
 
     private createCellPage(recipeBean: RecipeBean[]) {
         let { width, height } = this.scrollView.getWidthAndHeightScroll()
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             let rowCountColumn = 3
             let countGroupPerPage = 12
 
@@ -362,10 +368,10 @@ export class CollectionView extends GameObjects.Container {
     }
 
     public setupUI() {
-        this.dimButton = new DimButton(this.scene, 0.5, true)
+        this.dimButton = new DimButton(this.scene, 0.5, true, 'collection-bg')
         this.add(this.dimButton)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.setupUIDesktop()
 
             this.scrollView = new ScrollViewNormalAndPagination(this.scene)
@@ -572,7 +578,7 @@ export class CollectionView extends GameObjects.Container {
     private setTextCompleted(currentUnlocked: number) {
         this.currentCollectedText.setText(`Collected ${currentUnlocked}/${this.recipePod.totalMasterRecipe}`)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.currentCollectedImage.width = this.currentCollectedText.width + 20
         }
 
@@ -603,7 +609,11 @@ export class CollectionView extends GameObjects.Container {
         this.collectionMobileBackground?.setInteractive()
 
         this.dimButton.onClick(() => {
-            if (!this.collectionPod.isDragScrollView && !this.collectionPod.isDragScrollViewFilter) {
+            if (
+                !this.collectionPod.isDragScrollView &&
+                !this.collectionPod.isDragScrollViewFilter &&
+                this.tutorialManager.isCompletedTutorial()
+            ) {
                 this.townUIPod.changeUIState(TownUIState.MainMenu)
                 this.townUIPod.setIsShowGuideline(true)
             }

@@ -26,8 +26,8 @@
         "scaleY": 1,
         "interactX": -66,
         "interactY": -120,
-        "interactWidth": 50,
-        "interactHeight": 50,
+        "interactWidth": 80,
+        "interactHeight": 80,
         "depth": 6,
         "keyAsset": "7-11-cat",
         "isDisableInteract": true

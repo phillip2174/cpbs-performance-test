@@ -55,6 +55,41 @@
                 "type": "image",
                 "key": "content-panel-2_2",
                 "url": "assets/tutorial/content-panel-2_2.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-3",
+                "url": "assets/tutorial/content-panel-3.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-4",
+                "url": "assets/tutorial/content-panel-4.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-5",
+                "url": "assets/tutorial/content-panel-5.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-6",
+                "url": "assets/tutorial/content-panel-6.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-7_1",
+                "url": "assets/tutorial/content-panel-7_1.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-7_2",
+                "url": "assets/tutorial/content-panel-7_2.png"
+            },
+            {
+                "type": "image",
+                "key": "content-panel-8",
+                "url": "assets/tutorial/content-panel-8.png"
             }
         ]
     }

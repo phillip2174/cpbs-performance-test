@@ -8,6 +8,7 @@ import { MinigameSuccessIndicatorView } from '../MinigameSuccessIndicatorView'
 import { PodProvider } from '../../pod/PodProvider'
 import { AudioManager } from '../../Audio/AudioManager'
 import { Subscription, timer } from 'rxjs'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPOrderMenuCellView extends GameObjects.Container {
     public static readonly CELL_BG_KEY: string = 'minigame-menu-cell-bg-'
@@ -49,7 +50,7 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
         this.scenePod = PodProvider.instance.minigameScenePod
         this.minigamePod = PodProvider.instance.minigameCPOrderPod
         this.audioManager = PodProvider.instance.audioManager
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.isDesktop ? this.setupCellDesktop() : this.setupCellMobile()
         this.cellButton = this.scene.add
             .rectangle(0, 0, this.cellBg.width, this.cellBg.height)
@@ -72,9 +73,7 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
 
     public showSuccessIndicator(isCorrect: boolean): void {
         this.successIndicatorView?.playIndicatorTween(isCorrect)
-
-        if (isCorrect) this.audioManager.playSFXSound('order_correct_sfx')
-        else this.audioManager.playSFXSound('order_incorrect_sfx')
+        this.audioManager.playSFXSound('order_click_sfx')
     }
 
     public onStartGame(): void {

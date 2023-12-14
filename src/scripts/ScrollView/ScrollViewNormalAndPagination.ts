@@ -6,6 +6,7 @@ import { TextAdapter } from '../text-adapter/TextAdapter'
 import { Button } from '../button/Button'
 import { AnimationController } from '../Town/AnimationController'
 import { BoldText } from '../../BoldText/BoldText'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     public static readonly DELAY_TWEEN: number = 400
@@ -810,7 +811,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
 
         this.scrollbarContainer.add([this.nextButton, this.backButton])
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.setTweenIcon(this.nextButton, nextArrow)
             this.setTweenIcon(this.backButton, backArrow)
         }
@@ -850,7 +851,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
         let backArrow = this.scene.add.image(0, 0, 'arrow-icon').setFlipX(true).setScale(arrowSize)
         this.backButton.add(backArrow)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.setTweenIcon(this.nextButton, nextArrow)
             this.setTweenIcon(this.backButton, backArrow)
         }
@@ -1013,7 +1014,7 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
             }
         })
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.scene.input.on('wheel', (pointer) => {
                 if (this.scrollViewArea.active && this.scrollViewArea.getBounds().contains(pointer.x, pointer.y)) {
                     if (!this.checkCanDragScrollView()) this.scrollWithWheel(pointer)

@@ -2,6 +2,7 @@ import { GameObjects, Tweens } from 'phaser'
 import { AccessibilityButtonGroupView } from './../Town/AccessibilityButtonGroupView'
 import { PodProvider } from '../pod/PodProvider'
 import { AudioManager } from '../Audio/AudioManager'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class DimButton extends GameObjects.Container {
     private dimBackground: GameObjects.Rectangle
@@ -37,7 +38,7 @@ export class DimButton extends GameObjects.Container {
 
     createUI(dimValue: number, isShowSprite: boolean, keyImage: string) {
         if (isShowSprite) {
-            if (this.scene.sys.game.device.os.desktop) {
+            if (DeviceChecker.instance.isDesktop()) {
                 this.dimSprite = this.scene.add
                     .image(0, 0, keyImage)
                     .setOrigin(0.5)
@@ -48,7 +49,6 @@ export class DimButton extends GameObjects.Container {
                     .image(0, 0, keyImage)
                     .setOrigin(0.5)
                     .setDisplaySize(2291, this.scene.cameras.main.height)
-                this.dimSprite.x = this.dimSprite.x + this.scene.cameras.main.width / 1.1
 
                 this.accessibilityButtonGroupView = new AccessibilityButtonGroupView(this.scene)
                 this.accessibilityButtonGroupView.doInit(0, 0)

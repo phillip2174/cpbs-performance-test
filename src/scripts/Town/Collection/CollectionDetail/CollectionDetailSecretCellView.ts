@@ -10,6 +10,7 @@ import { TextAdapter } from '../../../text-adapter/TextAdapter'
 import { SecretRecipeBean } from '../SecretRecipeBean'
 import { RecipePod } from '../../../pod/RecipePod'
 import { BoldText } from '../../../../BoldText/BoldText'
+import { DeviceChecker } from '../../../plugins/DeviceChecker'
 
 export class CollectionDetailSecretCellView extends GameObjects.Container {
     public static readonly WIDTH_SIZE_BG_MOBILE: number = 311
@@ -84,15 +85,15 @@ export class CollectionDetailSecretCellView extends GameObjects.Container {
     }
 
     private createUI() {
-        let isDesktop = this.scene.sys.game.device.os.desktop
+        let isDesktop = DeviceChecker.instance.isDesktop()
 
         this.secretContainer = this.scene.add.container()
 
-        let sizeWidthBG = this.scene.sys.game.device.os.desktop
+        let sizeWidthBG = DeviceChecker.instance.isDesktop()
             ? CollectionDetailSecretCellView.WIDTH_SIZE_BG_DESKTOP
             : CollectionDetailSecretCellView.WIDTH_SIZE_BG_MOBILE
 
-        let sizeHeightBG = this.scene.sys.game.device.os.desktop
+        let sizeHeightBG = DeviceChecker.instance.isDesktop()
             ? CollectionDetailSecretCellView.HEIGHT_SIZE_BG_DESKTOP
             : CollectionDetailSecretCellView.HEIGHT_SIZE_BG_MOBILE
 
@@ -113,7 +114,7 @@ export class CollectionDetailSecretCellView extends GameObjects.Container {
         this.headerText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
             .setText(
-                this.scene.sys.game.device.os.desktop
+                DeviceChecker.instance.isDesktop()
                     ? 'เมนูลับมาสเตอร์เชฟ จะเป็นเมนูแบบไหนนะ??'
                     : 'เมนูลับมาสเตอร์เชฟ\nจะเป็นเมนูแบบไหนนะ??'
             )

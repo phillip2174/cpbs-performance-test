@@ -10,6 +10,7 @@ import { TutorialManager } from '../scripts/Manager/TutorialManager'
 import { PodProvider } from '../scripts/pod/PodProvider'
 import { GameConfig } from '../scripts/GameConfig'
 import { TutorialHintView } from '../Tutorial/TutorialHintView'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
 
 export class TownScene extends Scene {
     private townBuildingView: TownBuildingView
@@ -30,6 +31,7 @@ export class TownScene extends Scene {
         console.log('start TownScene')
         ResourceManager.instance.setResourceLoaderScene(this)
         AnimationController.instance.createSpriteSheetAnimation(this)
+        DeviceChecker.instance.doInit(this)
 
         this.tutorialManager = PodProvider.instance.tutorialManager
     }
@@ -51,6 +53,7 @@ export class TownScene extends Scene {
     }
 
     update() {
+        this.cameraControlView.update()
         this.townBuildingView.update()
     }
 }

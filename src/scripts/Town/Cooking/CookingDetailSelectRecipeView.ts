@@ -15,6 +15,9 @@ import { CookingPod } from './../Pod/CookingPod'
 import { CookingDetailState } from './CookingDetailState'
 import { CookingPanelState } from './CookingPanelState'
 import { BoldText } from '../../../BoldText/BoldText'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { TutorialState } from '../../../Tutorial/TutorialState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CookingDetailSelectRecipeView extends GameObjects.Container {
     public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 33
@@ -39,6 +42,7 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
     private letsCookButton: Button
 
     private cookingPod: CookingPod
+    private tutorialManager: TutorialManager
 
     private isDesktop: boolean
     private isIngredientAllFull: boolean = false
@@ -59,7 +63,8 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
         this.cookingPod = PodProvider.instance.cookingPod
         this.recipePod = PodProvider.instance.recipePod
         this.townUIPod = PodProvider.instance.townUIPod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.tutorialManager = PodProvider.instance.tutorialManager
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setupCookingRecipeUI()
         this.setupSubscribe()
     }
@@ -234,6 +239,10 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
             this.cookingPod.changeCookingPanelState(CookingPanelState.CookingList)
         })
 
+        if (!this.tutorialManager.isCompletedTutorial()) {
+            this.cancelButton.setCanInteract(false, true)
+        }
+
         this.letsCookButton.onClick(() => {
             this.cookingPod.changeCookingDetailState(CookingDetailState.CookingAnimation)
 
@@ -246,6 +255,11 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
             observableInit.push(timerLoadingDelay)
 
             forkJoin(observableInit).subscribe((_) => {
+                if (!this.tutorialManager.isCompletedTutorial()) {
+                    this.tutorialManager.updateCurrentToNextTutorial()
+                    this.tutorialManager.setTutorialState(TutorialState.CountDown)
+                }
+
                 this.cookingPod.changeCookingDetailState(CookingDetailState.CookingComplete)
             })
         })
@@ -276,7 +290,7 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, 2)

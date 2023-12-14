@@ -8,16 +8,35 @@ import { BonusBean } from '../Town/Recipe/BonusBean'
 
 export class RecipeRepository {
     private userRecipes: UserRecipe[] = []
-    getRecipeMasterData(): Observable<RecipeBean[]> {
+    getRecipeMasterData(isCompletedTutorial: boolean): Observable<RecipeBean[]> {
+        if (GameConfig.IS_MOCK_API) {
+            if (isCompletedTutorial) {
+                return ResourceManager.instance
+                    .loadText('recipe-master-mock', 'assets/town/json/recipe-master-mock.json')
+                    .pipe(map((json) => JSON.parse(json)))
+            } else {
+                return this.loadTutorialRecipeTutorialData()
+            }
+        } else {
+            if (isCompletedTutorial) {
+                let data: RecipeBean[] = []
+                return of(data)
+            } else {
+                return this.loadTutorialRecipeTutorialData()
+            }
+        }
+    }
+
+    loadTutorialRecipeTutorialData() {
         return ResourceManager.instance
-            .loadText('recipe-master-mock', 'assets/town/json/recipe-master-mock.json')
+            .loadText('tutorial-recipe-data', 'assets/town/json/tutorial-recipe-data.json')
             .pipe(map((json) => JSON.parse(json)))
     }
 
     getUserRecipeData(): Observable<UserRecipe[]> {
         if (GameConfig.IS_MOCK_API) {
             let userRecipes: UserRecipe[] = [
-                // new UserRecipe('test01', 1, CookState.Unlocked),
+                //new UserRecipe('test01', 1, CookState.Unlocked),
                 //new UserRecipe('test01', 3, CookState.Unlocked),
                 // new UserRecipe('test01', 5, CookState.Unlocked, new BonusBean(16, 10)),
                 // new UserRecipe('test01', 4, CookState.Cooked, new BonusBean(19, 5)),

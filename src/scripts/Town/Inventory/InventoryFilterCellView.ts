@@ -7,6 +7,8 @@ import { PodProvider } from '../../pod/PodProvider'
 import { Subscription } from 'rxjs'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { IScrollViewCallBack } from '../../ScrollView/IScrollViewCallBack'
 
 export class InventoryFilterCellView extends GameObjects.Container implements IScrollViewCallBack {
     public static readonly FILTER_TYPE_ICON_KEY: string = 'inventory-filter-type-icon-'
@@ -38,7 +40,7 @@ export class InventoryFilterCellView extends GameObjects.Container implements IS
         this.filterType = filterType
         this.cellPageIndex = cellPageIndex
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.setupFilterCellDesktop()
         } else {
             this.setupFilterCellMobile()
@@ -59,7 +61,10 @@ export class InventoryFilterCellView extends GameObjects.Container implements IS
     }
 
     private setupFilterCellDesktop(): void {
-        this.filterTypeText = new BoldText(this.scene, 0, 0, this.filterType.toString(), 22).setOrigin(0, 0.5)
+        this.filterTypeText = new BoldText(this.scene, 0, 0, this.filterType.toString(), 22, '#FFFFFF', 0, 0).setOrigin(
+            0,
+            0.5
+        )
 
         if (this.filterType == InventoryFilterType.FreshFood) {
             this.filterTypeText.setText('FRESH FOOD')
@@ -84,7 +89,10 @@ export class InventoryFilterCellView extends GameObjects.Container implements IS
             )
             .setOrigin(0.5)
 
-        this.filterTypeText.setPosition(-this.filterBackground.width / 2 + 45, -2)
+        this.filterTypeText.setPosition(
+            -this.filterBackground.width / 2 + 45,
+            DeviceChecker.instance.isMacOS() ? -3 : -2
+        )
         this.filterTypeIcon.setPosition(-this.filterBackground.width / 2 + 40, 0)
 
         this.filterSelectedBackground = this.scene.add

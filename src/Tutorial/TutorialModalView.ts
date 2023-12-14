@@ -9,6 +9,8 @@ import { TutorialButtonDataBean } from './TutorialButtonDataBean'
 import { UserPod } from '../scripts/Town/Pod/UserPod'
 import { PodProvider } from '../scripts/pod/PodProvider'
 import { UserType } from '../scripts/User/UserType'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
+import { AudioManager } from '../scripts/Audio/AudioManager'
 
 export class TutorialModalView extends GameObjects.Container {
     public static readonly OFFSET_X_CHARACTER_DESKTOP: number = 20
@@ -49,6 +51,8 @@ export class TutorialModalView extends GameObjects.Container {
     private onCloseTween: Tweens.Tween
     private onCloseScaleTween: Tweens.TweenChain
 
+    private audioManager: AudioManager
+
     private userPod: UserPod
 
     constructor(scene: Scene) {
@@ -57,8 +61,9 @@ export class TutorialModalView extends GameObjects.Container {
     }
 
     public doInit() {
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.userPod = PodProvider.instance.userPod
+        this.audioManager = PodProvider.instance.audioManager
         this.createUI()
         this.createTween()
 
@@ -71,6 +76,8 @@ export class TutorialModalView extends GameObjects.Container {
             this.onCloseScaleTween?.pause()
             this.onOpenTween.restart()
             this.onOpenTweenChain?.restart()
+
+            this.audioManager.playSFXSound('tutorial_modal_open_sfx')
 
             this.setActive(true)
             this.setVisible(true)
@@ -254,7 +261,7 @@ export class TutorialModalView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, this.isDesktop ? 3 : 1)

@@ -12,6 +12,7 @@ import { MinigamePod } from './MinigamePod'
 import { MinigameSelectCellView } from './MinigameSelectCellView'
 import { AudioManager } from '../../Audio/AudioManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameSelectPanelView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -86,7 +87,7 @@ export class MinigameSelectPanelView extends GameObjects.Container {
         this.dimButton = new DimButton(this.scene, 0.5, true, 'background-book')
         this.add(this.dimButton)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.setupUIDesktop()
 
             this.scrollView = new ScrollViewNormalAndPagination(this.scene)
@@ -212,8 +213,6 @@ export class MinigameSelectPanelView extends GameObjects.Container {
                 this.onCloseTweenChain?.restart()
                 this.scrollView?.setActiveScrollView(false, this.isTween)
                 this.dimButton.setActiveDim(false, !this.townUIPod.isFinishChangeUITween)
-
-                this.townUIPod.setLayerScrollView(MinigameSelectPanelView.SCROLL_VIEW_LAYER)
             }
         } else {
             this.setActive(isActive)
@@ -223,7 +222,10 @@ export class MinigameSelectPanelView extends GameObjects.Container {
             this.scrollView?.setActiveScrollView(isActive)
             this.isTween = true
 
-            if (isActive) this.townUIPod.setLayerScrollView(MinigameSelectPanelView.SCROLL_VIEW_LAYER)
+            if (isActive) {
+                this.townUIPod.setLayerScrollView(MinigameSelectPanelView.SCROLL_VIEW_LAYER)
+                this.audioManager.playBGMSound('select_minigame_bgm', true)
+            }
         }
 
         if (isActive && !this.minigamePod.isFirstOpen) {

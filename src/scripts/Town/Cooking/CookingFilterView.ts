@@ -9,6 +9,7 @@ import { RecipeFilterType } from '../Recipe/RecipeFilterType'
 import { Subscription, skip } from 'rxjs'
 import { TownUIState } from '../Type/TownUIState'
 import { AnimationController } from '../AnimationController'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class CookingFilterView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -38,7 +39,7 @@ export class CookingFilterView extends GameObjects.Container {
         this.setPosition(x, y)
         this.setDepth(depth + 2)
         this.createTween()
-        this.scene.sys.game.device.os.desktop ? this.createFilterCellsDesktop() : this.createFilterCellsMobile(widthBG)
+        DeviceChecker.instance.isDesktop() ? this.createFilterCellsDesktop() : this.createFilterCellsMobile(widthBG)
         this.setupSubscribes()
     }
 
@@ -150,7 +151,7 @@ export class CookingFilterView extends GameObjects.Container {
     }
 
     private setActiveFilter(isActive: boolean, isTween: boolean = true) {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             if (isTween) {
                 if (isActive) {
                     this.onCloseTween?.pause()

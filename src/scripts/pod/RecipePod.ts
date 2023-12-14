@@ -9,6 +9,8 @@ import { RepositoryProvider } from '../Repository/RepositoryProvider'
 import { CollectionPod } from '../Town/Pod/CollectionPod'
 import { PodProvider } from './PodProvider'
 import { TextAdapter } from '../text-adapter/TextAdapter'
+import { TutorialStepState } from '../../Tutorial/TutorialStepState'
+import { TutorialManager } from '../Manager/TutorialManager'
 
 export class RecipePod {
     public userRecipeBeans: UserRecipe[]
@@ -25,45 +27,32 @@ export class RecipePod {
 
     private recipeRepository: RecipeRepository
     private collectionPod: CollectionPod
+    private tutorialManager: TutorialManager
 
     constructor() {
         this.recipeRepository = RepositoryProvider.instance.recipeRepository
         this.collectionPod = PodProvider.instance.collectionPod
+        this.tutorialManager = PodProvider.instance.tutorialManager
     }
 
     public getRecipeData(filterType: RecipeFilterType): Observable<RecipeBean[]> {
         if (this.recipeBeans == undefined || this.recipeBeans == null) {
-            return this.recipeRepository.getRecipeMasterData().pipe(
-                map((recipes) => {
-                    this.recipeBeans = recipes
+            return this.recipeRepository
+                .getRecipeMasterData(
+                    PodProvider.instance.tutorialManager.isCompletedTutorial() ||
+                        (!PodProvider.instance.tutorialManager.isCompletedTutorial() &&
+                            !PodProvider.instance.splashPod.isLaunchCPCity)
+                )
+                .pipe(
+                    map((recipes) => {
+                        this.recipeBeans = recipes
 
-                    console.log('recipeBeans Count: ' + this.recipeBeans.length)
-                    console.log(this.recipeBeans)
+                        console.log('recipeBeans Count: ' + this.recipeBeans.length)
+                        console.log(this.recipeBeans)
 
-                    // TextAdapter.splitThaiStringByLegth(
-                    //     'ตัดข้อความให้เป็นสองบรรทัดโดยทำจากการทดสอบตัดข้อความให้เป็นหลายบรรทัดนะครับลองทำดูยาวๆก็ทำได้แน่นอนการทำแบบนี้ไม่ดีเลยนะจ่ะจ่ะจ่ะ',
-                    //     11
-                    // )
-                    // TextAdapter.splitThaiStringByLegth('ไข่ลูกเขย', 13)
-                    // TextAdapter.splitThaiStringByLegth('พุดดิ้งไข่คาราเมลแต่ไม่ใช่ไข่ตุ๋น', 13)
-                    // TextAdapter.splitThaiStringByLegth('กุ้งกรอบซอสสามรสเปรี้ยวหวาน', 13)
-                    // TextAdapter.splitThaiStringByLegth('โตเกียวมินิฮอทดอกหน้าไข่กระทะ', 13)
-                    // TextAdapter.splitThaiStringByLegth('เกี๊ยวกุ้งดับเบิ้ลชีสซอสสไปซี่มาโย', 13)
-                    // TextAdapter.splitThaiStringByLegth(
-                    //     'ไข่ม้วนยัดไส้เต้าหู้ราดซอสมะเขือเทศ CP Delight เต้าหู้ไข่ไก่',
-                    //     13
-                    // )
-                    // TextAdapter.splitThaiStringByLegth('Chicken Rib คลุกฝุ่น', 13)
-                    // TextAdapter.splitThaiStringByLegth('บะหมี่ไข่พะโล้ยางมะตูมหมูดำคูโรบูตะ', 13)
-                    // TextAdapter.splitThaiStringByLegth('แกงจืดไส้กรอกห่อกะหล่ำปลี', 13)
-                    // TextAdapter.splitThaiStringByLegth('โบโลน่าหั่นเต๋ายำไข่แดงเค็มปลาร้าแซ่บ', 13)
-                    // TextAdapter.splitThaiStringByLegth('ปีกไก่ทอดสามรส', 13)
-                    // TextAdapter.splitThaiStringByLegth('บัวลอยไข่แดงเค็ม', 13)
-                    // TextAdapter.splitThaiStringByLegth('พานินี่ไส้กรอกชีสและเบคอนกรอบ', 13)
-                    // TextAdapter.splitThaiStringByLegth('สปาเก็ตตี้คาโบนาร่า โบโลน่าชีส', 13)
-                    return this.filterReturn(recipes, filterType, false) as RecipeBean[]
-                })
-            )
+                        return this.filterReturn(recipes, filterType, false) as RecipeBean[]
+                    })
+                )
         } else {
             return this.filterReturn(this.recipeBeans, filterType, true) as Observable<RecipeBean[]>
         }
@@ -142,6 +131,18 @@ export class RecipePod {
         if (this.userRecipeBeans == undefined || this.userRecipeBeans == null) {
             return this.recipeRepository.getUserRecipeData().pipe(
                 map((userRecipes) => {
+                    if (!this.tutorialManager.isCompletedTutorial()) {
+                        switch (this.tutorialManager.tutorialStepID.value) {
+                            case TutorialStepState.CompleteCooking:
+                            case TutorialStepState.WelcomeToCollection:
+                                userRecipes.push(new UserRecipe('tutorial', 10, CookState.Cooked))
+                                break
+                            case TutorialStepState.CompleteCollection:
+                                userRecipes.push(new UserRecipe('tutorial', 10, CookState.Unlocked))
+                                break
+                        }
+                    }
+
                     this.userRecipeBeans = userRecipes
                     this.updateTotalUserRecipe()
                     this.updateTotalUnlockedRecipe()
@@ -250,5 +251,9 @@ export class RecipePod {
             group.push(arr.slice(i * countPerGroup, (i + 1) * countPerGroup))
         }
         return group
+    }
+
+    public clearRecipeBeans(): void {
+        this.recipeBeans = undefined
     }
 }

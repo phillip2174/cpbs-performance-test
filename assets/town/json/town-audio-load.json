@@ -21,8 +21,14 @@
             },
             {
                 "type": "audio",
-                "key": "town_ambient",
-                "url": "assets/audio/ambient/town_ambient.mp3",
+                "key": "town_day_ambient",
+                "url": "assets/audio/ambient/town_day_ambient.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "town_night_ambient",
+                "url": "assets/audio/ambient/town_night_ambient.mp3",
                 "autoDecode": true
             },
             {
@@ -101,6 +107,36 @@
                 "type": "audio",
                 "key": "win_sfx",
                 "url": "assets/audio/sfx/minigame/win_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "day_night_alert_sfx",
+                "url": "assets/audio/sfx/day-night-alert/day_night_alert_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "complete_ingredients_alert_sfx",
+                "url": "assets/audio/sfx/complete-ingredients-alert/complete_ingredients_alert_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "alert_dialogue_open_sfx",
+                "url": "assets/audio/sfx/alert-dialogue/alert_dialogue_open_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "flat_message_alert_sfx",
+                "url": "assets/audio/sfx/flat-message/flat_message_alert_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "tutorial_modal_open_sfx",
+                "url": "assets/audio/sfx/tutorial/tutorial_modal_open_sfx.mp3",
                 "autoDecode": true
             }
         ]

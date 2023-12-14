@@ -4,6 +4,9 @@ import { ObjectPlacementDebugger } from '../plugins/ObjectPlacementDebugger'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 import { IngredientObjectView } from './IngredientObjectView'
+import { TownUIPod } from './Pod/TownUIPod'
+import { PodProvider } from '../pod/PodProvider'
+import { TownUIState } from './Type/TownUIState'
 
 export class TrainObjectWithIngredientView extends GameObjects.Container {
     private trainObjectSpine: SpineGameObject
@@ -18,6 +21,10 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
 
     private timerSubscription: Subscription
     private timerTweenSubscription: Subscription
+    private stateSubscription: Subscription
+    private delaySetActiveSubscription: Subscription
+
+    private townUIPod: TownUIPod
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
@@ -25,6 +32,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
     }
 
     public doInit(ingredientObjectView: IngredientObjectView) {
+        this.townUIPod = PodProvider.instance.townUIPod
         this.setDepth(2)
         let test = new ObjectPlacementDebugger(this.scene)
 
@@ -59,6 +67,27 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
 
         this.tweenTrainAnimation(fadeInOutFx)
         this.add([this.trainObjectSpine as any, this.ingredientObjectView])
+
+        this.stateSubscription = this.townUIPod.townUIState.subscribe((state) => {
+            const validStates: TownUIState[] = [
+                TownUIState.MainMenu,
+                TownUIState.Settings,
+                TownUIState.DailyLogin,
+                TownUIState.CompleteIngredients,
+                TownUIState.NextIngredients,
+            ]
+
+            if (validStates.includes(state)) {
+                this.delaySetActiveSubscription?.unsubscribe()
+                this.trainObjectSpine.timeScale = 1
+                this.trainObjectSpine.setVisible(true)
+            } else {
+                this.delaySetActiveSubscription = timer(200).subscribe((_) => {
+                    this.trainObjectSpine.timeScale = 0
+                    this.trainObjectSpine.setVisible(false)
+                })
+            }
+        })
     }
 
     private tweenTrainAnimation(fadeInOutFx: Phaser.FX.Wipe) {
@@ -133,6 +162,8 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
         this.tweenMoveInOut?.destroy()
         this.tweenMoveOut?.destroy()
         this.trainObjectSpine?.destroy()
+        this.stateSubscription?.unsubscribe()
+        this.delaySetActiveSubscription?.unsubscribe()
         super.destroy(fromScene)
     }
 }

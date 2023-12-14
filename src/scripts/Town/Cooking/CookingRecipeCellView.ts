@@ -18,6 +18,11 @@ import { RecipePod } from '../../pod/RecipePod'
 import { Subscription } from 'rxjs'
 import { AnimationController } from '../AnimationController'
 import { BoldText } from '../../../BoldText/BoldText'
+import { TutorialState } from '../../../Tutorial/TutorialState'
+import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
+import { TutorialManager } from '../../Manager/TutorialManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { IScrollViewCallBack } from '../../ScrollView/IScrollViewCallBack'
 
 export class CookingRecipeCellView extends GameObjects.Container implements IScrollViewCallBack {
     public static readonly LENGTH_CUT_TEXT: number = 20
@@ -55,6 +60,7 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
 
     private cookingPod: CookingPod
     private recipePod: RecipePod
+    private tutorialManager: TutorialManager
 
     public recipeBean: RecipeBean
 
@@ -66,10 +72,11 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
     public doInit(recipeBean: RecipeBean, cellPageIndex: number): void {
         this.cookingPod = PodProvider.instance.cookingPod
         this.recipePod = PodProvider.instance.recipePod
+        this.tutorialManager = PodProvider.instance.tutorialManager
 
         this.cellPageIndex = cellPageIndex
 
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.recipeBackgroundWidth = this.isDesktop ? 196 : 170
         this.recipeBackgroundHeight = this.isDesktop ? 299 : 293
         this.recipeBean = recipeBean
@@ -129,6 +136,24 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+
+        //IF TUTORIAL RECIPE > 1 MUST HANDLE CHECK ID RECIPE TO OPEN
+        if (!this.tutorialManager.isCompletedTutorial()) {
+            switch (this.tutorialManager.tutorialStepID.value) {
+                case TutorialStepState.SelectCooking:
+                    this.tutorialManager.currentActionOnClick = () => {
+                        this.doOnClickButton()
+                        this.tutorialManager.currentActionOnClick = undefined
+                    }
+                    break
+                case TutorialStepState.CompleteCooking:
+                    this.tutorialManager.currentActionOnClick = () => {
+                        this.doOnReopenTutorialCompletedCooked()
+                        this.tutorialManager.currentActionOnClick = undefined
+                    }
+                    break
+            }
+        }
     }
 
     public setCellWithUserRecipe(userRecipe: UserRecipe) {
@@ -171,6 +196,12 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
         }
     }
 
+    private doOnReopenTutorialCompletedCooked() {
+        this.cookingPod.setCurrentRecipeBean(this.recipeBean)
+        this.cookingPod.changeCookingPanelState(CookingPanelState.CookingDetail)
+        this.cookingPod.changeCookingDetailState(CookingDetailState.CookingComplete)
+    }
+
     private setActionButton() {
         // this.cellButton.onClick(
         //     () => {
@@ -188,10 +219,26 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
         // )
 
         this.selectButton.onClick(() => {
-            this.doOnClickButton()
+            if (this.tutorialManager.isCompletedTutorial()) {
+                this.doOnClickButton()
+
+                if (DeviceChecker.instance.isDesktop()) {
+                    if (this.isReady) this.onLeaveButton()
+                }
+            } else {
+                this.tutorialManager.updateCurrentToNextTutorial()
+                this.tutorialManager.setTutorialState(TutorialState.ShowUI)
+
+                this.tutorialManager.currentActionOnClick = () => {
+                    this.doOnClickButton()
+                }
+                if (DeviceChecker.instance.isDesktop()) {
+                    if (this.isReady) this.onLeaveButton()
+                }
+            }
         })
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.cellButton.on('pointerover', () => {
                 if (this.isReady) this.onHoverButton()
             })
@@ -314,7 +361,7 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
                 this.selectButton.setCanInteract(false, false)
                 this.selectButton.setBackgroundButtonTexture('completed-icon')
                 this.selectButton.setText('')
-                this.selectButton.setButtonSize(80, 39)
+                this.selectButton.setButtonSize(80, 40)
                 this.selectButton.clearTint()
                 break
             case CookingCellState.Secret:
@@ -389,7 +436,7 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, 1)
@@ -442,7 +489,7 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
             paused: true,
         })
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             let tweenOnHover = AnimationController.instance.tweenHoverButton(
                 this.scene,
                 undefined, //Change when have notification tag

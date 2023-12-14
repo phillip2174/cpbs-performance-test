@@ -13,7 +13,7 @@ export class MinigameScenePod {
     score: number
     textScore: string = '0000'
     balance: any
-    ticket: number = 1
+    ticket: BehaviorSubject<number>  = new BehaviorSubject(1)
     sceneState: BehaviorSubject<MinigameState> = new BehaviorSubject(MinigameState.StartMenu)
     settingState: BehaviorSubject<boolean> = new BehaviorSubject(false)
 
@@ -29,6 +29,11 @@ export class MinigameScenePod {
         this.sceneState.next(state)
     }
 
+    public setTicket(ticket : number)
+    {
+        this.ticket.next(ticket)
+    }
+
     public setTextScore(score: string): void {
         this.textScore = score
     }
@@ -37,13 +42,13 @@ export class MinigameScenePod {
         if (isFetch) {
             return this.minigameRepository.getTicket(this.id).pipe(tap(
                 ticket => {
-                    this.ticket = ticket;
-                    this.isPlayOnline = this.ticket != 0
+                    this.ticket.next(ticket);
+                    this.isPlayOnline = this.ticket.value != 0
                 })
             )
         } else {
-            this.isPlayOnline = this.ticket != 0
-            return of(this.ticket)
+            this.isPlayOnline = this.ticket.value != 0
+            return of(this.ticket.value)
         }
     }
 
@@ -52,11 +57,11 @@ export class MinigameScenePod {
     }
 
     startGame(): Observable<StartGameResultBean> {
-        if (this.ticket > 0) {
+        if (this.ticket.value > 0) {
             return this.minigameRepository.startGame(this.id).pipe(map(
                 startGameResultBean => {
                     this.balance = startGameResultBean.balance
-                    this.ticket = startGameResultBean.ticketLeft
+                    this.ticket.next(startGameResultBean.ticketLeft)
                     return startGameResultBean
                 })
             )
@@ -64,7 +69,7 @@ export class MinigameScenePod {
             return this.minigameRepository.startGameOffline(this.id).pipe(map(
                 startGameResultBean => {
                     this.balance = startGameResultBean.balance
-                    this.ticket = startGameResultBean.ticketLeft
+                    this.ticket.next(startGameResultBean.ticketLeft)
                     return startGameResultBean
                 })
             )

@@ -15,6 +15,9 @@ import { SceneState } from '../../scenes/SceneState'
 import { TimeBarView } from '../../bar/TimeBarView'
 import { HeaderScoreView } from './HeaderScroeView'
 import { MinigameState } from './MinigameState'
+import { APILoadingManager } from '../api-loading/APILoadingManager'
+import { AudioManager } from '../Audio/AudioManager'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class MinigameMenuUIView extends GameObjects.GameObject {
     private startButton: Button
@@ -31,6 +34,10 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
     private cpTownButton: TownUIButtonView
 
+    private audioManager: AudioManager
+
+    private sceneStateSubscription: Subscription
+
     constructor(scene: Scene) {
         super(scene, 'gameObject')
         GameObjectConstructor(scene, this)
@@ -38,20 +45,25 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
     public doInit(minigameNumber: number, pod: MinigameScenePod): void {
         this.scenePod = pod
+        this.audioManager = PodProvider.instance.audioManager
         this.minigameNumber = minigameNumber
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
         this.group = this.scene.add.container(centerX, centerY).setDepth(2)
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setUpImage()
         this.setUpButton()
 
-        this.scenePod.sceneState.subscribe((state) => {
+        this.sceneStateSubscription = this.scenePod.sceneState.subscribe((state) => {
             if (state == MinigameState.StartMenu || state == MinigameState.Completed) {
                 this.showUI()
             } else {
                 this.hideUI()
             }
+        })
+
+        this.on('destroy', () => {
+            this.sceneStateSubscription?.unsubscribe()
         })
     }
 
@@ -73,24 +85,9 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
             this.bg.setDisplaySize(this.scene.cameras.main.width + 500, this.scene.cameras.main.height + 30)
         } else {
             this.bg = this.scene.add.image(centerX, centerY, `minigame-${this.minigameNumber}-bg`)
-            this.bg.x = this.bg.x - this.scene.cameras.main.width
+
             this.bg.setDisplaySize(this.bg.width, this.scene.cameras.main.height)
         }
-
-        // let timeBarView = new TimeBarView(this.scene).setDepth(100)
-        // timeBarView.doInit(centerX, centerY, 201, 58, 100, 145, 20, -5, 11)
-        // timeBarView.createTextTime(-5, -7, '#585858', 22)
-
-        // timeBarView.addCallBack(() => {
-        //     timeBarView.startTimeBar(11000, true)
-        // })
-
-        // timeBarView.startTimeBar(10000, true)
-
-        // let timeBarDeskView = new TimeBarView(this.scene).setDepth(100)
-        // timeBarDeskView.doInit(centerX, centerY + 100, 271, 70, 100, 199, 18, -10, 16, 10, 48)
-        // timeBarDeskView.createTextTime(-60, -12, '#2b2b2b', 24)
-        // let headerText = new HeaderScoreView(this.scene, centerX, centerY, 'TIME').setDepth(100)
     }
 
     private setUpButton() {
@@ -157,7 +154,11 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
             this.cpTownButton.onClick(() => {
                 //back to city scene
+                this.audioManager.stopBGMSound()
+                PodProvider.instance.splashPod.setIsCloseLogo(false)
                 PodProvider.instance.splashPod.setLaunchScene(SceneState.TownScene)
+                if (!PodProvider.instance.tutorialManager.isCompletedTutorial())
+                    PodProvider.instance.recipePod.clearRecipeBeans()
                 this.scene.scene.start(`SplashLoaddingScene`)
             })
         } else {
@@ -188,6 +189,7 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
             this.townCircleButton.onClick(() => {
                 //back to city scene
+                PodProvider.instance.splashPod.setIsCloseLogo(false)
                 PodProvider.instance.splashPod.setLaunchScene(SceneState.TownScene)
                 this.scene.scene.start(`SplashLoaddingScene`)
             })

@@ -4,6 +4,7 @@ import { RecipeType } from '../Collection/type/RecipeType'
 import { CookState } from '../Collection/type/CookState'
 import { RecipeBean } from '../Collection/RecipeBean'
 import { AnimationController } from '../AnimationController'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class RecipePreviewView extends GameObjects.Container {
     public static readonly RECIPE_KEY_IMAGE: string = 'recipe-'
@@ -92,7 +93,7 @@ export class RecipePreviewView extends GameObjects.Container {
     }
 
     private createTween() {
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             let tweenOnHover = AnimationController.instance.tweenHoverButton(this.scene, this.recipeImage, () => {})
             let tweenOnLeaveHover = AnimationController.instance.tweenLeaveHoverButton(
                 this.scene,

@@ -35,40 +35,31 @@ export class ErrorAlertFactory {
         ]
     }
 
-    showError({
-        scene,
-        error,
-        actionOnRetry,
-        actionOnCancel,
-    }: ShowErrorParams): AlertDialogue {
+    showError({ scene, error, actionOnRetry, actionOnCancel }: ShowErrorParams): AlertDialogue {
         let errorObj: ErrorObject
         console.error(error)
         if (error.name == 'TimeoutError') {
             var errorTimeOut = new ErrorObject('9001')
+            errorTimeOut.header = 'เกิดข้อผิดพลาด'
             errorTimeOut.message = 'Client Timeout'
             errorObj = errorTimeOut
         }
         if (error.message == 'Network request failed') {
             var errorUndefined = new ErrorObject('9003')
+            errorUndefined.header = 'เกิดข้อผิดพลาด'
             errorUndefined.message = 'Client Cannot Connect To Server'
             errorObj = errorUndefined
         } else if (error['response']?.errors) {
             errorObj = error['response'].errors[0]
         } else {
             errorUndefined = new ErrorObject('9999')
-            errorUndefined.message = 'Something went wrong'
+            errorUndefined.header = 'เกิดข้อผิดพลาด'
+            errorUndefined.message = 'ไม่สามารถติดต่อ Server ได้ในขณะนี้' //ไม่สามารถติดต่อ Server ได้ในขณะนี้ ไม่สามารถติดต่อ Server ได้ในขณะนี้ ไม่สามารถติดต่อ Server ได้ในขณะนี้ ไม่สามารถติดต่อ Server ได้ในขณะนี้ไม่สามารถติดต่อ Server ได้ในขณะนี้'
             errorObj = errorUndefined
         }
 
-        let matchRule = this.errorRules.find((rule) =>
-            rule.isMatchErrorCode(errorObj),
-        )
-        let alertDialogue = matchRule.createAlertDialog(
-            scene,
-            errorObj,
-            actionOnRetry,
-            actionOnCancel,
-        )
+        let matchRule = this.errorRules.find((rule) => rule.isMatchErrorCode(errorObj))
+        let alertDialogue = matchRule.createAlertDialog(scene, errorObj, actionOnRetry, actionOnCancel)
 
         return alertDialogue
     }

@@ -124,6 +124,10 @@ export class MinigameCPOrderPod {
         this.currentRecipeBeans = []
     }
 
+    public clearCurrentOrderMarkStates(): void {
+        this.currentOrderMarkStates.next([])
+    }
+
     public randomCurrentOrderRecipes(): void {
         this.currentOrderRecipes = []
         let randomOrderAmount = Phaser.Math.Between(1, 2)

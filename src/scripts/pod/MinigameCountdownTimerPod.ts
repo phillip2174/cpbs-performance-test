@@ -32,6 +32,16 @@ export class MinigameCountdownTimerPod {
          0,
          0,
          0)
+         
+      // //MOCK
+      // this.nextDayTimeStamp = new Date(
+      //    this.localTimeStamp.getFullYear(),
+      //    this.localTimeStamp.getMonth(),
+      //    this.localTimeStamp.getDate(),
+      //    this.localTimeStamp.getHours(),
+      //    this.localTimeStamp.getMinutes(),
+      //    this.localTimeStamp.getSeconds() + 10,
+      //    0)
    }
 
 

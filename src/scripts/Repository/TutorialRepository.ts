@@ -1,7 +1,6 @@
-import { Observable, map } from 'rxjs'
-import { InventoryItemBean } from '../Town/Inventory/InventoryItemBean'
-import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
+import { Observable, map, of } from 'rxjs'
 import { TutorialDataBean } from '../../Tutorial/TutorialDataBean'
+import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 
 export class TutorialRepository {
     public getTutorialData(isDesktop: boolean): Observable<TutorialDataBean[]> {
@@ -14,5 +13,9 @@ export class TutorialRepository {
                 .loadText('tutorial-data-mobile', 'assets/town/json/tutorial-data-mobile.json')
                 .pipe(map((json) => JSON.parse(json)))
         }
+    }
+
+    public saveTutorialData(): Observable<boolean> {
+        return of(true)
     }
 }

@@ -5,6 +5,7 @@ import { DailyLoginBean } from './DailyLoginBean'
 import { RewardBean } from './RewardBean'
 import { RewardType } from './RewardType'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class DailyLoginRewardPreviewView extends GameObjects.Container {
     private previewBg: GameObjects.Image
@@ -26,7 +27,7 @@ export class DailyLoginRewardPreviewView extends GameObjects.Container {
     }
 
     public doInit(dailyLoginBean: DailyLoginBean, rewardBean: RewardBean) {
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.dailyLoginBean = dailyLoginBean
         this.rewardBean = rewardBean
         this.setupPreviewUIContainer()

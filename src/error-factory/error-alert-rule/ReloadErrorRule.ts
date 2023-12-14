@@ -4,15 +4,7 @@ import { ErrorObject } from '../ErrorObject'
 import { IErrorAlertRule } from './IErrorAlertRule'
 
 export class ReloadErrorRule implements IErrorAlertRule {
-    readonly errorCodeList: string[] = [
-        `1000`,
-        `1001`,
-        `1002`,
-        `4100`,
-        `9002`,
-        `9003`,
-        `9999`,
-    ]
+    readonly errorCodeList: string[] = [`1000`, `1001`, `1002`, `4100`, `9002`, `9003`, `9999`]
 
     readonly header: string = ''
 
@@ -24,18 +16,19 @@ export class ReloadErrorRule implements IErrorAlertRule {
         errorDialogScene: Scene,
         error: ErrorObject,
         retryAction: () => any,
-        cancelAction: () => any,
+        cancelAction: () => any
     ): AlertDialogue {
         const errorAlertDialogue = AlertDialogue.showConfirmPopup(
             errorDialogScene,
-            'Code ' + error.code,
+            error.header,
             '\n' + error.message,
             () => {
                 location.reload()
             },
-            '',
+            'TRY AGAIN',
+            true
         )
-        errorAlertDialogue.getHeader().setColor('#AAAAAA').setFontSize(50)
+        errorAlertDialogue.getHeader().setColor('#2B2B2B').setFontSize(22)
         return errorAlertDialogue
     }
 }

@@ -7,6 +7,7 @@ import { BubbleMenuMarkState } from './BubbleMenuMarkState'
 import { MinigameCPOrderBubbleMenuCellView } from './MinigameCPOrderBubbleMenuCellView'
 import { MinigameCPOrderPod } from './MinigameCPOrderPod'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPOrderBubbleView extends GameObjects.Container {
     public static readonly MAX_CELL_COUNT: number = 2
@@ -46,7 +47,7 @@ export class MinigameCPOrderBubbleView extends GameObjects.Container {
     public doInit(x: number, y: number): void {
         this.audioManager = PodProvider.instance.audioManager
         this.minigamePod = PodProvider.instance.minigameCPOrderPod
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.smallBubbleBg = this.scene.add.image(-55, 60, 'minigame-2-bubble-small').setScale(0)
         this.bigBubbleBg = this.scene.add.image(48, 10, 'minigame-2-bubble-big').setScale(0).setOrigin(0.5)
         this.bigBubbleBgOriginRotation = this.bigBubbleBg.rotation

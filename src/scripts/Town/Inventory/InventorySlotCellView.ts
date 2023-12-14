@@ -3,6 +3,7 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { InventoryItemBean } from './InventoryItemBean'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class InventorySlotCellView extends GameObjects.Container {
     public static readonly INGREDIENT_IMAGE_KEY: string = `ingredient_`
@@ -20,7 +21,7 @@ export class InventorySlotCellView extends GameObjects.Container {
     }
 
     public doInit(x: number, y: number): void {
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setPosition(x, y)
 
         if (this.isDesktop) {

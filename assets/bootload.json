@@ -47,6 +47,21 @@
                 "type": "image",
                 "key": "glow-effect-loading-bar",
                 "url": "assets/Boot/glow-effect-loading-bar.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-load-01",
+                "url": "assets/Boot/cloud-load-01.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-load-02",
+                "url": "assets/Boot/cloud-load-02.png"
+            },
+            {
+                "type": "image",
+                "key": "cloud-load-03",
+                "url": "assets/Boot/cloud-load-03.png"
             }
         ]
     }

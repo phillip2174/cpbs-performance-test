@@ -38,6 +38,11 @@
             },
             {
                 "type": "image",
+                "key": "minigame-result-free-play",
+                "url": "assets/minigame/result/mobile/mobile-minigame-result-free-play-button.png"
+            },
+            {
+                "type": "image",
                 "key": "minigame-result-reward-bg",
                 "url": "assets/minigame/result/minigame-result-reward-bg.png"
             },
@@ -70,6 +75,11 @@
                 "type": "image",
                 "key": "ticket-use-effect",
                 "url": "assets/minigame/result/ticket-use-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-result-alert",
+                "url": "assets/minigame/result/minigame-result-alert.png"
             }
         ]
     }

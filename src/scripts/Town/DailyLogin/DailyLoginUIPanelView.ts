@@ -13,6 +13,9 @@ import { DailyLoginCellView } from './DailyLoginCellView'
 import { DailyLoginCollectState } from './DailyLoginCollectState'
 import { AudioManager } from '../../Audio/AudioManager'
 import { BoldText } from '../../../BoldText/BoldText'
+import { TownDayNightPod } from '../../pod/TownDayNightPod'
+import { TownTimeState } from '../Type/TownTimeState'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class DailyLoginUIPanelView extends GameObjects.Container {
     public static readonly BG_WIDTH_DESKTOP: number = 602
@@ -52,6 +55,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
 
     private townUIPod: TownUIPod
     private dailyLoginPod: DailyLoginPod
+    private townDayNightPod: TownDayNightPod
 
     private stateSubscription: Subscription
 
@@ -67,7 +71,9 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
         this.townUIPod = PodProvider.instance.townUIPod
         this.dailyLoginPod = PodProvider.instance.dailyLoginPod
         this.audioManager = PodProvider.instance.audioManager
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.townDayNightPod = PodProvider.instance.townDayNightPod
+
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setPosition(this.cameraCenterX, this.cameraCenterY)
         this.setDepth(202)
         this.setupUI()
@@ -89,16 +95,12 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
                 if (this.townUIPod.isShowGuideline.value == false && state == TownUIState.DailyLogin) {
                     this.townUIPod.setIsShowGuideline(true)
                 }
-                
-                this.audioManager.playAmbientSound(
-                    'town_ambient',
-                    false,
-                )
 
-                this.audioManager.playBGMSound(
-                    'citygame_01_bgm',
-                    false,
-                )
+                if (this.townDayNightPod.getTownTimeState() == TownTimeState.Day)
+                    this.audioManager.playAmbientSound('town_day_ambient', false)
+                else this.audioManager.playAmbientSound('town_night_ambient', false)
+
+                this.audioManager.playBGMSound('citygame_01_bgm', false)
             } else {
                 this.setActiveContainer(false)
             }
@@ -118,7 +120,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
             .setText('กลับมาอีกครั้งในวันพรุ่งนี้ เพื่อรับของรางวัลสุดพิเศษ')
             .setColor('#585858')
             .setOrigin(0.5)
-        this.confirmButton = this.createButton(119, 48, 'button-white-bg', 'CONFIRM', 0x29cc6a)
+        this.confirmButton = this.createButton(186, 48, 'button-white-bg', 'COLLECT REWARD', 0x29cc6a)
         this.isDesktop ? this.setupDailyLoginUIDesktop() : this.setupDailyLoginUIMobile()
         this.setupDailyLoginHeaderContainer()
 
@@ -353,7 +355,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, 3)

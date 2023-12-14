@@ -32,6 +32,15 @@ export class UserPod {
         )
     }
 
+    public getUserCPPoint(): Observable<number> {
+        return this.userRepository.getUserCPPoint(PodProvider.instance.tutorialManager.isCompletedTutorial()).pipe(
+            map((cpPoint) => {
+                this.userCPpoint.next(cpPoint)
+                return this.userCPpoint.value
+            })
+        )
+    }
+
     public checkFirstLoginOfTheDay(): void {
         this.currentLoginTime = new Date()
         if (this.userBean.lastLoginTime == undefined || this.userBean.lastLoginTime == null) {
@@ -48,6 +57,10 @@ export class UserPod {
 
     public setIsFirstLoginOfTheDay(isFirstLogin: boolean): void {
         this.isFirstLoginOfTheDay.next(isFirstLogin)
+    }
+
+    public addCPPoint(point: number): void {
+        this.userCPpoint.next(this.userCPpoint.value + point)
     }
 
     private getCurrentTimeInUnixSeconds(): number {

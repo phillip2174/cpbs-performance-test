@@ -4,8 +4,11 @@ import { BillboardObjectView } from './BillboardObjectView'
 import { BillboardSizeType } from './Type/BillboardSizeType'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 import { ObjectPlacementDebugger } from '../plugins/ObjectPlacementDebugger'
-import { Observable, tap } from 'rxjs'
+import { Observable, Subscription, tap, timer } from 'rxjs'
 import { Billboard3DObjectView } from './Billboard3D/Billboard3DObjectView'
+import { TownUIPod } from './Pod/TownUIPod'
+import { PodProvider } from '../pod/PodProvider'
+import { TownUIState } from './Type/TownUIState'
 
 export class IdleObjectGroupView extends GameObjects.GameObject {
     private cloudBigImage: GameObjects.Image
@@ -33,6 +36,10 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
     private hotdogShop: SpineGameObject
     private vegetableLotus: SpineGameObject
 
+    private townUIPod: TownUIPod
+    private stateSubscription: Subscription
+    private delaySetActiveSubscription: Subscription
+
     constructor(scene: Scene) {
         super(scene, 'gameObject')
         GameObjectConstructor(scene, this)
@@ -40,7 +47,32 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
 
     public doInit() {
         console.log('Create idle Object')
+        this.townUIPod = PodProvider.instance.townUIPod
         this.createIdleObject()
+
+        this.stateSubscription = this.townUIPod.townUIState.subscribe((state) => {
+            const validStates: TownUIState[] = [
+                TownUIState.MainMenu,
+                TownUIState.Settings,
+                TownUIState.DailyLogin,
+                TownUIState.CompleteIngredients,
+                TownUIState.NextIngredients,
+            ]
+
+            if (validStates.includes(state)) {
+                this.delaySetActiveSubscription?.unsubscribe()
+                this.handleObjectSpine(true)
+            } else {
+                this.delaySetActiveSubscription = timer(200).subscribe((_) => {
+                    this.handleObjectSpine(false)
+                })
+            }
+        })
+
+        this.on('destroy', () => {
+            this.stateSubscription?.unsubscribe()
+            this.delaySetActiveSubscription?.unsubscribe()
+        })
     }
 
     public createIdleObject() {
@@ -342,5 +374,33 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
 
     private randomIntFromInterval(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+
+    private handleObjectSpine(isActive: boolean) {
+        const timeScaleSpine = isActive ? 1 : 0
+
+        this.burgerShrimp.timeScale = timeScaleSpine
+        this.bushes.timeScale = timeScaleSpine
+        this.personMascot2ndFloor.timeScale = timeScaleSpine
+        this.dog7_11.timeScale = timeScaleSpine
+        this.clown.timeScale = timeScaleSpine
+        this.peopleGroupA.timeScale = timeScaleSpine
+        this.peopleGroupC.timeScale = timeScaleSpine
+        this.peopleGroupD.timeScale = timeScaleSpine
+        this.peopleGroupF.timeScale = timeScaleSpine
+        this.hotdogShop.timeScale = timeScaleSpine
+        this.vegetableLotus.timeScale = timeScaleSpine
+
+        this.burgerShrimp.setVisible(isActive)
+        this.bushes.setVisible(isActive)
+        this.personMascot2ndFloor.setVisible(isActive)
+        this.dog7_11.setVisible(isActive)
+        this.clown.setVisible(isActive)
+        this.peopleGroupA.setVisible(isActive)
+        this.peopleGroupC.setVisible(isActive)
+        this.peopleGroupD.setVisible(isActive)
+        this.peopleGroupF.setVisible(isActive)
+        this.hotdogShop.setVisible(isActive)
+        this.vegetableLotus.setVisible(isActive)
     }
 }

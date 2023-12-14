@@ -3,6 +3,7 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { RecipeType } from '../Collection/type/RecipeType'
 import { BoldText } from '../../../BoldText/BoldText'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class TagRarityView extends GameObjects.Container {
     private tagContainer: GameObjects.Container
@@ -20,11 +21,11 @@ export class TagRarityView extends GameObjects.Container {
 
     public createTag(sizeIndex: number) {
         this.sizeIndex = sizeIndex
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.tagContainer = this.scene.add.container()
-        this.textPosition = this.scene.add.rectangle(0, 0, 1, 6, 0xff00ff, 0).setOrigin(0.5)
+        this.textPosition = this.scene.add.rectangle(0, 0, 1, 7, 0xff00ff, 0).setOrigin(0.5)
 
-        if (this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS) {
+        if (DeviceChecker.instance.isAppleOS()) {
             this.typeText = TextAdapter.instance
                 .getVectorText(this.scene, 'DB_HeaventRounded_Med')
                 .setText(`???`)
@@ -37,17 +38,17 @@ export class TagRarityView extends GameObjects.Container {
         switch (sizeIndex) {
             case 0:
                 this.typeTagBackground = this.scene.add
-                    .nineslice(0, 0, 'small-tag', '', 55, 18, 10, 11, 8, 9)
+                    .nineslice(0, 0, 'small-tag', '', 55, 19, 10, 11, 8, 9)
                     .setAlpha(0.2)
-                this.typeTagBackground.setDisplaySize(55, 18)
-                this.typeText.setStyle({ fill: '#FFFFFF', fontSize: 12 })
+                this.typeTagBackground.setDisplaySize(55, 19)
+                this.typeText.setStyle({ fill: '#FFFFFF', fontSize: 13 })
                 break
             case 1:
                 this.typeTagBackground = this.scene.add
-                    .nineslice(0, 0, 'medium-tag', '', 55, 28, 13, 13, 12, 12)
+                    .nineslice(0, 0, 'medium-tag', '', 55, 29, 13, 13, 12, 12)
                     .setAlpha(0.2)
-                this.typeTagBackground.setDisplaySize(55, 28)
-                this.typeText.setStyle({ fill: '#FFFFFF', fontSize: 16 })
+                this.typeTagBackground.setDisplaySize(55, 29)
+                this.typeText.setStyle({ fill: '#FFFFFF', fontSize: 17 })
                 break
         }
 
@@ -102,7 +103,7 @@ export class TagRarityView extends GameObjects.Container {
             this.textPosition,
             this.typeTagSecretImage,
             0,
-            this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS ? -1 : 0
+            DeviceChecker.instance.isAppleOS() ? -1 : 0
         )
         Phaser.Display.Align.In.Center(this.typeText, this.textPosition, 0, -2)
         this.setScale(scale)
@@ -123,13 +124,13 @@ export class TagRarityView extends GameObjects.Container {
 
         switch (this.sizeIndex) {
             case 0:
-                this.typeText.setFontSize(12)
+                this.typeText.setFontSize(13)
                 this.typeTagBackground.setSize(this.typeText.width + 18, this.typeTagBackground.height)
                 this.textPosition.setSize(this.typeTagBackground.width, this.textPosition.height)
                 Phaser.Display.Align.In.Center(this.typeText, this.textPosition, 1, this.isSecret ? -1 : -1.5)
                 break
             case 1:
-                this.typeText.setFontSize(16)
+                this.typeText.setFontSize(17)
                 this.typeTagBackground.setSize(this.typeText.width + 24, this.typeTagBackground.height)
                 this.textPosition.setSize(this.typeTagBackground.width, this.textPosition.height)
                 Phaser.Display.Align.In.Center(this.typeText, this.textPosition, 1, this.isDesktop ? -3.5 : -2.5)

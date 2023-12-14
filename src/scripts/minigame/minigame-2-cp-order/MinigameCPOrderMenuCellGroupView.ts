@@ -6,6 +6,7 @@ import { PodProvider } from '../../pod/PodProvider'
 import { MinigameCPOrderMenuCellView } from './MinigameCPOrderMenuCellView'
 import { MinigameCPOrderPod } from './MinigameCPOrderPod'
 import { TimeBarView } from '../../../bar/TimeBarView'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
     private cellViews: MinigameCPOrderMenuCellView[] = []
@@ -36,7 +37,7 @@ export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
     public doInit(x: number, y: number, timeBar: TimeBarView): void {
         this.timeBarView = timeBar
         this.minigamePod = PodProvider.instance.minigameCPOrderPod
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.cellGroupBg = this.scene.add.image(0, 0, 'minigame-2-menu-group-bg').setOrigin(0.5)
         if (this.isDesktop) {
             this.cellSize = 98

@@ -19,6 +19,8 @@ import { CameraControlPod } from '../camera/CameraControlPod'
 import { TutorialStepState } from '../../Tutorial/TutorialStepState'
 import { TutorialState } from '../../Tutorial/TutorialState'
 import { AudioManager } from '../Audio/AudioManager'
+import { TownUIPod } from './Pod/TownUIPod'
+import { TownUIState } from './Type/TownUIState'
 
 export class IngredientObjectView extends GameObjects.Container {
     public static readonly SPINE_PATH: string = `assets/spines/`
@@ -34,6 +36,8 @@ export class IngredientObjectView extends GameObjects.Container {
     private indicatorSubscription: Subscription
     private timerAnimationSubscription: Subscription
     private endRepeatTimerAnimationSubscription: Subscription
+    private stateSubscription: Subscription
+    private delaySetActiveSubscription: Subscription
 
     private isPickIngredient: boolean
     private isCanToggle: boolean
@@ -48,6 +52,7 @@ export class IngredientObjectView extends GameObjects.Container {
 
     private pod: IngredientObjectPod
     private townBuildingPod: TownBuildingPod
+    private townUIPod: TownUIPod
     private cameraPod: CameraControlPod
 
     constructor(scene: Scene, bean: IngredientObjectBean, isPickIngredient: boolean = false) {
@@ -59,6 +64,7 @@ export class IngredientObjectView extends GameObjects.Container {
         this.townBuildingPod = PodProvider.instance.townbuildingPod
         this.cameraPod = PodProvider.instance.cameraControlPod
         this.audioManager = PodProvider.instance.audioManager
+        this.townUIPod = PodProvider.instance.townUIPod
 
         this.isPickIngredient = isPickIngredient
 
@@ -121,6 +127,29 @@ export class IngredientObjectView extends GameObjects.Container {
                 this.setSubscribe()
                 this.debugInteract()
                 break
+        }
+
+        if (this.spineGameObject != undefined) {
+            this.stateSubscription = this.townUIPod.townUIState.subscribe((state) => {
+                const validStates: TownUIState[] = [
+                    TownUIState.MainMenu,
+                    TownUIState.Settings,
+                    TownUIState.DailyLogin,
+                    TownUIState.CompleteIngredients,
+                    TownUIState.NextIngredients,
+                ]
+
+                if (validStates.includes(state)) {
+                    this.delaySetActiveSubscription?.unsubscribe()
+                    this.spineGameObject.timeScale = 1
+                    this.spineGameObject.setVisible(true)
+                } else {
+                    this.delaySetActiveSubscription = timer(200).subscribe((_) => {
+                        this.spineGameObject.timeScale = 0
+                        this.spineGameObject.setVisible(false)
+                    })
+                }
+            })
         }
     }
 
@@ -216,6 +245,11 @@ export class IngredientObjectView extends GameObjects.Container {
 
         this.on('destroy', () => {
             this.stateAnimationSubscription?.unsubscribe()
+            this.indicatorSubscription?.unsubscribe()
+            this.timerAnimationSubscription?.unsubscribe()
+            this.endRepeatTimerAnimationSubscription?.unsubscribe()
+            this.stateSubscription?.unsubscribe()
+            this.delaySetActiveSubscription?.unsubscribe()
         })
     }
 
@@ -326,7 +360,7 @@ export class IngredientObjectView extends GameObjects.Container {
         })
 
         this.interactZone.setInteractive().on('pointerup', () => {
-            if (!this.cameraPod.isMovingCamera.value) {
+            if (!this.cameraPod.isMovingCamera.value && !this.cameraPod.isPinchZooming) {
                 if (this.isPointerDown) {
                     if (
                         PodProvider.instance.tutorialManager.isCompletedTutorial(true, TutorialStepState.Welcome) &&

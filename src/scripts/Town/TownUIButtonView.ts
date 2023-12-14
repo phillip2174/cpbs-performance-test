@@ -10,6 +10,7 @@ import { ButtonNotificationView } from './ButtonNotificationView'
 import { TownUIButtonType } from './Type/TownUIButtonType'
 import { ButtonSoundType } from '../button/ButtonSoundType'
 import { BoldText } from '../../BoldText/BoldText'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class TownUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
@@ -94,7 +95,7 @@ export class TownUIButtonView extends GameObjects.Container {
 
         this.setPosition(x, y)
 
-        if (this.scene.sys.game.device.os.desktop) {
+        if (DeviceChecker.instance.isDesktop()) {
             this.createHoverLeaveTweens()
             this.checkHoverOnButton()
         }
@@ -106,7 +107,9 @@ export class TownUIButtonView extends GameObjects.Container {
 
     public onClick(callback: Function, holdCallback: Function = null): void {
         this.callback = callback
-        this.holdCallback = holdCallback
+        this.holdCallback = () => {
+            PodProvider.instance.cameraControlPod.setIsHoldingButton(true)
+        }
     }
 
     public showNotification(): void {
@@ -378,6 +381,7 @@ export class TownUIButtonView extends GameObjects.Container {
     private addButtonClickListeners(): void {
         this.backgroundButton.onClick(
             () => {
+                PodProvider.instance.cameraControlPod.setIsHoldingButton(false)
                 if (this.callback != undefined || this.callback != null) {
                     this.callback()
                 }
@@ -511,7 +515,17 @@ export class TownUIButtonView extends GameObjects.Container {
     }
 
     private setupCloseButton(iconKey: string, buttonText: string): void {
-        this.backgroundButton = new Button(this.scene, 0, 0, 101, 92, 'close-button-bg', this.clickDelay, '', ButtonSoundType.Negative)
+        this.backgroundButton = new Button(
+            this.scene,
+            0,
+            0,
+            101,
+            92,
+            'close-button-bg',
+            this.clickDelay,
+            '',
+            ButtonSoundType.Negative
+        )
         this.buttonIcon = this.scene.add.image(0, -13, iconKey + TownUIButtonView.ICON_IMAGE_KEY).setOrigin(0.5)
         this.buttonText = new BoldText(this.scene, -0.5, 23, buttonText, 16, '#585858')
         this.add([this.backgroundButton, this.buttonIcon, this.buttonText])

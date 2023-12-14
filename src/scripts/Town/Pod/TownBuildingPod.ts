@@ -1,4 +1,4 @@
-import { Observable, Subject, map, of } from 'rxjs'
+import { Observable, Subject, concatMap, map, of } from 'rxjs'
 import { GameConfig } from '../../GameConfig'
 import { IngredientBean } from '../../Ingredient/IngredientBean'
 import { RepositoryProvider } from '../../Repository/RepositoryProvider'
@@ -7,6 +7,7 @@ import { IngredientObjectBean } from '../Bean/IngredientObjectBean'
 import { TownTimeState } from '../Type/TownTimeState'
 import { PodProvider } from '../../pod/PodProvider'
 import { UserIngredientBean } from '../../Ingredient/UserIngredientBean'
+import { UserType } from '../../User/UserType'
 
 export class TownBuildingPod {
     public firstInit: Subject<boolean> = new Subject<boolean>()
@@ -61,7 +62,10 @@ export class TownBuildingPod {
     getCurrentHiddenIngredientData(): Observable<IngredientBean[]> {
         if (this.currentHiddenIngredientBeans == undefined || this.currentHiddenIngredientBeans == null) {
             return this.townBuildingRepository
-                .getCurrentHiddenIngredientData(PodProvider.instance.tutorialManager.isCompletedTutorial())
+                .getCurrentHiddenIngredientData(
+                    PodProvider.instance.tutorialManager.isCompletedTutorial() &&
+                        PodProvider.instance.userPod.userLoginType == UserType.Login
+                )
                 .pipe(
                     map((beanList) => {
                         this.currentHiddenIngredientBeans = beanList

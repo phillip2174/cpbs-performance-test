@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs'
 import { TownUIPod } from '../Town/Pod/TownUIPod'
 import { TownUIState } from '../Town/Type/TownUIState'
 import { IngredientBean } from './../Ingredient/IngredientBean'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class NextIngredientsPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -32,7 +33,6 @@ export class NextIngredientsPanelView extends GameObjects.Container {
     private onCloseTweenChain: Tweens.TweenChain
 
     private confirmButton: Button
-    private closeButton: Button
 
     private townUIPod: TownUIPod
     private townBuildingPod: TownBuildingPod
@@ -51,7 +51,7 @@ export class NextIngredientsPanelView extends GameObjects.Container {
     public doInit(): void {
         this.townUIPod = PodProvider.instance.townUIPod
         this.townBuildingPod = PodProvider.instance.townbuildingPod
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.dimButton = new DimButton(this.scene)
         this.setNextIngredientBeans()
         this.setupUIPanelContainer()
@@ -73,6 +73,10 @@ export class NextIngredientsPanelView extends GameObjects.Container {
         })
 
         this.setActiveContainer(this.townUIPod.townUIState.getValue() == TownUIState.NextIngredients, false)
+
+        this.on('destroy', () => {
+            this.uiStateSubscription?.unsubscribe()
+        })
     }
 
     private setNextIngredientBeans(): void {
@@ -88,7 +92,7 @@ export class NextIngredientsPanelView extends GameObjects.Container {
         this.uiPanelContainer = this.scene.add.container()
 
         this.uiPanelBg = this.scene.add
-            .nineslice(0, 0, 'ui-button-group-bg', '', 460, 400, 23, 23, 23, 28)
+            .nineslice(0, 0, 'ui-button-group-bg', '', 460, 384, 23, 23, 23, 28)
             .setOrigin(0.5)
 
         this.isDesktop ? this.setupUIDesktop() : this.setupUIMobile()
@@ -96,16 +100,8 @@ export class NextIngredientsPanelView extends GameObjects.Container {
 
         this.confirmButton = this.createButton(150, 48, 'button-white-bg', 'OK', 0x29cc6a).setPosition(
             0,
-            this.uiPanelBg.height / 2 - (this.checkIsNextIngredientsOverMax() ? 45 : 60)
-        )
-
-        this.closeButton = new Button(
-            this.scene,
-            this.uiPanelBg.width / 2 - (this.isDesktop ? 35 : 30),
-            -this.uiPanelBg.height / 2 + (this.isDesktop ? 35 : 30),
-            40,
-            40,
-            'close-button'
+            this.uiPanelBg.height / 2 -
+                (this.checkIsNextIngredientsOverMax() ? (this.isDesktop ? 50 : 45) : this.isDesktop ? 55 : 50)
         )
 
         this.uiPanelContainer.add([
@@ -115,13 +111,12 @@ export class NextIngredientsPanelView extends GameObjects.Container {
             this.nextTimeText,
             this.ingredientPreviewView,
             this.confirmButton,
-            this.closeButton,
         ])
     }
 
     private setupUIDesktop(): void {
         if (this.checkIsNextIngredientsOverMax()) {
-            this.uiPanelBg.setSize(460, 444)
+            this.uiPanelBg.setSize(460, 428)
         }
 
         this.ingredientPreviewView.setCompleteNextPreviewView(
@@ -134,20 +129,20 @@ export class NextIngredientsPanelView extends GameObjects.Container {
 
         this.ingredientPreviewView.setPosition(
             0,
-            this.uiPanelBg.height / 2 - (this.checkIsNextIngredientsOverMax() ? 165 : 150)
+            this.uiPanelBg.height / 2 - (this.checkIsNextIngredientsOverMax() ? 170 : 150)
         )
     }
 
     private setupUIMobile(): void {
         if (this.checkIsNextIngredientsOverMax()) {
-            this.uiPanelBg.setSize(328, 414)
+            this.uiPanelBg.setSize(328, 368)
         } else {
-            this.uiPanelBg.setSize(328, 370)
+            this.uiPanelBg.setSize(328, 324)
         }
 
         this.ingredientPreviewView.setCompleteNextPreviewView(
             this.nextIngredientBeans,
-            this.checkIsNextIngredientsOverMax() ? 0.85 : 0.7,
+            this.checkIsNextIngredientsOverMax() ? 0.75 : 0.7,
             10,
             this.checkIsNextIngredientsOverMax(),
             true
@@ -155,7 +150,7 @@ export class NextIngredientsPanelView extends GameObjects.Container {
 
         this.ingredientPreviewView.setPosition(
             0,
-            this.uiPanelBg.height / 2 - (this.checkIsNextIngredientsOverMax() ? 150 : 140)
+            this.uiPanelBg.height / 2 - (this.checkIsNextIngredientsOverMax() ? 140 : 120)
         )
     }
 
@@ -163,13 +158,13 @@ export class NextIngredientsPanelView extends GameObjects.Container {
         this.headerText = new BoldText(
             this.scene,
             0,
-            -this.uiPanelBg.height / 2 + 65,
+            -this.uiPanelBg.height / 2 + 40,
             'วัตถุดิบในรอบถัดไป มีอะไรบ้างนะ??',
-            28,
+            this.isDesktop ? 28 : 24,
             '#EE843C'
         )
 
-        if (this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS) {
+        if (DeviceChecker.instance.isAppleOS()) {
             this.descText = TextAdapter.instance
                 .getVectorText(this.scene, 'DB_HeaventRounded_Med')
                 .setOrigin(0.5)
@@ -206,10 +201,6 @@ export class NextIngredientsPanelView extends GameObjects.Container {
         })
 
         this.confirmButton.onClick(() => {
-            this.townUIPod.changeUIState(TownUIState.MainMenu)
-        })
-
-        this.closeButton.onClick(() => {
             this.townUIPod.changeUIState(TownUIState.MainMenu)
         })
     }
@@ -270,7 +261,7 @@ export class NextIngredientsPanelView extends GameObjects.Container {
                 fill: 'white',
                 fontSize: 22,
             },
-            !(this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS)
+            !DeviceChecker.instance.isAppleOS()
         )
 
         button.setTextPosition(0, 3)

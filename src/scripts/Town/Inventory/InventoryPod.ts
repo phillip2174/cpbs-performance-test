@@ -4,6 +4,8 @@ import { RepositoryProvider } from '../../Repository/RepositoryProvider'
 import { BehaviorSubject, Observable, map, of } from 'rxjs'
 import { InventoryFilterType } from './InventoryFilterType'
 import { IngredientType } from '../Type/IngredientType'
+import { PodProvider } from '../../pod/PodProvider'
+import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
 
 export class InventoryPod {
     public inventoryItemBeans: InventoryItemBean[]
@@ -22,17 +24,31 @@ export class InventoryPod {
     }
 
     public getInventoryItemData(inventoryFilterType: InventoryFilterType): Observable<InventoryItemBean[]> {
-        if (this.inventoryItemBeans == undefined || this.inventoryItemBeans == null) {
-            return this.inventoryRepository.getInventoryItemData().pipe(
-                map((inventoryItems) => {
-                    this.inventoryItemBeans = inventoryItems.filter((item) => item.amount > 0)
-                    this.sortInventoryItemsWithUpdatedDate()
-                    console.log('inventoryItemBeans Count: ' + this.inventoryItemBeans.length)
-                    console.log(this.inventoryItemBeans)
+        if (
+            this.inventoryItemBeans == undefined ||
+            this.inventoryItemBeans == null ||
+            !PodProvider.instance.tutorialManager.isCompletedTutorial()
+        ) {
+            return this.inventoryRepository
+                .getInventoryItemData(PodProvider.instance.tutorialManager.isCompletedTutorial())
+                .pipe(
+                    map((inventoryItems) => {
+                        this.inventoryItemBeans = inventoryItems.filter((item) => item.amount > 0)
+                        this.sortInventoryItemsWithUpdatedDate()
+                        console.log('inventoryItemBeans Count: ' + this.inventoryItemBeans.length)
+                        console.log(this.inventoryItemBeans)
 
-                    return this.getInventoryItemBeansByType(inventoryFilterType)
-                })
-            )
+                        if (
+                            PodProvider.instance.tutorialManager.tutorialStepID.value >=
+                                TutorialStepState.CompleteCooking &&
+                            !PodProvider.instance.tutorialManager.isCompletedTutorial()
+                        ) {
+                            this.inventoryItemBeans = []
+                        }
+
+                        return this.getInventoryItemBeansByType(inventoryFilterType)
+                    })
+                )
         } else {
             this.inventoryItemBeans = this.inventoryItemBeans.filter((item) => item.amount > 0)
             this.sortInventoryItemsWithUpdatedDate()

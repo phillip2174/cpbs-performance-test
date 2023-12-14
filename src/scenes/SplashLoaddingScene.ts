@@ -8,6 +8,8 @@ import { SplashPod } from '../scripts/pod/SplashPod'
 import { SceneState } from './SceneState'
 import { LoadingBarView } from '../bar/LoadingBar'
 import { GameConfig } from '../scripts/GameConfig'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
+import { UserType } from '../scripts/User/UserType'
 
 export class SplashLoaddingScene extends Scene {
     private splashPod: SplashPod
@@ -27,11 +29,11 @@ export class SplashLoaddingScene extends Scene {
     preload(): void {
         console.log('start SplashLoaddingScene')
         this.splashPod = PodProvider.instance.splashPod
-        this.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         ResourceManager.instance.setResourceLoaderScene(this)
-
+        DeviceChecker.instance.doInit(this)
         APILoadingManager.instance.doInit(this, 0)
-        APILoadingManager.instance.showSceneLoading(this.splashPod.launchScene)
+        APILoadingManager.instance.showSceneLoading(this.splashPod.launchScene, true)
         this.loadingBar = APILoadingManager.instance.getLoadingBar()
 
         this.isLoadingBar = false
@@ -52,7 +54,12 @@ export class SplashLoaddingScene extends Scene {
             switch (this.splashPod.launchScene) {
                 case SceneState.TownScene:
                     const tutorialManager = PodProvider.instance.tutorialManager
-                    if (!tutorialManager.tutorialSaveBean.isCompletedTutorial && GameConfig.IS_START_WITH_TUTORIAL) {
+                    if (
+                        (!tutorialManager.tutorialSaveBean.isCompletedTutorial && GameConfig.IS_START_WITH_TUTORIAL) ||
+                        (tutorialManager.tutorialSaveBean.isCompletedTutorial &&
+                            GameConfig.IS_START_WITH_TUTORIAL &&
+                            PodProvider.instance.userPod.userLoginType == UserType.Guest)
+                    ) {
                         observableInit.push(
                             ResourceManager.instance.loadPackJson(
                                 'tutorial-ui-load',
@@ -62,7 +69,7 @@ export class SplashLoaddingScene extends Scene {
 
                         observableInit.push(tutorialManager.loadTutorialData(this.isDesktop))
                     }
-                    observableInit.push(timer(1500))
+                    observableInit.push(timer(200))
                     observableInit.push(
                         ResourceManager.instance.loadPackJson('global-ui-load', `assets/global-ui-load.json`)
                     )
@@ -73,7 +80,10 @@ export class SplashLoaddingScene extends Scene {
                         ResourceManager.instance.loadPackJson('town-ui-load', `assets/town/json/town-ui-load.json`)
                     )
                     observableInit.push(
-                        ResourceManager.instance.loadPackJson('town-audio-load', `assets/town/json/town-audio-load.json`)
+                        ResourceManager.instance.loadPackJson(
+                            'town-audio-load',
+                            `assets/town/json/town-audio-load.json`
+                        )
                     )
                     observableInit.push(
                         ResourceManager.instance.loadPackJson(
@@ -92,7 +102,7 @@ export class SplashLoaddingScene extends Scene {
                     )
                     break
                 case SceneState.MinigameCPPuzzle:
-                    observableInit.push(timer(1500))
+                    observableInit.push(timer(200))
                     observableInit.push(
                         ResourceManager.instance.loadPackJson('global-ui-load', `assets/global-ui-load.json`)
                     )
@@ -126,7 +136,7 @@ export class SplashLoaddingScene extends Scene {
                     }
                     break
                 case SceneState.MinigameCPOrder:
-                    observableInit.push(timer(1500))
+                    observableInit.push(timer(200))
                     observableInit.push(
                         ResourceManager.instance.loadPackJson('global-ui-load', `assets/global-ui-load.json`)
                     )

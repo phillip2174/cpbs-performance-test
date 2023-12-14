@@ -11,6 +11,7 @@ export class LoadingBarView extends GameObjects.Container {
     private loadingBarContainer: GameObjects.Container
     private loadingBar: GameObjects.NineSlice
     private glowEffect: GameObjects.Image
+    private maskImage: GameObjects.NineSlice
 
     private startLoadingValue: number
     private endLoadingValue: number
@@ -39,10 +40,14 @@ export class LoadingBarView extends GameObjects.Container {
         this.setVisible(isActive)
     }
 
+    public updatePositionMask() {
+        this.maskImage.setPosition(this.x, this.y)
+    }
+
     private createLoadingBar() {
         this.loadingBarContainer = this.scene.add.container(0, 0).setDepth(this.depth + 1)
 
-        let maskImage = this.scene.make
+        this.maskImage = this.scene.make
             .nineslice(
                 {
                     x: this.x,
@@ -60,7 +65,7 @@ export class LoadingBarView extends GameObjects.Container {
             )
             .setTint(0xff00ff)
 
-        const mask1 = new Phaser.Display.Masks.BitmapMask(this.scene, maskImage)
+        const mask1 = new Phaser.Display.Masks.BitmapMask(this.scene, this.maskImage)
 
         this.loadingBarContainer.mask = mask1
 
@@ -95,11 +100,11 @@ export class LoadingBarView extends GameObjects.Container {
 
         this.scene.add.tween({
             targets: this.loadingBar,
-            ease: 'Expo.easeIn',
-            duration: 800,
+            ease: 'Linear',
+            duration: 500,
             props: {
                 width: {
-                    from: Math.round(this.barTempWidthValue * 0.3) + 44 * this.normalize(0.3, 1, 0),
+                    from: Math.round(this.barTempWidthValue * 0.25) + 44 * this.normalize(0.25, 1, 0),
                     to: this.barTempWidthValue,
                 },
             },

@@ -1,5 +1,6 @@
+import { MinigameResultTicketUIView } from './MinigameResultTicketUIView'
 import { GameObjects, Scene } from 'phaser'
-import { Observable, concat, concatAll, concatMap, delay, map, takeLast } from 'rxjs'
+import { Observable, Subscription, concat, concatAll, concatMap, delay, map, takeLast } from 'rxjs'
 import { Button } from '../button/Button'
 import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { MinigameResultBean } from './MinigameResultBean'
@@ -13,6 +14,8 @@ import { PodProvider } from '../pod/PodProvider'
 import { AnimationController } from '../Town/AnimationController'
 import { BoldText } from '../../BoldText/BoldText'
 import { AudioManager } from '../Audio/AudioManager'
+import { GameConfig } from '../GameConfig'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class MinigameResultUIView extends GameObjects.GameObject {
     protected group: GameObjects.Container
@@ -37,8 +40,11 @@ export class MinigameResultUIView extends GameObjects.GameObject {
     protected ticketImage: GameObjects.Image
     protected ticketText: GameObjects.Text
     protected ticketAnimateImage: GameObjects.Image
-    protected isPlay: boolean
+    protected isPlayAnimationTicket: boolean
     protected textHeader: string
+    protected minigameResultTicketUIView: MinigameResultTicketUIView
+    protected isPlay: boolean
+    protected isClickButton: boolean
 
     private audioManager: AudioManager
 
@@ -47,6 +53,9 @@ export class MinigameResultUIView extends GameObjects.GameObject {
     onCloseTween: Phaser.Tweens.Tween
     onCloseScaleTween: Phaser.Tweens.TweenChain
     onOpenButtonGroup: Phaser.Tweens.Tween
+    ticketSubscription: any
+    sceneStateSubscription: any
+    starEffectSubscription: Subscription
 
     constructor(scene: Scene) {
         super(scene, 'gameObject')
@@ -57,7 +66,7 @@ export class MinigameResultUIView extends GameObjects.GameObject {
         this.scenePod = pod
         this.audioManager = PodProvider.instance.audioManager
         this.textHeader = textHeader
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY + (this.isDesktop ? 0 : 0)
         this.group = this.scene.add.container()
@@ -74,9 +83,36 @@ export class MinigameResultUIView extends GameObjects.GameObject {
     }
 
     protected setSubscribe() {
-        this.scenePod.sceneState.subscribe((state) => {
+        this.sceneStateSubscription = this.scenePod.sceneState.subscribe((state) => {
             if (state == MinigameState.Completed && this.scenePod.isPlayOnline) this.showUI()
             else this.hideUI()
+        })
+
+        this.scenePod.setTicket(0)
+        this.ticketSubscription = this.scenePod.ticket.subscribe((ticket) => {
+            this.minigameResultTicketUIView.setTextTicket(ticket, false)
+
+            if (ticket == 0) {
+                this.playAgainButton.background
+                    .setTexture('minigame-result-free-play')
+                    .setSize(this.isDesktop ? 190 : 168, 48)
+                this.minigameResultTicketUIView.setUICountdown()
+                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1.02 : 0.97)
+            } else {
+                this.playAgainButton.background
+                    .setTexture('minigame-result-play-again')
+                    .setSize(this.isDesktop ? 202 : 178, 48)
+                this.minigameResultTicketUIView.setUITicket()
+                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.95)
+            }
+        })
+
+        this.minigameResultTicketUIView.setCallBack(() => this.scenePod.getTicket(true).subscribe())
+
+        this.on('destroy', () => {
+            this.ticketSubscription?.unsubscribe()
+            this.sceneStateSubscription?.unsubscribe()
+            this.starEffectSubscription?.unsubscribe()
         })
     }
 
@@ -96,12 +132,14 @@ export class MinigameResultUIView extends GameObjects.GameObject {
     }
 
     public showUI() {
+        this.starEffect.setVisible(false)
         APILoadingManager.instance.showMiniLoading()
         this.scenePod
             .resultMinigame()
-            .pipe(delay(2000))
+            .pipe(delay(GameConfig.IS_MOCK_API ? 1500 : 0))
             .subscribe((result) => {
                 APILoadingManager.instance.hideMiniLoading()
+                this.isClickButton = false
                 this.group.setActive(true)
                 this.group.setVisible(true)
                 this.dim.setActive(true)
@@ -120,7 +158,6 @@ export class MinigameResultUIView extends GameObjects.GameObject {
 
     protected onShowScore() {
         this.bonus.updateView(this.result)
-        this.setTextTicket(this.scenePod.ticket, false)
     }
 
     public hideUI() {
@@ -147,8 +184,8 @@ export class MinigameResultUIView extends GameObjects.GameObject {
         this.dim.setInteractive()
         //this.group.add(this.dim)
 
-        this.bg = this.scene.add.image(0, 90, 'minigame-result-bg')
-        this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.95)
+        this.bg = this.scene.add.image(0, this.isDesktop ? -240 : -230, 'minigame-result-bg').setOrigin(0.5, 0)
+        this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.97)
         this.group.add(this.bg)
 
         this.starGroup = this.scene.add.container(0, this.isDesktop ? -175 : -170)
@@ -190,14 +227,13 @@ export class MinigameResultUIView extends GameObjects.GameObject {
         this.backButton = new Button(
             this.scene,
             this.isDesktop ? -120 : -100,
-            this.isDesktop ? 240 : 240,
+            240,
             this.isDesktop ? 136 : 101,
             48,
             'minigame-result-back',
             0,
             ''
         )
-        this.backButton.setScale(this.isDesktop ? 1 : 1.1)
         this.group.add(this.backButton)
         this.backButton.onClick(() => {
             this.OnClickBackButton()
@@ -206,14 +242,13 @@ export class MinigameResultUIView extends GameObjects.GameObject {
         this.playAgainButton = new Button(
             this.scene,
             this.isDesktop ? 80 : 60,
-            this.isDesktop ? 240 : 240,
-            this.isDesktop ? 216 : 178,
+            240,
+            this.isDesktop ? 202 : 178,
             48,
             'minigame-result-play-again',
             0,
             ''
         )
-        this.playAgainButton.setScale(this.isDesktop ? 1 : 1.1)
         this.playAgainButton.setTextPosition(20, 1)
         this.playAgainButton.setTextSize(24)
         this.group.add(this.playAgainButton)
@@ -221,39 +256,43 @@ export class MinigameResultUIView extends GameObjects.GameObject {
             this.OnClickPlayAgainButton()
         })
 
-        this.ticketImage = this.scene.add.image(-60, 310, 'ticket')
-        this.ticketImage.setScale(this.isDesktop ? 1 : 0.8)
-        this.ticketAnimateImage = this.scene.add.image(-60, 310, 'ticket-use-effect').setScale(1.2)
-        this.group.add([this.ticketImage, this.ticketAnimateImage])
-        this.ticketAnimateImage.setVisible(false)
-        this.ticketText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded')
-            .setText('TICKET : 2')
-            .setOrigin(0.5)
-            .setPosition(35, 305)
-            .setStyle({
-                fill: '#FFFFFF',
-                fontSize: 24,
-            })
-            .setStroke('#EE843C', 5)
-        this.group.add(this.ticketText)
+        this.minigameResultTicketUIView = new MinigameResultTicketUIView(
+            this.scene,
+            0,
+            this.isDesktop ? 305 : 305,
+            this.scenePod
+        )
+        this.group.add(this.minigameResultTicketUIView)
     }
 
     protected OnClickBackButton() {
+        if (this.isClickButton) return
+        this.isClickButton = true
         this.scenePod.setSceneState(MinigameState.StartMenu)
     }
 
     protected OnClickPlayAgainButton() {
-        if (this.isPlay) return
-
+        if (this.isPlay || this.isClickButton) return
+        this.isClickButton = true
+        APILoadingManager.instance.showMiniLoading()
         this.scenePod
             .getTicket(false)
-            .pipe(concatMap(() => this.scenePod.startGame()))
+            .pipe(
+                delay(GameConfig.IS_MOCK_API ? 1500 : 0),
+                concatMap(() => this.scenePod.startGame())
+            )
             .subscribe((startResult) => {
-                this.setTextTicket(startResult.ticketLeft, this.scenePod.isPlayOnline, () => {
-                    this.hideUI()
-                    this.scenePod.setSceneState(MinigameState.BeforeStart)
-                })
+                this.isPlayAnimationTicket = true
+                APILoadingManager.instance.hideMiniLoading()
+                this.minigameResultTicketUIView.setTextTicket(
+                    startResult.ticketLeft,
+                    this.scenePod.isPlayOnline,
+                    () => {
+                        this.hideUI()
+                        this.isPlayAnimationTicket = false
+                        this.scenePod.setSceneState(MinigameState.BeforeStart)
+                    }
+                )
             })
     }
 
@@ -294,54 +333,13 @@ export class MinigameResultUIView extends GameObjects.GameObject {
         }
         this.starEffect.setScale(0)
         this.starEffect.setVisible(true)
-        concat(observableList)
+        this.starEffectSubscription = concat(observableList)
             .pipe(delay(300), concatAll(), takeLast(1))
             .subscribe(() => {
                 if (score >= 3) {
                     this.tweenEffectStar()
                 }
             })
-    }
-
-    protected setTextTicket(ticket: number, isAnimate: boolean, callback: Function = () => {}) {
-        this.ticketText.setText(`TICKET : ${ticket}`)
-        if (!isAnimate) {
-            callback()
-        } else {
-            this.ticketAnimateImage.setVisible(true)
-            this.ticketAnimateImage.setAlpha(1)
-            this.isPlay = true
-            this.scene.tweens
-                .add({
-                    targets: this.ticketAnimateImage,
-                    duration: 500,
-                    props: {
-                        scaleX: { from: 0.6, to: 1.2, duration: 300, ease: `Quad.easeOut` },
-                        scaleY: { from: 0.6, to: 1.2, duration: 300, ease: `Cubic.easeOut` },
-                        y: { from: 310, to: 110, ease: `Cubic.easeOut` },
-                        alpha: { from: 1, to: 0.7 },
-                    },
-                    onStart: () => {
-                        this.audioManager.playSFXSound('ticket_tearing')
-                    },
-                    onComplete: () => {
-                        this.scene.tweens
-                            .add({
-                                targets: this.ticketAnimateImage,
-                                ease: `Back.easeOut`,
-                                duration: 300,
-                                alpha: 0,
-                                onComplete: () => {
-                                    this.ticketAnimateImage.setVisible(false)
-                                    this.isPlay = false
-                                    callback()
-                                },
-                            })
-                            .play()
-                    },
-                })
-                .play()
-        }
     }
 
     private tweenEffectStar() {
@@ -360,12 +358,12 @@ export class MinigameResultUIView extends GameObjects.GameObject {
                 this.scene.tweens.add({
                     targets: this.starEffect,
                     ease: `Sine.easeInOut`,
-                    duration: 1500,
+                    duration: 800,
                     yoyo: true,
                     loop: -1,
                     props: {
-                        scale: { from: 1.05, to: 0.8 },
-                        alpha: { from: 1, to: 0.5 },
+                        scale: { from: 1.3, to: 0.8 },
+                        alpha: { from: 1, to: 0.8 },
                     },
                 }).play
             },

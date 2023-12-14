@@ -10,6 +10,7 @@ import { AnimationController } from './AnimationController'
 import { UserPod } from './Pod/UserPod'
 import { SceneState } from '../../scenes/SceneState'
 import { BoldText } from '../../BoldText/BoldText'
+import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class CPPointUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
@@ -22,6 +23,9 @@ export class CPPointUIButtonView extends GameObjects.Container {
 
     private onOpenTween: Tweens.Tween
     private onCloseTween: Tweens.Tween
+
+    private callback: Function
+    private holdCallback: Function
 
     private isDesktop: boolean
 
@@ -39,7 +43,7 @@ export class CPPointUIButtonView extends GameObjects.Container {
     public doInit(x: number, y: number, iconKey: string): void {
         this.townUIPod = PodProvider.instance.townUIPod
         this.userPod = PodProvider.instance.userPod
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.buttonPosX = x
         this.buttonPosY = y
 
@@ -77,10 +81,19 @@ export class CPPointUIButtonView extends GameObjects.Container {
 
         this.setupSubscribe()
         this.createTweens()
+        this.onClick(() => {})
+        this.setButtonAction()
     }
 
     public setContainerDepth(depth: number): void {
         this.setDepth(depth)
+    }
+
+    public onClick(callback: Function, holdCallback: Function = null): void {
+        this.callback = callback
+        this.holdCallback = () => {
+            PodProvider.instance.cameraControlPod.setIsHoldingButton(true)
+        }
     }
 
     private convertFormatPoint(point: number): string {
@@ -102,7 +115,7 @@ export class CPPointUIButtonView extends GameObjects.Container {
 
         if (PodProvider.instance.splashPod.launchScene == SceneState.TownScene) {
             this.stateSubscription = this.townUIPod.townUIState.pipe(skip(1)).subscribe((state) => {
-                if (state != TownUIState.MainMenu && state != TownUIState.DailyLogin && state != TownUIState.Settings) {
+                if (this.checkIsStateUseDimSprite(state)) {
                     if (!this.townUIPod.isFinishChangeUITween) {
                         this.setPosition(this.buttonPosX, this.buttonPosY - 65)
                         this.setActiveButton(true, true)
@@ -116,11 +129,7 @@ export class CPPointUIButtonView extends GameObjects.Container {
                 }
             })
 
-            if (
-                this.townUIPod.townUIState.value != TownUIState.MainMenu &&
-                this.townUIPod.townUIState.value != TownUIState.DailyLogin &&
-                this.townUIPod.townUIState.value != TownUIState.Settings
-            ) {
+            if (this.checkIsStateUseDimSprite(this.townUIPod.townUIState.value)) {
                 this.townUIPod.setIsFinishChangeUITween(true)
                 this.setPosition(this.buttonPosX, this.buttonPosY - 65)
                 this.setActiveButton(true, false)
@@ -139,6 +148,16 @@ export class CPPointUIButtonView extends GameObjects.Container {
             this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
             this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
         })
+    }
+
+    private checkIsStateUseDimSprite(state: TownUIState): boolean {
+        return (
+            state != TownUIState.MainMenu &&
+            state != TownUIState.DailyLogin &&
+            state != TownUIState.Settings &&
+            state != TownUIState.CompleteIngredients &&
+            state != TownUIState.NextIngredients
+        )
     }
 
     private CheckHoverOnButton(): void {
@@ -187,6 +206,22 @@ export class CPPointUIButtonView extends GameObjects.Container {
     private createTweens(): void {
         if (!this.isDesktop) return
         this.onOpenTween = AnimationController.instance.tweenOpenContainer(this.scene, this, () => {}).onOpenTween
+    }
+
+    private setButtonAction(): void {
+        this.backgroundButton.onClick(
+            () => {
+                PodProvider.instance.cameraControlPod.setIsHoldingButton(false)
+                if (this.callback != undefined || this.callback != null) {
+                    this.callback()
+                }
+            },
+            () => {
+                if (this.holdCallback != undefined || this.holdCallback != null) {
+                    this.holdCallback()
+                }
+            }
+        )
     }
 
     destroy(fromScene?: boolean): void {

@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs'
 
 export class CameraControlPod {
     public isHoldingButton: boolean = false
+    public isPinchZooming: boolean = false
 
     public currentZoomValue: BehaviorSubject<{ propagate: boolean; zoomValue: number }> = new BehaviorSubject<{
         propagate: boolean
@@ -23,6 +24,10 @@ export class CameraControlPod {
 
     public setIsHoldingButton(isHolding: boolean): void {
         this.isHoldingButton = isHolding
+    }
+
+    public setIsPinchZooming(isPinchZooming: boolean): void {
+        this.isPinchZooming = isPinchZooming
     }
 
     public setCameraZoomMinMaxValue(minCameraZoom: number, maxCameraZoom: number): void {

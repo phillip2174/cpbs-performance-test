@@ -1,4 +1,4 @@
 export enum UserType {
-    Login,
-    Guest,
+    Login = 'Login',
+    Guest = 'Guest',
 }

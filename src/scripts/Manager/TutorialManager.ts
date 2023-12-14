@@ -1,13 +1,16 @@
 import { BehaviorSubject, Observable, map } from 'rxjs'
+import { TutorialDataBean } from '../../Tutorial/TutorialDataBean'
 import { TutorialSaveBean } from '../../Tutorial/TutorialSaveBean'
+import { TutorialState } from '../../Tutorial/TutorialState'
+import { TutorialStepState } from '../../Tutorial/TutorialStepState'
+import { GameConfig } from '../GameConfig'
+import { UserIngredientBean } from '../Ingredient/UserIngredientBean'
 import { LocalStorageRepository } from '../Repository/LocalStorageRepository'
 import { RepositoryProvider } from '../Repository/RepositoryProvider'
-import { TutorialState } from '../../Tutorial/TutorialState'
-import { TutorialDataBean } from '../../Tutorial/TutorialDataBean'
 import { TutorialRepository } from '../Repository/TutorialRepository'
-import { GameConfig } from '../GameConfig'
-import { TutorialStepState } from '../../Tutorial/TutorialStepState'
-import { UserIngredientBean } from '../Ingredient/UserIngredientBean'
+import { UserType } from '../User/UserType'
+import { PodProvider } from '../pod/PodProvider'
+import { UserPod } from './../Town/Pod/UserPod'
 
 export class TutorialManager {
     public tutorialState: BehaviorSubject<TutorialState> = new BehaviorSubject<TutorialState>(TutorialState.CountDown)
@@ -16,23 +19,32 @@ export class TutorialManager {
     )
     public tutorialSaveBean: TutorialSaveBean
 
-    public maxTutorialStep: number = 10 //mock
+    public maxTutorialStep: number = 9
     public tutorialDataBeans: TutorialDataBean[]
+    public currentActionOnClick: Function
+
+    public currentActionOnTweenClose: Function
 
     private localStorageRepository: LocalStorageRepository
     private tutorialRepository: TutorialRepository
+    private userPod: UserPod
 
     constructor() {
         this.localStorageRepository = RepositoryProvider.instance.localStorageRepository
         this.tutorialRepository = RepositoryProvider.instance.tutorialRepository
+        this.userPod = PodProvider.instance.userPod
     }
 
-    public getTutorialData() {
+    public getTutorialData(isSetCompletedTutorial: boolean, isCompletedTutorial: boolean = false) {
         //this.localStorageRepository.clearAllTutorial()
+
+        //TODO GET TUTORIAL COMPLETED FROM SERVER AND SET TO THIS
         this.tutorialSaveBean = this.localStorageRepository.getTutorialSaveData()
         this.updateStep(this.tutorialSaveBean.currentCheckPointID)
         //MOCK COMPLETED TUTORIAL
-        // this.tutorialSaveBean.isCompletedTutorial = true
+        if (isSetCompletedTutorial) {
+            this.tutorialSaveBean.isCompletedTutorial = isCompletedTutorial
+        }
     }
 
     public saveCheckPointTutorialAndCompleted(checkPointID: number, isCompletedTutorial: boolean) {
@@ -40,10 +52,20 @@ export class TutorialManager {
         this.tutorialSaveBean.isCompletedTutorial = isCompletedTutorial
 
         this.localStorageRepository.saveTutorialData()
+        if (this.tutorialSaveBean.isCompletedTutorial && this.userPod.userLoginType == UserType.Login) {
+            this.tutorialRepository.saveTutorialData()
+        }
     }
 
     public saveUserIngredientBeansData(userIngredient: UserIngredientBean) {
         this.localStorageRepository.saveUserIngredientBeansData(userIngredient)
+        RepositoryProvider.instance.inventoryRepository
+            .updateTutorialInventory(userIngredient.id, 1, this.isCompletedTutorial())
+            .subscribe()
+    }
+
+    public saveUserCPPoint(userCPPoint: number) {
+        this.localStorageRepository.saveUserCPPoint(userCPPoint)
     }
 
     public updateStep(id: number) {

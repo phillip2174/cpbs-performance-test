@@ -16,6 +16,8 @@ import { BoldText } from '../../BoldText/BoldText'
 import { GuideLineUIManager } from './GuideLineUIManager'
 import { TutorialState } from '../../Tutorial/TutorialState'
 import { Button } from '../button/Button'
+import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UserType } from '../User/UserType'
 
 export class GuideLineUIView extends GameObjects.Container {
     private guideLineUI: GameObjects.NineSlice
@@ -55,9 +57,9 @@ export class GuideLineUIView extends GameObjects.Container {
     private countdownManager: CountdownManager
     private guideLineUIManager: GuideLineUIManager
 
-    private onShowContainerTween: Tweens.Tween
-    private onShowContainerTextTween: Tweens.Tween
-    private onShowScrollViewTween: Tweens.Tween
+    private onShowContainerTween: Tweens.TweenChain
+    private onShowContainerTextTween: Tweens.TweenChain
+    private onShowScrollViewTween: Tweens.TweenChain
     private onHideContainerTween: Tweens.Tween
     private onHideScrollViewTween: Tweens.Tween
     private onHideContainerTextTween: Tweens.Tween
@@ -75,9 +77,9 @@ export class GuideLineUIView extends GameObjects.Container {
         this.townDayNightPod = PodProvider.instance.townDayNightPod
         this.townUIPod = PodProvider.instance.townUIPod
         this.guideLineUIManager = PodProvider.instance.guideLineUIManager
-        this.isDesktop = this.scene.sys.game.device.os.desktop
+        this.isDesktop = DeviceChecker.instance.isDesktop()
 
-        this.setPosition(x, y)
+        this.setPosition(x, y + 150)
         this.setDepth(202)
         this.clockButton = new Button(
             this.scene,
@@ -90,7 +92,10 @@ export class GuideLineUIView extends GameObjects.Container {
 
         this.getIngredientBeansAndSetupUI()
 
-        if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+        if (
+            PodProvider.instance.tutorialManager.isCompletedTutorial() &&
+            PodProvider.instance.userPod.userLoginType == UserType.Login
+        ) {
             this.countdownManager = new CountdownManager(this.scene)
             this.countdownManager.doInit(0, -50)
             this.add([this.countdownManager])
@@ -116,22 +121,24 @@ export class GuideLineUIView extends GameObjects.Container {
         )
 
         //Need To Add Condition Checks For When All Found For Login First Time
-        this.foundAllIngredientDisposable = this.guideLineUIManager.isAllFound.subscribe((isAllFound) => {
-            if (isAllFound) {
-                this.currentFoundIngredientCountText?.setStyle({ fill: '#29CC6A' })
-                if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
-                    this.hideTextTimerDisposable = timer(800).subscribe((_) => {
-                        this.textCountContainer.setVisible(false)
-                        this.clockButton.setVisible(true)
-                        this.townUIPod.changeUIState(TownUIState.CompleteIngredients)
-                        this.hideTextTimerDisposable?.unsubscribe()
-                    })
-                } else {
-                    PodProvider.instance.tutorialManager.updateCurrentToNextTutorial()
-                    PodProvider.instance.tutorialManager.setTutorialState(TutorialState.CountDown)
+        if (!this.guideLineUIManager.isAllFound.value) {
+            this.foundAllIngredientDisposable = this.guideLineUIManager.isAllFound.subscribe((isAllFound) => {
+                if (isAllFound) {
+                    this.currentFoundIngredientCountText?.setStyle({ fill: '#29CC6A' })
+                    if (PodProvider.instance.tutorialManager.isCompletedTutorial()) {
+                        this.hideTextTimerDisposable = timer(800).subscribe((_) => {
+                            this.textCountContainer.setVisible(false)
+                            this.clockButton.setVisible(true)
+                            this.townUIPod.changeUIState(TownUIState.CompleteIngredients)
+                            this.hideTextTimerDisposable?.unsubscribe()
+                        })
+                    } else {
+                        PodProvider.instance.tutorialManager.updateCurrentToNextTutorial()
+                        PodProvider.instance.tutorialManager.setTutorialState(TutorialState.CountDown)
+                    }
                 }
-            }
-        })
+            })
+        }
 
         this.showHideGuidelineDisposable = this.townUIPod.isShowGuideline.pipe(skip(1)).subscribe((isShow) => {
             if (isShow) {
@@ -141,7 +148,7 @@ export class GuideLineUIView extends GameObjects.Container {
             }
         })
 
-        this.setFirstActive(this.townUIPod.townUIState.value == TownUIState.MainMenu)
+        this.setFirstActive(false)
 
         this.on('destroy', () => {
             this.showHideGuidelineDisposable?.unsubscribe()
@@ -167,8 +174,13 @@ export class GuideLineUIView extends GameObjects.Container {
         this.guideLineUIManager.updateCurrentFoundIngredientCount()
         if (this.guideLineUIManager.checkAllIsFound()) {
             this.currentFoundIngredientCountText?.setStyle({ fill: '#29CC6A' })
-            this.textCountContainer.setVisible(false)
-            this.clockButton.setVisible(true)
+            if (
+                PodProvider.instance.tutorialManager.isCompletedTutorial() &&
+                PodProvider.instance.userPod.userLoginType == UserType.Login
+            ) {
+                this.textCountContainer.setVisible(false)
+                this.clockButton.setVisible(true)
+            }
         }
         this.setupGuideLineUI()
     }
@@ -183,7 +195,7 @@ export class GuideLineUIView extends GameObjects.Container {
                     'guideline-bg',
                     '',
                     (this.currentTimeGuideLineUICellViewList.length >= this.getMaxGuidelineUILengthFromDeviceCheck()
-                        ? !this.scene.sys.game.device.os.desktop
+                        ? !DeviceChecker.instance.isDesktop()
                             ? 5.25
                             : 7.25
                         : this.currentTimeGuideLineUICellViewList.length + 0.65) * this.gridCellWidth,
@@ -194,6 +206,7 @@ export class GuideLineUIView extends GameObjects.Container {
                     18
                 )
                 .setOrigin(0.5)
+                .setInteractive()
 
             this.setupGuideLineScrollView()
             this.setupGuideLineCellViewGrid()
@@ -213,7 +226,7 @@ export class GuideLineUIView extends GameObjects.Container {
             this.guideLineScrollView = new ScrollView(
                 this.scene,
                 this.scrollViewPosX,
-                this.scrollViewPosY,
+                this.scrollViewPosY - 150,
                 this.guideLineUI.width - 20,
                 this.guideLineUI.height,
                 202,
@@ -227,6 +240,7 @@ export class GuideLineUIView extends GameObjects.Container {
                     15,
                 0
             )
+            this.guideLineScrollView.getContainer().y = this.guideLineScrollView.getContainer().y + 150
         } else {
             this.isHaveScrollView = false
         }
@@ -307,27 +321,13 @@ export class GuideLineUIView extends GameObjects.Container {
             })
     }
 
-    private getNextIngredientBeansAndSetupUI(): void {
-        this.townBuildingPod
-            .getNextHiddenIngredientData()
-            .pipe(
-                tap((x) => {
-                    this.ingredientBeans = x
-                })
-            )
-            .subscribe((_) => {
-                this.updateCurrentTimeStateCellViewList()
-                this.hideIngredientCountTexts()
-            })
-    }
-
     private getMaxGuidelineUILengthFromDeviceCheck(): number {
-        return !this.scene.sys.game.device.os.desktop ? 5 : 7
+        return !DeviceChecker.instance.isDesktop() ? 5 : 7
     }
 
     private setupFoundIngredientCountTexts(): void {
         this.textCountContainer = this.scene.add
-            .container(this.scene.cameras.main.centerX, this.scene.cameras.main.height - 68)
+            .container(this.scene.cameras.main.centerX, this.scene.cameras.main.height + 83)
             .setDepth(202)
 
         this.currentFoundIngredientCountText = new BoldText(this.scene, 0, 0, '0', 18, '#F19D63')
@@ -343,13 +343,6 @@ export class GuideLineUIView extends GameObjects.Container {
         this.textCountContainer.add([this.currentFoundIngredientCountText, this.maxIngredientCountText])
     }
 
-    private hideIngredientCountTexts(): void {
-        this.currentFoundIngredientCountText?.setActive(false)
-        this.currentFoundIngredientCountText?.setVisible(false)
-        this.maxIngredientCountText?.setActive(false)
-        this.maxIngredientCountText?.setVisible(false)
-    }
-
     private setupClockButton(): void {
         this.clockButton.setPosition(this.guideLineUI.width / 2 - 30, this.guideLineUI.y - 35)
 
@@ -359,16 +352,24 @@ export class GuideLineUIView extends GameObjects.Container {
     }
 
     private setupGuidelineTweens(): void {
-        this.onShowContainerTween = this.scene.add.tween({
+        this.onShowContainerTween = this.scene.tweens.chain({
             targets: this,
-            ease: 'cubic.inout',
-            duration: 500,
+            tweens: [
+                {
+                    ease: 'cubic.inout',
+                    duration: 500,
+                    props: {
+                        y: { from: this.y, to: this.y - 160 },
+                    },
+                },
+                {
+                    ease: 'linear',
+                    duration: 100,
+                    props: { y: { from: this.y - 160, to: this.y - 150 } },
+                },
+            ],
             persist: true,
             paused: true,
-            props: { y: { from: this.y + 150, to: this.y } },
-            onStart: () => {
-                this.isShowing = true
-            },
         })
 
         this.onHideContainerTween = this.scene.add.tween({
@@ -377,19 +378,27 @@ export class GuideLineUIView extends GameObjects.Container {
             duration: 500,
             persist: true,
             paused: true,
-            props: { y: { from: this.y, to: this.y + 150 } },
-            onStart: () => {
-                this.isShowing = false
-            },
+            props: { y: { from: this.y - 150, to: this.y } },
         })
 
-        this.onShowContainerTextTween = this.scene.add.tween({
+        this.onShowContainerTextTween = this.scene.tweens.chain({
             targets: this.textCountContainer,
-            ease: 'cubic.inout',
-            duration: 500,
+            tweens: [
+                {
+                    ease: 'cubic.inout',
+                    duration: 500,
+                    props: {
+                        y: { from: this.textCountContainer.y, to: this.textCountContainer.y - 160 },
+                    },
+                },
+                {
+                    ease: 'linear',
+                    duration: 100,
+                    props: { y: { from: this.textCountContainer.y - 160, to: this.textCountContainer.y - 150 } },
+                },
+            ],
             persist: true,
             paused: true,
-            props: { y: { from: this.textCountContainer.y + 150, to: this.textCountContainer.y } },
         })
 
         this.onHideContainerTextTween = this.scene.add.tween({
@@ -398,22 +407,36 @@ export class GuideLineUIView extends GameObjects.Container {
             duration: 500,
             persist: true,
             paused: true,
-            props: { y: { from: this.textCountContainer.y, to: this.textCountContainer.y + 150 } },
+            props: { y: { from: this.textCountContainer.y - 150, to: this.textCountContainer.y } },
         })
 
         if (this.isHaveScrollView) {
-            this.onShowScrollViewTween = this.scene.add.tween({
+            this.onShowScrollViewTween = this.scene.tweens.chain({
                 targets: this.guideLineScrollView.getContainer(),
-                ease: 'cubic.inout',
-                duration: 500,
+                tweens: [
+                    {
+                        ease: 'cubic.inout',
+                        duration: 500,
+                        props: {
+                            y: {
+                                from: this.guideLineScrollView.getContainer().y,
+                                to: this.guideLineScrollView.getContainer().y - 160,
+                            },
+                        },
+                    },
+                    {
+                        ease: 'linear',
+                        duration: 100,
+                        props: {
+                            y: {
+                                from: this.guideLineScrollView.getContainer().y - 160,
+                                to: this.guideLineScrollView.getContainer().y - 150,
+                            },
+                        },
+                    },
+                ],
                 persist: true,
                 paused: true,
-                props: {
-                    y: {
-                        from: this.guideLineScrollView.getContainer().y + 150,
-                        to: this.guideLineScrollView.getContainer().y,
-                    },
-                },
             })
 
             this.onHideScrollViewTween = this.scene.add.tween({
@@ -424,8 +447,8 @@ export class GuideLineUIView extends GameObjects.Container {
                 paused: true,
                 props: {
                     y: {
-                        from: this.guideLineScrollView.getContainer().y,
-                        to: this.guideLineScrollView.getContainer().y + 150,
+                        from: this.guideLineScrollView.getContainer().y - 150,
+                        to: this.guideLineScrollView.getContainer().y,
                     },
                 },
                 onComplete: () => {
@@ -448,6 +471,10 @@ export class GuideLineUIView extends GameObjects.Container {
     private onShow(): void {
         if (this.isShowing) return
         this.setGuidelineAndScrollViewActive(true)
+        this.isShowing = true
+        this.onHideContainerTween?.pause()
+        this.onHideContainerTextTween?.pause()
+        this.onHideScrollViewTween?.pause()
         this.onShowContainerTween?.restart()
         this.onShowContainerTextTween?.restart()
         this.onShowScrollViewTween?.restart()
@@ -455,6 +482,10 @@ export class GuideLineUIView extends GameObjects.Container {
 
     private onHide(): void {
         if (!this.isShowing) return
+        this.isShowing = false
+        this.onShowContainerTween?.pause()
+        this.onShowContainerTextTween?.pause()
+        this.onShowScrollViewTween?.pause()
         this.onHideContainerTween?.restart()
         this.onHideContainerTextTween?.restart()
         this.onHideScrollViewTween?.restart()
@@ -469,6 +500,9 @@ export class GuideLineUIView extends GameObjects.Container {
         this.setActive(isActive)
         this.setVisible(isActive)
         this.guideLineScrollView?.setActiveScrollView(isActive)
+        if (!this.guideLineUIManager.checkAllIsFound()) {
+            this.textCountContainer.setVisible(isActive)
+        }
     }
 
     destroy(fromScene?: boolean): void {

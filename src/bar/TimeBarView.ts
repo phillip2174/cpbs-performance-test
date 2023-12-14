@@ -5,6 +5,7 @@ import { PodProvider } from '../scripts/pod/PodProvider'
 import { Subscription, interval } from 'rxjs'
 import { BoldText } from '../BoldText/BoldText'
 import { AudioManager } from '../scripts/Audio/AudioManager'
+import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
 
 export class TimeBarView extends GameObjects.Container {
     public static readonly COLOR_CODE_GREEN: number = 0x00f962
@@ -49,6 +50,16 @@ export class TimeBarView extends GameObjects.Container {
     private isFadingColor: boolean = false
     private isFadeYellow: boolean = false
 
+    private countdownSFXKey: string = 'clock_ticking_01_sfx'
+    private timeAlmostUpCountdownSFXKey: string = ''
+    private timeMillisecondToPlaySFX: number = 1000
+    private offsetForUnsubscribeSound: number = 1
+
+    private isUseDifferentSFXWhenTimeIsAlmostUp: boolean = false
+
+    private countdownSFXSound: Phaser.Sound.BaseSound
+    private timeAlmostUpCountdownSound: Phaser.Sound.BaseSound
+
     private audioManager: AudioManager
 
     private countdownIntervalSubscription: Subscription
@@ -92,7 +103,7 @@ export class TimeBarView extends GameObjects.Container {
     }
 
     public createTextTime(offsetX: number, offsetY: number, colorText: string, fontSize: number) {
-        if (this.scene.sys.game.device.os.macOS || this.scene.sys.game.device.os.iOS) {
+        if (DeviceChecker.instance.isAppleOS()) {
             this.timeText = TextAdapter.instance
                 .getVectorText(this.scene, 'DB_HeaventRounded_Med')
                 .setText('00:00s')
@@ -224,6 +235,25 @@ export class TimeBarView extends GameObjects.Container {
         // })
     }
 
+    public setTimebarProperties(countdownSFXKey: string, timeMillisecondToPlaySFX: number = 1000, offsetForUnsubscribeSound: number = 1, isUseDifferentSFXWhenTimeIsAlmostUp: boolean = false, timeAlmostUpCountdownSFXKey: string = '') {
+        this.countdownSFXKey = countdownSFXKey
+        this.timeMillisecondToPlaySFX = timeMillisecondToPlaySFX
+        this.offsetForUnsubscribeSound = offsetForUnsubscribeSound
+        this.isUseDifferentSFXWhenTimeIsAlmostUp = isUseDifferentSFXWhenTimeIsAlmostUp
+        this.timeAlmostUpCountdownSFXKey = timeAlmostUpCountdownSFXKey
+
+        if(this.countdownSFXSound != undefined)
+            this.countdownSFXSound.destroy()
+
+        if(this.timeAlmostUpCountdownSound != undefined)
+            this.timeAlmostUpCountdownSound.destroy()
+
+        this.countdownSFXSound = this.audioManager.createSFXSoundObject(countdownSFXKey)
+
+        if(isUseDifferentSFXWhenTimeIsAlmostUp)
+            this.timeAlmostUpCountdownSound = this.audioManager.createSFXSoundObject(timeAlmostUpCountdownSFXKey)
+    }
+
     public startTimeBar(timeMillisecond: number, doCallBackOnEnd: boolean = false, startCount: boolean = false) {
         this.resetToDefault()
 
@@ -238,144 +268,162 @@ export class TimeBarView extends GameObjects.Container {
         const yellowColor = Phaser.Display.Color.ValueToColor(TimeBarView.COLOR_CODE_YELLOW)
         const redColor = Phaser.Display.Color.ValueToColor(TimeBarView.COLOR_CODE_RED)
 
-        let everySecondCounter: number = 0
-        let isFirstTickingEffect: boolean = false
-
         if(startCount) {
-            this.countdownIntervalSubscription = interval(1000).subscribe((count) => {
-                this.audioManager.playSFXSound('clock_ticking_01_sfx')
-    
-                if (count >= (timeMillisecond / 1000) - 1)
+            this.countdownSFXSound.play()
+
+            this.countdownIntervalSubscription = interval(this.timeMillisecondToPlaySFX).subscribe((count) => {
+                if(this.isUseDifferentSFXWhenTimeIsAlmostUp) {
+                    if (this.changeValueRange(0, (timeMillisecond / 1000) - 1, 0, 1, count) >= 0.5)
+                        this.timeAlmostUpCountdownSound.play()
+                    else
+                        this.countdownSFXSound.play()
+                }else
+                    this.countdownSFXSound.play()
+
+                if (count >= (timeMillisecond / 1000) - this.offsetForUnsubscribeSound) {
                     this.countdownIntervalSubscription?.unsubscribe()
+                }
             })
 
-        this.tweenTimeBar = this.scene.add.tween({
-            targets: this.timeBar,
-            ease: 'Linear',
-            duration: timeMillisecond,
-            props: {
-                width: { from: this.timeBar.width, to: TimeBarView.OFFSET_WIDTH + 4 },
-            },
-            onUpdate: (tweenMain) => {
-                this.currentTime = tweenMain.duration - tweenMain.duration * tweenMain.progress
+            this.tweenTimeBar = this.scene.add.tween({
+                targets: this.timeBar,
+                ease: 'Linear',
+                duration: timeMillisecond,
+                props: {
+                    width: { from: this.timeBar.width, to: TimeBarView.OFFSET_WIDTH + 4 },
+                },
+                onUpdate: (tweenMain) => {
+                    this.currentTime = tweenMain.duration - tweenMain.duration * tweenMain.progress
 
-                if (this.isHaveText) {
-                    this.timeText.setText(`${this.convertMsToMinutesSeconds(this.currentTime)}s`)
+                    if (this.isHaveText) {
+                        this.timeText.setText(`${this.convertMsToMinutesSeconds(this.currentTime)}s`)
 
-                    if (tweenMain.progress >= TimeBarView.RED_PERCENT) {
-                        this.timeText.setColor('#DF2B41')
+                        if (tweenMain.progress >= TimeBarView.RED_PERCENT) {
+                            this.timeText.setColor('#DF2B41')
+                        }
                     }
-                }
 
-                if (timeMillisecond <= 10000) {
-                    if (!this.isFadingColor) {
-                        this.isFadingColor = true
+                    if (timeMillisecond <= 10000) {
+                        if (!this.isFadingColor) {
+                            this.isFadingColor = true
 
-                        this.fadeColorTween = this.scene.tweens.addCounter({
-                            from: 0,
-                            to: 100,
-                            duration: timeMillisecond / 2.5,
-                            ease: 'Sine.easeIn',
-                            onUpdate: (tween) => {
-                                const value = tween.getValue()
-                                const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
-                                    greenColor,
-                                    yellowColor,
-                                    100,
-                                    value
-                                )
-                                const color = Phaser.Display.Color.GetColor(colorObject.r, colorObject.g, colorObject.b)
-                                this.timeBar.setTint(color)
+                            this.fadeColorTween = this.scene.tweens.addCounter({
+                                from: 0,
+                                to: 100,
+                                duration: timeMillisecond / 2.5,
+                                ease: 'Sine.easeIn',
+                                onUpdate: (tween) => {
+                                    const value = tween.getValue()
+                                    const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
+                                        greenColor,
+                                        yellowColor,
+                                        100,
+                                        value
+                                    )
+                                    const color = Phaser.Display.Color.GetColor(
+                                        colorObject.r,
+                                        colorObject.g,
+                                        colorObject.b
+                                    )
+                                    this.timeBar.setTint(color)
 
-                                if (value == 100) {
-                                    this.fadeColorTween = this.scene.tweens.addCounter({
-                                        from: 0,
-                                        to: 100,
-                                        duration: timeMillisecond / 2.5,
-                                        ease: 'Sine.easeIn',
-                                        onUpdate: (tween) => {
-                                            const value = tween.getValue()
-                                            const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
-                                                yellowColor,
-                                                redColor,
-                                                100,
-                                                value
-                                            )
-                                            const color = Phaser.Display.Color.GetColor(
-                                                colorObject.r,
-                                                colorObject.g,
-                                                colorObject.b
-                                            )
-                                            this.timeBar.setTint(color)
-                                        },
-                                    })
-                                }
-                            },
-                        })
+                                    if (value == 100) {
+                                        this.fadeColorTween = this.scene.tweens.addCounter({
+                                            from: 0,
+                                            to: 100,
+                                            duration: timeMillisecond / 2.5,
+                                            ease: 'Sine.easeIn',
+                                            onUpdate: (tween) => {
+                                                const value = tween.getValue()
+                                                const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
+                                                    yellowColor,
+                                                    redColor,
+                                                    100,
+                                                    value
+                                                )
+                                                const color = Phaser.Display.Color.GetColor(
+                                                    colorObject.r,
+                                                    colorObject.g,
+                                                    colorObject.b
+                                                )
+                                                this.timeBar.setTint(color)
+                                            },
+                                        })
+                                    }
+                                },
+                            })
+                        }
+                    } else {
+                        if (
+                            tweenMain.progress >= TimeBarView.YELLOW_PERCENT &&
+                            tweenMain.progress <= TimeBarView.RED_PERCENT &&
+                            !this.isFadingColor &&
+                            !this.isFadeYellow
+                        ) {
+                            this.isFadingColor = true
+                            this.isFadeYellow = true
+                            this.fadeColorTween = this.scene.tweens.addCounter({
+                                from: 0,
+                                to: 100,
+                                duration: 1500,
+                                ease: 'Sine.easeIn',
+                                onUpdate: (tween) => {
+                                    const value = tween.getValue()
+                                    const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
+                                        greenColor,
+                                        yellowColor,
+                                        100,
+                                        value
+                                    )
+                                    const color = Phaser.Display.Color.GetColor(
+                                        colorObject.r,
+                                        colorObject.g,
+                                        colorObject.b
+                                    )
+                                    this.timeBar.setTint(color)
+
+                                    if (value == 100) {
+                                        this.isFadingColor = false
+                                    }
+                                },
+                            })
+                        }
+                        if (tweenMain.progress >= TimeBarView.RED_PERCENT && !this.isFadingColor) {
+                            this.isFadingColor = true
+
+                            this.fadeColorTween = this.scene.tweens.addCounter({
+                                from: 0,
+                                to: 100,
+                                duration: 1000,
+                                ease: 'Sine.easeIn',
+                                onUpdate: (tween) => {
+                                    const value = tween.getValue()
+                                    const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
+                                        yellowColor,
+                                        redColor,
+                                        100,
+                                        value
+                                    )
+                                    const color = Phaser.Display.Color.GetColor(
+                                        colorObject.r,
+                                        colorObject.g,
+                                        colorObject.b
+                                    )
+                                    this.timeBar.setTint(color)
+                                },
+                            })
+                        }
                     }
-                } else {
-                    if (
-                        tweenMain.progress >= TimeBarView.YELLOW_PERCENT &&
-                        tweenMain.progress <= TimeBarView.RED_PERCENT &&
-                        !this.isFadingColor &&
-                        !this.isFadeYellow
-                    ) {
-                        this.isFadingColor = true
-                        this.isFadeYellow = true
-                        this.fadeColorTween = this.scene.tweens.addCounter({
-                            from: 0,
-                            to: 100,
-                            duration: 1500,
-                            ease: 'Sine.easeIn',
-                            onUpdate: (tween) => {
-                                const value = tween.getValue()
-                                const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
-                                    greenColor,
-                                    yellowColor,
-                                    100,
-                                    value
-                                )
-                                const color = Phaser.Display.Color.GetColor(colorObject.r, colorObject.g, colorObject.b)
-                                this.timeBar.setTint(color)
 
-                                if (value == 100) {
-                                    this.isFadingColor = false
-                                }
-                            },
-                        })
+                    if (this.currentTime <= 1000 && !this.isTimeRunningOut) {
+                        this.isTimeRunningOut = true
                     }
-                    if (tweenMain.progress >= TimeBarView.RED_PERCENT && !this.isFadingColor) {
-                        this.isFadingColor = true
-
-                        this.fadeColorTween = this.scene.tweens.addCounter({
-                            from: 0,
-                            to: 100,
-                            duration: 1000,
-                            ease: 'Sine.easeIn',
-                            onUpdate: (tween) => {
-                                const value = tween.getValue()
-                                const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
-                                    yellowColor,
-                                    redColor,
-                                    100,
-                                    value
-                                )
-                                const color = Phaser.Display.Color.GetColor(colorObject.r, colorObject.g, colorObject.b)
-                                this.timeBar.setTint(color)
-                            },
-                        })
-                    }
-                }
-
-                if (this.currentTime <= 1000 && !this.isTimeRunningOut) {
-                    this.isTimeRunningOut = true
-                }
-            },
-            onComplete: () => {
-                if (doCallBackOnEnd) this.doCallBack()
-            },
-        })
-    }
+                },
+                onComplete: () => {
+                    if (doCallBackOnEnd) this.doCallBack()
+                },
+            })
+        }
     }
 
     public resetToDefault() {
@@ -391,6 +439,12 @@ export class TimeBarView extends GameObjects.Container {
         this.tweenTimeBar?.pause()
         this.countdownIntervalSubscription?.unsubscribe()
         this.fadeColorTween?.destroy()
+
+        if(this.countdownSFXSound != undefined)
+            this.countdownSFXSound.stop()
+
+        if(this.timeAlmostUpCountdownSound != undefined)
+            this.timeAlmostUpCountdownSound.stop()
     }
 
     public doCallBack() {
@@ -409,5 +463,9 @@ export class TimeBarView extends GameObjects.Container {
 
     public getIsTimeRunningOut(): boolean {
         return this.isTimeRunningOut
+    }
+
+    private changeValueRange(oldMin: number, oldMax: number, newMin: number, newMax: number, value: number) : number {
+        return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin
     }
 }

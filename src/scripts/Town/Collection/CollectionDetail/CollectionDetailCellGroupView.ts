@@ -13,6 +13,7 @@ import { RecipePreviewView } from '../../Recipe/RecipePreviewView'
 import { IngredientDescPreviewGroupView } from '../../Recipe/IngredientDescPreviewGroupView'
 import { CollectionDetailState } from '../type/CollectionDetailState'
 import { BoldText } from '../../../../BoldText/BoldText'
+import { DeviceChecker } from '../../../plugins/DeviceChecker'
 
 export class CollectionDetailCellGroupView extends GameObjects.Container {
     public static readonly LENGTH_CUT_TEXT_TITLE_DESKTOP: number = 54
@@ -58,7 +59,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     }
 
     public doInit() {
-        this.scene.sys.game.device.os.desktop ? (this.isDesktop = true) : (this.isDesktop = false)
+        this.isDesktop = DeviceChecker.instance.isDesktop()
         this.collectionPod = PodProvider.instance.collectionPod
         this.setCellWithState()
 
@@ -85,7 +86,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     private createFirstCell() {
         this.firstContainer = this.scene.add.container(0, 0)
 
-        let sizeWidthBG = this.scene.sys.game.device.os.desktop
+        let sizeWidthBG = DeviceChecker.instance.isDesktop()
             ? CollectionDetailCellGroupView.WIDTH_SIZE_BG_DESKTOP
             : CollectionDetailCellGroupView.WIDTH_SIZE_BG_MOBILE
 
@@ -115,7 +116,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
             .setPosition(0, 230)
             .setStyle({ fill: '#585858', fontSize: 18 })
 
-        const positionXText = this.scene.sys.game.device.os.desktop
+        const positionXText = DeviceChecker.instance.isDesktop()
             ? -this.firstDetailCellBG.width / 2 + CollectionDetailCellGroupView.TEXT_OFFSET_DESKTOP
             : -this.firstDetailCellBG.width / 2 + CollectionDetailCellGroupView.TEXT_OFFSET_MOBILE
         this.recipeNameText.setPosition(positionXText, 230)
@@ -147,7 +148,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
     private createSecondCell() {
         this.secondContainer = this.scene.add.container(0, 0)
 
-        let sizeWidthBG = this.scene.sys.game.device.os.desktop
+        let sizeWidthBG = DeviceChecker.instance.isDesktop()
             ? CollectionDetailCellGroupView.WIDTH_SIZE_BG_DESKTOP
             : CollectionDetailCellGroupView.WIDTH_SIZE_BG_MOBILE
 
@@ -162,7 +163,7 @@ export class CollectionDetailCellGroupView extends GameObjects.Container {
             .setPosition(0, 25)
             .setStyle({ fill: '#2B2B2B', fontSize: 24 })
 
-        const offsetText = this.scene.sys.game.device.os.desktop
+        const offsetText = DeviceChecker.instance.isDesktop()
             ? CollectionDetailCellGroupView.TEXT_OFFSET_DESKTOP
             : CollectionDetailCellGroupView.TEXT_OFFSET_MOBILE
         this.headerText.setPosition(-this.secondDetailCellBG.width / 2 + this.headerText.width / 2 + offsetText, 25)

@@ -11,6 +11,7 @@ import { MinigameScenePod } from '../MinigameScenePod'
 import { MinigameState } from '../MinigameState'
 import { PodProvider } from '../../pod/PodProvider'
 import { AudioManager } from '../../Audio/AudioManager'
+import { DeviceChecker } from '../../plugins/DeviceChecker'
 
 export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
     private readonly WIDTH = 3
@@ -50,38 +51,30 @@ export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
 
         this.setDepth(2)
 
-        if (this.scene.sys.game.device.os.desktop) {
-            this.isDesktop = true
-        } else {
-            this.isDesktop = false
-        }
+        this.isDesktop = DeviceChecker.instance.isDesktop()
     }
 
     public showPreview(): Observable<string> {
         this.fullImage?.destroy()
-        this.cellList.forEach(x => {
-            x.destroy();
+        this.cellList.forEach((x) => {
+            x.destroy()
         })
-        this.cellList = [];
+        this.cellList = []
 
-        this.scene.game.textures.removeKey('minigame1');
-        this.scene.game.textures.removeKey('minigame1-full');
+        this.scene.game.textures.removeKey('minigame1')
+        this.scene.game.textures.removeKey('minigame1-full')
         return ResourceManager.instance
             .loadSpriteSheet('minigame1', this.scenePod.balance.image, {
                 frameWidth: this.CELL_WIDTH,
                 frameHeight: this.CELL_HEIGHT,
             })
-            .pipe(concatMap(() => ResourceManager.instance
-                .loadTexture('minigame1-full', this.scenePod.balance.image)),
+            .pipe(
+                concatMap(() => ResourceManager.instance.loadTexture('minigame1-full', this.scenePod.balance.image)),
                 tap((x) => {
                     this.createPreview()
-
                 })
             )
     }
-
-
-
 
     tweenShowFullImage(): Observable<void> {
         return new Observable((observer: Observer<void>) => {
@@ -90,21 +83,21 @@ export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
                 ease: `Sine.easeInOut`,
                 duration: 1000,
                 props: {
-                    alpha: { from: 0, to: 1 }
+                    alpha: { from: 0, to: 1 },
                 },
-                onStart: (() => {
-                    this.fullImage.setVisible(true);
-                }), onComplete: (() => {
+                onStart: () => {
+                    this.fullImage.setVisible(true)
+                },
+                onComplete: () => {
                     observer.next()
                     observer.complete()
-
-                }),
+                },
             })
         })
     }
 
     setCallBackOnFinish(callBack: Function) {
-        this.callBackFunction = callBack;
+        this.callBackFunction = callBack
     }
 
     createPreview() {
@@ -128,13 +121,13 @@ export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
         // var debug1 = this.scene.add.rectangle(0, 0, 50, 50, 0xff0000).setOrigin(0.5).setDepth(1000);
         // this.add(debug1);
 
-        this.fullImage = this.scene.add.image(0, this.CELL_HEIGHT / 2, 'minigame1-full');
-        var diff =  this.fullImage.width - this.WIDTH * this.CELL_WIDTH ;
+        this.fullImage = this.scene.add.image(0, this.CELL_HEIGHT / 2, 'minigame1-full')
+        var diff = this.fullImage.width - this.WIDTH * this.CELL_WIDTH
 
-        this.fullImage.setCrop(0,0,this.WIDTH * this.CELL_WIDTH,this.HEIGHT * this.CELL_HEIGHT)
-        this.fullImage.setPosition(diff/2,this.CELL_HEIGHT / 2)
-        this.add(this.fullImage);
-        this.fullImage.setVisible(false);
+        this.fullImage.setCrop(0, 0, this.WIDTH * this.CELL_WIDTH, this.HEIGHT * this.CELL_HEIGHT)
+        this.fullImage.setPosition(diff / 2, this.CELL_HEIGHT / 2)
+        this.add(this.fullImage)
+        this.fullImage.setVisible(false)
     }
 
     public onUpdate() {
@@ -143,8 +136,7 @@ export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
         })
     }
 
-    public reset()
-    {
+    public reset() {
         this.cellList.forEach((cellView) => {
             cellView.onDeSelect()
         })
@@ -180,7 +172,7 @@ export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
                         y: { from: startPosition.y, to: newPositionXY.y },
                     },
                 })
-                .play()         
+                .play()
         }
 
         this.audioManager.playSFXSound('jigsaw_puzzle_move_sfx')
