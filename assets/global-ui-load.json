@@ -296,6 +296,11 @@
                 "type": "image",
                 "key": "star-effect",
                 "url": "assets/global_ui/star-effect.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-select-bg",
+                "url": "assets/global_ui/minigame-3-select-bg.png"
             }
         ]
     }

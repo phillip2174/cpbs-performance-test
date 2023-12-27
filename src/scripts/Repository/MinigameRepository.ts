@@ -18,7 +18,7 @@ export class MinigameRepository {
 
     getAllMinigame(): Observable<MinigameBean[]> {
         if (GameConfig.IS_MOCK_API) {
-            let minigameBeans: MinigameBean[] = [new MinigameBean(1), new MinigameBean(2)]
+            let minigameBeans: MinigameBean[] = [new MinigameBean(1), new MinigameBean(2), new MinigameBean(3)]
             this.minigameBeans = minigameBeans
             return of(minigameBeans)
         } else {
