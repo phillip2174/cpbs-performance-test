@@ -19,7 +19,7 @@ export class TutorialManager {
     )
     public tutorialSaveBean: TutorialSaveBean
 
-    public maxTutorialStep: number = 9
+    public maxTutorialStep: number = 10
     public tutorialDataBeans: TutorialDataBean[]
     public currentActionOnClick: Function
 

@@ -1,6 +1,7 @@
 import { MinigameBonusBean } from './../minigame/MinigameBonusBean'
 import { Observable, of } from 'rxjs'
 import { MinigameResultBean } from '../minigame/MinigameResultBean'
+import { MinigameCPGuessDataBean } from '../minigame/minigame-3-cp-guess-this-picture/MinigameCPGuessDataBean'
 
 export class MinigameService {
     private mockTicket = 1
@@ -50,6 +51,9 @@ export class MinigameService {
             case 2:
                 result = score
                 break
+            case 3:
+                result = score
+                break
         }
 
         var minigameResultBean = new MinigameResultBean(result, [
@@ -58,6 +62,10 @@ export class MinigameService {
             new MinigameBonusBean(false, 4, 100),
         ])
         return of(minigameResultBean)
+    }
+
+    public getMinigameCPGuessData(): Observable<MinigameCPGuessDataBean> {
+        return of(new MinigameCPGuessDataBean())
     }
 }
 

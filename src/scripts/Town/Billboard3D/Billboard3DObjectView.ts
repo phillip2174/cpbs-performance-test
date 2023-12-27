@@ -3,11 +3,11 @@ import { GameObjectConstructor } from '../../plugins/objects/GameObjectConstruct
 import { GameObjects, Scene, Tweens } from 'phaser'
 import { BillboardObjectPod } from '../Pod/BillboardObjectPod'
 import { PodProvider } from '../../pod/PodProvider'
+import { ObjectDepthConfig } from '../../ObjectDepthConfig'
 
 export class Billboard3DObjectView extends GameObjects.GameObject {
     public static readonly DELAY_SHOW_PRODUCT: number = 2000
     public static readonly DELAY_SHOW_CP_LED: number = 3200
-    public static readonly DEPTH_3D_BILLBOARD: number = 5
 
     private billboard1Image: GameObjects.Image
     private billboard2Image: GameObjects.Image
@@ -68,37 +68,37 @@ export class Billboard3DObjectView extends GameObjects.GameObject {
     private setupBillboard3DImage() {
         this.billboard1Image = this.scene.add
             .image(this.mainCamera.centerX + 115, this.mainCamera.centerY - 230, '3d-billboard-01-04')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
+            .setDepth(ObjectDepthConfig.THREE_D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.billboard2Image = this.scene.add
             .image(this.mainCamera.centerX + 170, this.mainCamera.centerY - 195, '3d-billboard-01-03')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
+            .setDepth(ObjectDepthConfig.THREE_D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.billboard3Image = this.scene.add
             .image(this.mainCamera.centerX + 280, this.mainCamera.centerY - 120, '3d-billboard-01-02')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
+            .setDepth(ObjectDepthConfig.THREE_D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.billboard4Image = this.scene.add
             .image(this.mainCamera.centerX + 405, this.mainCamera.centerY - 48, '3d-billboard-01-01')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
+            .setDepth(ObjectDepthConfig.THREE_D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.billboardFoodPlateImage = this.scene.add
             .image(this.mainCamera.centerX + 515, this.mainCamera.centerY + 40, '3d-billboard-01-plate-01')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD)
+            .setDepth(ObjectDepthConfig.THREE_D_BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.billboardCPCoverImage = this.scene.add
             .sprite(this.mainCamera.centerX + 355, this.mainCamera.centerY - 117, '')
-            .setDepth(Billboard3DObjectView.DEPTH_3D_BILLBOARD + 2)
+            .setDepth(ObjectDepthConfig.THREE_D_BILLBOARD + 2)
             .setScale(1.95)
     }
 

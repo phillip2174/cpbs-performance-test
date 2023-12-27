@@ -103,6 +103,8 @@ export class RecipePod {
                 return RecipeType.Hard
             case RecipeFilterType.Challenge:
                 return RecipeType.Challenge
+            default:
+                return undefined
         }
     }
 

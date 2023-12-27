@@ -12,6 +12,7 @@ import { PodProvider } from '../../pod/PodProvider'
 import { BoldText } from '../../../BoldText/BoldText'
 import { AudioManager } from '../../Audio/AudioManager'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
     private group: GameObjects.Container
@@ -41,7 +42,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
         this.group = this.scene.add.container(centerX, centerY)
-        this.group.setDepth(0)
+        this.group.setDepth(UIDepthConfig.MINI_GAME_GAMEPLAY)
 
         this.setUpImage()
         this.setUpButton()
@@ -109,7 +110,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
         if (this.isDesktop) {
-            this.timeBarView = new TimeBarView(this.scene).setDepth(0)
+            this.timeBarView = new TimeBarView(this.scene).setDepth(this.group.depth)
             this.timeBarView.doInit(
                 centerX + 65,
                 centerY - this.subBg.height / 2 + 80,
@@ -124,10 +125,10 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
                 48
             )
             this.timeBarView.createTextTime(-55, -12, '#2b2b2b', 24)
-            let headerText = new HeaderScoreView(this.scene, -50, -14, 'TIME').setDepth(100)
+            let headerText = new HeaderScoreView(this.scene, -50, -14, 'TIME')
             this.timeBarView.add(headerText)
         } else {
-            this.timeBarView = new TimeBarView(this.scene).setDepth(0)
+            this.timeBarView = new TimeBarView(this.scene).setDepth(this.group.depth)
             this.timeBarView.doInit(centerX + 55, centerY - this.subBg.height / 2 + 140, 201, 58, 0, 145, 20, -5, 11)
             this.timeBarView.createTextTime(-5, -7, '#585858', 22)
         }
@@ -159,7 +160,9 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
 
-        this.groupBeforeStart = this.scene.add.container(centerX, centerY).setDepth(1)
+        this.groupBeforeStart = this.scene.add
+            .container(centerX, centerY)
+            .setDepth(UIDepthConfig.MINI_GAME_BEFORE_START)
 
         this.dim = this.scene.add.rectangle(
             0,

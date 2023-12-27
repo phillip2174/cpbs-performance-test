@@ -41,6 +41,8 @@ export class MinigameResultBonusView extends GameObjects.Container {
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+
+        this.bonusContainer.setScale(this.isDesktop ? 1 : 0.9)
     }
 
     public updateView(bean: MinigameResultBean) {
@@ -70,7 +72,7 @@ export class MinigameResultBonusView extends GameObjects.Container {
 
         let x = -this.bonusContainer.getBounds().width / 2 + cellWidth / 2
 
-        this.bonusContainer.setPosition(x + (this.isDesktop ? 0 : 4.5 * (bean.list.length - 1)), 0)
+        this.bonusContainer.setPosition(x, 0)
         //this.rectMockPosition.setPosition( this.bonusContainer.x - cellWidth/2,this.bonusContainer.y).setSize(containerWidth,this.bonusContainer.getBounds().height).setOrigin(0,0.5)
         this.bg.setSize(containerWidth + 33, cellHeight + 40)
 

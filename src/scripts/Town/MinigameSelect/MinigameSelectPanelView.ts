@@ -13,6 +13,7 @@ import { MinigameSelectCellView } from './MinigameSelectCellView'
 import { AudioManager } from '../../Audio/AudioManager'
 import { BoldText } from '../../../BoldText/BoldText'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class MinigameSelectPanelView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -51,7 +52,7 @@ export class MinigameSelectPanelView extends GameObjects.Container {
         this.townUIPod = PodProvider.instance.townUIPod
         this.audioManager = PodProvider.instance.audioManager
         this.minigamePod = new MinigamePod(this.scene)
-        this.setDepth(199)
+        this.setDepth(UIDepthConfig.MINIGAME_SELECT)
 
         this.setupUI()
         this.createTween()

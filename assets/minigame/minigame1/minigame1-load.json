@@ -3,13 +3,10 @@
         "files": [
             {
                 "type": "image",
-                "key": "minigame-start-button",
-                "url": "assets/minigame/minigame1/button-cta-game.png"
-            }, {
-                "type": "image",
                 "key": "minigame-free-play-button",
                 "url": "assets/minigame/minigame1/minigame-free-play-button.png"
-            }, {
+            },
+            {
                 "type": "image",
                 "key": "minigame-background-countdown-ticket",
                 "url": "assets/minigame/minigame1/minigame-background-countdown-ticket.png"

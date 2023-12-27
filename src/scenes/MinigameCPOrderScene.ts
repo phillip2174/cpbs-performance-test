@@ -35,7 +35,7 @@ export class MinigameCPOrderScene extends Scene {
         this.minigameScenePod.setGameId(2)
         this.minigameScenePod.setSceneState(MinigameState.StartMenu)
         this.minigameMenuUIView = new MinigameMenuUIView(this)
-        this.minigameStartMenuUIView = new MinigameStartMenuUIView(this).setDepth(2)
+        this.minigameStartMenuUIView = new MinigameStartMenuUIView(this)
         this.minigameCPOrderGameplayUIView = new MinigameCPOrderGameplayUIView(this)
         this.minigameResultUIView = new MinigameResultUIView(this)
         this.minigameResultUIMiniView = new MinigameResultUIMiniView(this)

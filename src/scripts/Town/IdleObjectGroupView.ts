@@ -9,6 +9,7 @@ import { Billboard3DObjectView } from './Billboard3D/Billboard3DObjectView'
 import { TownUIPod } from './Pod/TownUIPod'
 import { PodProvider } from '../pod/PodProvider'
 import { TownUIState } from './Type/TownUIState'
+import { ObjectDepthConfig } from '../ObjectDepthConfig'
 
 export class IdleObjectGroupView extends GameObjects.GameObject {
     private cloudBigImage: GameObjects.Image
@@ -78,15 +79,15 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
     public createIdleObject() {
         this.cloudBigImage = this.scene.add
             .image(this.scene.cameras.main.centerX + 810, this.scene.cameras.main.centerY - 340, 'cloud-01')
-            .setDepth(99)
+            .setDepth(ObjectDepthConfig.CLOUD)
 
         this.cloudSmallImage = this.scene.add
             .image(this.scene.cameras.main.centerX + 480, this.scene.cameras.main.centerY - 495, 'cloud-02')
-            .setDepth(99)
+            .setDepth(ObjectDepthConfig.CLOUD)
 
         this.cloudNarutoImage = this.scene.add
             .image(this.scene.cameras.main.centerX - 910, this.scene.cameras.main.centerY - 315, 'cloud-naruto')
-            .setDepth(99)
+            .setDepth(ObjectDepthConfig.CLOUD)
 
         this.scene.add.tween({
             targets: this.cloudBigImage,
@@ -132,16 +133,16 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
 
         this.peopleGroupE = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'people-group-e')
-            .setDepth(99)
+            .setDepth(ObjectDepthConfig.PEOPLE_GROUP_E)
 
         this.nongsomSprite = this.scene.add
             .sprite(this.scene.cameras.main.centerX - 342, this.scene.cameras.main.centerY - 141, 'nong-som')
-            .setDepth(99)
+            .setDepth(ObjectDepthConfig.NONG_SOM)
         this.nongsomSprite.play('idle-nong-som')
 
         this.cheeseImage = this.scene.add
             .image(this.scene.cameras.main.centerX - 160, this.scene.cameras.main.centerY + 150, 'cheese')
-            .setDepth(4)
+            .setDepth(ObjectDepthConfig.CHEESE)
 
         this.setupBillboards()
         this.setupBillboard3D()
@@ -195,7 +196,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 burgerShrimpConfig.startAnimation,
                 burgerShrimpConfig.isLooping
             )
-            .setDepth(9)
+            .setDepth(ObjectDepthConfig.BURGER_SHRIMP)
 
         let bushesConfig = {
             x: this.scene.cameras.main.centerX + 352,
@@ -213,7 +214,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 bushesConfig.startAnimation,
                 bushesConfig.isLooping
             )
-            .setDepth(7)
+            .setDepth(ObjectDepthConfig.BUSHES)
 
         let personMascotConfig = {
             x: this.scene.cameras.main.centerX + 433,
@@ -231,7 +232,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 personMascotConfig.startAnimation,
                 personMascotConfig.isLooping
             )
-            .setDepth(6)
+            .setDepth(ObjectDepthConfig.PERSON_WITH_MASCOT)
 
         let dog7_11Config = {
             x: this.scene.cameras.main.centerX + 491,
@@ -249,7 +250,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 dog7_11Config.startAnimation,
                 dog7_11Config.isLooping
             )
-            .setDepth(7)
+            .setDepth(ObjectDepthConfig.DOG_7_11)
 
         let clownConfig = {
             x: this.scene.cameras.main.centerX + 392,
@@ -261,7 +262,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
 
         this.clown = this.scene.add
             .spine(clownConfig.x, clownConfig.y, clownConfig.key, clownConfig.startAnimation, clownConfig.isLooping)
-            .setDepth(7)
+            .setDepth(ObjectDepthConfig.CLOWN)
 
         let peopleGroupAConfig = {
             x: this.scene.cameras.main.centerX + 700,
@@ -279,7 +280,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 peopleGroupAConfig.startAnimation,
                 peopleGroupAConfig.isLooping
             )
-            .setDepth(3)
+            .setDepth(ObjectDepthConfig.PEOPLE_GROUP_A)
 
         let peopleGroupCConfig = {
             x: this.scene.cameras.main.centerX + 23,
@@ -297,7 +298,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 peopleGroupCConfig.startAnimation,
                 peopleGroupCConfig.isLooping
             )
-            .setDepth(8)
+            .setDepth(ObjectDepthConfig.PEOPLE_GROUP_C)
 
         let peopleGroupDConfig = {
             x: this.scene.cameras.main.centerX - 528,
@@ -315,7 +316,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 peopleGroupDConfig.startAnimation,
                 peopleGroupDConfig.isLooping
             )
-            .setDepth(3)
+            .setDepth(ObjectDepthConfig.PEOPLE_GROUP_D)
 
         let hotdogShopConfig = {
             x: this.scene.cameras.main.centerX - 917.5,
@@ -333,7 +334,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 hotdogShopConfig.startAnimation,
                 hotdogShopConfig.isLooping
             )
-            .setDepth(5)
+            .setDepth(ObjectDepthConfig.HOTDOG_SHOP)
 
         let vegetableLotusConfig = {
             x: this.scene.cameras.main.centerX - 553,
@@ -351,7 +352,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 vegetableLotusConfig.startAnimation,
                 vegetableLotusConfig.isLooping
             )
-            .setDepth(5)
+            .setDepth(ObjectDepthConfig.VEGETABLE_LOTUS)
 
         let peopleGroupFConfig = {
             x: this.scene.cameras.main.centerX - 230,
@@ -369,7 +370,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 peopleGroupFConfig.startAnimation,
                 peopleGroupFConfig.isLooping
             )
-            .setDepth(5)
+            .setDepth(ObjectDepthConfig.PEOPLE_GROUP_F)
     }
 
     private randomIntFromInterval(min, max) {

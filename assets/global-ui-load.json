@@ -248,8 +248,54 @@
             },
             {
                 "type": "image",
+                "key": "minigame-start-button",
+                "url": "assets/global_ui/button-cta-game.png"
+            },
+            {
+                "type": "image",
                 "key": "minigame-play-button-tween",
                 "url": "assets/global_ui/minigame-play-button-tween.png"
+            },
+            {
+                "type": "image",
+                "key": "button-white-bg",
+                "url": "assets/global_ui/button-white-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-countdown-start",
+                "url": "assets/global_ui/minigame-countdown-start.png"
+            },
+
+            {
+                "type": "image",
+                "key": "tutorial-character-1",
+                "url": "assets/global_ui/tutorial-character-1.png"
+            },
+            {
+                "type": "image",
+                "key": "tutorial-character-2",
+                "url": "assets/global_ui/tutorial-character-2.png"
+            },
+            {
+                "type": "image",
+                "key": "tutorial-character-3",
+                "url": "assets/global_ui/tutorial-character-3.png"
+            },
+            {
+                "type": "image",
+                "key": "tutorial-character-4",
+                "url": "assets/global_ui/tutorial-character-4.png"
+            },
+            {
+                "type": "image",
+                "key": "header-bg-tutorial",
+                "url": "assets/global_ui/header-bg-tutorial.png"
+            },
+            {
+                "type": "image",
+                "key": "star-effect",
+                "url": "assets/global_ui/star-effect.png"
             }
         ]
     }

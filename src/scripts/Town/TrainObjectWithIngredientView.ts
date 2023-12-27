@@ -7,6 +7,7 @@ import { IngredientObjectView } from './IngredientObjectView'
 import { TownUIPod } from './Pod/TownUIPod'
 import { PodProvider } from '../pod/PodProvider'
 import { TownUIState } from './Type/TownUIState'
+import { ObjectDepthConfig } from '../ObjectDepthConfig'
 
 export class TrainObjectWithIngredientView extends GameObjects.Container {
     private trainObjectSpine: SpineGameObject
@@ -33,7 +34,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
 
     public doInit(ingredientObjectView: IngredientObjectView) {
         this.townUIPod = PodProvider.instance.townUIPod
-        this.setDepth(2)
+        this.setDepth(ObjectDepthConfig.TRAIN_OBJECT_WITH_INGREDIENT)
         let test = new ObjectPlacementDebugger(this.scene)
 
         this.setPosition(this.x + 1442, this.y + -1240)

@@ -8,19 +8,19 @@
         "desc2Text": [],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "มาเริ่มกันเลย",
+                "buttonText": "GET STARTED",
                 "buttonColorCode": "#29CC6A",
-                "buttonWidth": 162
+                "buttonWidth": 181
             }
         ],
         "tutorialButtonGuestDataBean": [
             {
-                "buttonText": "ทดลองเล่น",
+                "buttonText": "TRY TO PLAYING",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             },
             {
-                "buttonText": "เข้าสู่ระบบ",
+                "buttonText": "LOGIN",
                 "buttonColorCode": "#29CC6A",
                 "buttonWidth": 182
             }
@@ -35,7 +35,7 @@
         "desc2Text": ["สามารถดูได้ตรงนี้ ว่ายังเหลือวัตถุดิบที่ต้องเก็บอีกกี่ชิ้น"],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "เข้าใจแล้ว",
+                "buttonText": "UNDERSTAND",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             }
@@ -50,7 +50,7 @@
         "desc2Text": ["นี่คือห้องครัวของคุณ!"],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "ไป COOKING",
+                "buttonText": "GO TO COOKING",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             }
@@ -65,7 +65,7 @@
         "desc2Text": ["เลือกเมนูที่ต้องการปรุง"],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "เข้าใจแล้ว",
+                "buttonText": "UNDERSTAND",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             }
@@ -75,12 +75,12 @@
         "tutorialID": 4,
         "characterImageKey": "tutorial-character-4",
         "contentImageKey": "content-panel-4",
-        "headerText": ["เมนู"],
+        "headerText": ["เมนูสำหรับปรุง"],
         "desc1Text": ["สามารถดูได้ง่ายๆ ว่าเมนูไหนพร้อมปรุงแล้วบ้าง"],
         "desc2Text": ["เมนูที่พร้อมปรุง"],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "เข้าใจแล้ว",
+                "buttonText": "UNDERSTAND",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             }
@@ -95,7 +95,7 @@
         "desc2Text": ["โดยเลือก COLLECT REWARD เพื่อไปยัง COLLECTIONS"],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "เข้าใจแล้ว",
+                "buttonText": "UNDERSTAND",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             }
@@ -110,7 +110,7 @@
         "desc2Text": ["กดที่นี่ เพื่อปลดล็อกเมนูใหม่"],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "เข้าใจแล้ว",
+                "buttonText": "UNDERSTAND",
                 "buttonColorCode": "#0099FF",
                 "buttonWidth": 182
             }
@@ -125,9 +125,9 @@
         "desc2Text": [],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "จะทำให้ดีที่สุด! (รับ+50 Point)",
+                "buttonText": "I'LL DO MY BEST! (GET +50 POINT)",
                 "buttonColorCode": "#29CC6A",
-                "buttonWidth": 247
+                "buttonWidth": 297
             }
         ]
     },
@@ -140,12 +140,12 @@
         "desc2Text": [],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "ย้อนกลับ",
+                "buttonText": "BACK",
                 "buttonColorCode": "#EE843C",
                 "buttonWidth": 182
             },
             {
-                "buttonText": "เข้าสู่ระบบ",
+                "buttonText": "LOGIN",
                 "buttonColorCode": "#29CC6A",
                 "buttonWidth": 182
             }
@@ -160,13 +160,33 @@
         "desc2Text": [],
         "tutorialButtonDataBean": [
             {
-                "buttonText": "เข้าสู่ระบบ",
+                "buttonText": "LOGIN",
                 "buttonColorCode": "#29CC6A",
                 "buttonWidth": 182
             },
             {
-                "buttonText": "ยืนยัน",
+                "buttonText": "CONFIRM",
                 "buttonColorCode": "#EE843C",
+                "buttonWidth": 182
+            }
+        ]
+    },
+    {
+        "tutorialID": 10,
+        "characterImageKey": "tutorial-character-1",
+        "contentImageKey": "content-panel-8",
+        "headerText": ["เข้าสู่ระบบ"],
+        "desc1Text": ["ตอนนี้คุณมี 1 เมนู “แกงเขียวหวาน” และ 50 Points", "โปรดเข้าสู่ระบบเพื่อเก็บรักษาคะแนนของคุณ!"],
+        "desc2Text": [],
+        "tutorialButtonDataBean": [
+            {
+                "buttonText": "BACK",
+                "buttonColorCode": "#EE843C",
+                "buttonWidth": 182
+            },
+            {
+                "buttonText": "LOGIN",
+                "buttonColorCode": "#29CC6A",
                 "buttonWidth": 182
             }
         ]

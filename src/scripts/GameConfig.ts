@@ -1,8 +1,8 @@
 export class GameConfig {
     public static readonly IS_MOCK_API: boolean = true
     public static readonly IS_MOCK_DAY_NIGHT: boolean = true
-    public static readonly DEBUG_OBJECT: boolean = false
-    public static readonly IS_START_WITH_TUTORIAL: boolean = true
+    public static readonly DEBUG_OBJECT: boolean = true
+    public static readonly IS_START_WITH_TUTORIAL: boolean = false
     public static readonly TIME_DURATION_TUTORIAL = 3000
     public static readonly TUTORIAL_INGREDIENT_OBJECT_ID: number[] = [8, 1]
     public static readonly MAX_MOBILE_CAMERA_ZOOM: number = 1

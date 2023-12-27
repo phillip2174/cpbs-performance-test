@@ -2,7 +2,7 @@ import { GameObjects, Scene, Tweens } from 'phaser'
 import { GameObjectConstructor } from '../scripts/plugins/objects/GameObjectConstructor'
 import { TutorialManager } from '../scripts/Manager/TutorialManager'
 import { PodProvider } from '../scripts/pod/PodProvider'
-import { Subscription } from 'rxjs'
+import { Subscription, timer } from 'rxjs'
 import { TutorialState } from './TutorialState'
 import { TutorialModalView } from './TutorialModalView'
 import { UserIngredientBean } from '../scripts/Ingredient/UserIngredientBean'
@@ -25,6 +25,8 @@ export class TutorialPanelView extends GameObjects.Container {
 
     private idStepSubscription: Subscription
     private stateSubscription: Subscription
+    private updateTutorialSubscription: Subscription
+    private reloadWindowTimerSubscription: Subscription
 
     private userPod: UserPod
 
@@ -40,7 +42,7 @@ export class TutorialPanelView extends GameObjects.Container {
         this.createUI()
         this.createTween()
         this.setActionPanel()
-        
+
         this.idStepSubscription = this.tutorialManager.tutorialStepID.subscribe((step) => {
             this.modalTutorial.updateData(this.tutorialManager.getTutorialDataWithID(step))
 
@@ -68,7 +70,13 @@ export class TutorialPanelView extends GameObjects.Container {
                         this.tutorialManager.setTutorialState(TutorialState.CloseUI)
                         if (this.userPod.userLoginType == UserType.Login) {
                             this.tutorialManager.saveCheckPointTutorialAndCompleted(7, true)
-                            window.location.reload()
+                            this.onBGCloseTween?.pause()
+                            this.setVisible(true)
+                            this.dimBackground.fillAlpha = 0.01
+                            this.reloadWindowTimerSubscription = timer(1000).subscribe((_) => {
+                                this.reloadWindowTimerSubscription?.unsubscribe()
+                                window.location.reload()
+                            })
                         } else {
                             this.tutorialManager.currentActionOnTweenClose = () => {
                                 this.tutorialManager.updateCurrentToNextTutorial()
@@ -98,6 +106,21 @@ export class TutorialPanelView extends GameObjects.Container {
                         () => {
                             this.tutorialManager.setTutorialState(TutorialState.CloseUI)
                             this.tutorialManager.setTutorialState(TutorialState.WaitClick)
+                            this.updateTutorialSubscription = timer(300).subscribe((_) => {
+                                this.tutorialManager.updateCurrentToNextTutorial()
+                                this.tutorialManager.saveCheckPointTutorialAndCompleted(10, true)
+                            })
+                        }
+                    )
+                    break
+                case TutorialStepState.LoopAskLogin:
+                    this.modalTutorial.setActionButton(
+                        () => {
+                            this.tutorialManager.setTutorialState(TutorialState.CloseUI)
+                            this.tutorialManager.setTutorialState(TutorialState.WaitClick)
+                        },
+                        () => {
+                            window.open('https://www.cpbrandsite.com/')
                         }
                     )
                     break
@@ -118,6 +141,8 @@ export class TutorialPanelView extends GameObjects.Container {
                     this.isCanInteract = true
                     break
                 case TutorialState.ShowUI:
+                    this.isCanInteract = false
+                    this.onBGCloseTween.pause()
                     this.setVisible(true)
                     this.onBGOpenTween.restart()
                     this.modalTutorial.setActiveModal(true)
@@ -142,6 +167,7 @@ export class TutorialPanelView extends GameObjects.Container {
         this.on('destroy', () => {
             this.idStepSubscription?.unsubscribe()
             this.stateSubscription?.unsubscribe()
+            this.updateTutorialSubscription?.unsubscribe()
         })
     }
 

@@ -9,4 +9,5 @@ export enum TutorialStepState {
     CompleteCollection = 7,
     AskLogin = 8,
     ConfirmNotLogin = 9,
+    LoopAskLogin = 10,
 }

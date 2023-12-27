@@ -15,6 +15,7 @@ import { TownUIPod } from '../Pod/TownUIPod'
 import { AudioManager } from '../../Audio/AudioManager'
 import { TutorialManager } from '../../Manager/TutorialManager'
 import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class CookingDetailView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -58,7 +59,7 @@ export class CookingDetailView extends GameObjects.Container {
 
         this.gameCamera = this.scene.cameras.main
         this.setPosition(this.gameCamera.centerX, this.gameCamera.centerY)
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.COLLECTION_DETAIL)
 
         this.dimButton = new DimButton(this.scene)
         this.dimButton.onClick(() => {

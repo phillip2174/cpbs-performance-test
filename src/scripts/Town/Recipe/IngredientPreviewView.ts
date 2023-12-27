@@ -6,6 +6,7 @@ import { InventoryPod } from '../Inventory/InventoryPod'
 import { IngredientPreviewCellView } from './IngredientPreviewCellView'
 import { IngredientBean } from './../../Ingredient/IngredientBean'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class IngredientPreviewView extends GameObjects.Container {
     public static readonly NOT_READY_COLOR_CODE: number = 0xfdf3ec
@@ -33,7 +34,6 @@ export class IngredientPreviewView extends GameObjects.Container {
         this.inventoryPod = PodProvider.instance.inventoryPod
         this.isDesktop = DeviceChecker.instance.isDesktop()
 
-        this.setDepth(204)
         this.createUI()
     }
 
@@ -42,7 +42,10 @@ export class IngredientPreviewView extends GameObjects.Container {
         scale: number = 1,
         spacing: number = 2.5,
         isOpenBG: boolean = false,
-        moreOffset: number = 0
+        moreOffsetX: number = 0,
+        moreOffsetY: number = 0,
+        isShowText: boolean = false,
+        backgroundYPosition: number = 7
     ) {
         this.setVisible(true)
 
@@ -53,7 +56,14 @@ export class IngredientPreviewView extends GameObjects.Container {
 
         this.recipeBean.ingredients.forEach((bean) => {
             let ingredientPR = new IngredientPreviewCellView(this.scene)
-            ingredientPR.doInit(scale, bean, isOpenBG ? true : this.recipeBean.secretUnlock != undefined, isOpenBG)
+            ingredientPR.doInit(
+                scale,
+                bean,
+                isOpenBG ? (isShowText ? true : false) : this.recipeBean.secretUnlock != undefined,
+                isShowText,
+                false,
+                isOpenBG ? 0xffffff : 0xedf1f8
+            )
             ingredientPR.width = ingredientPR.getBounds().width
             ingredientPR.height = ingredientPR.getBounds().height
             this.ingredientContainer.add([ingredientPR])
@@ -80,11 +90,11 @@ export class IngredientPreviewView extends GameObjects.Container {
                 this.backgroundIngredientPreview = this.scene.add
                     .nineslice(
                         0,
-                        7,
+                        backgroundYPosition,
                         'white-ingredient-bg',
                         '',
-                        this.ingredientContainer.getBounds().width + 10 + moreOffset,
-                        cellHeight,
+                        this.ingredientContainer.getBounds().width + moreOffsetX,
+                        cellHeight + moreOffsetY,
                         10,
                         10,
                         10,
@@ -95,8 +105,8 @@ export class IngredientPreviewView extends GameObjects.Container {
                 this.add(this.backgroundIngredientPreview).sendToBack(this.backgroundIngredientPreview)
             } else {
                 this.backgroundIngredientPreview.setSize(
-                    this.ingredientContainer.getBounds().width + 10 + moreOffset,
-                    cellHeight
+                    this.ingredientContainer.getBounds().width + moreOffsetX,
+                    cellHeight + moreOffsetY
                 )
             }
         }
@@ -164,6 +174,11 @@ export class IngredientPreviewView extends GameObjects.Container {
         this.backgroundIngredientPreview.setTint(this.isAllFull ? readyColor : notReadyColor)
 
         return this.isAllFull
+    }
+
+    public setBackgroundToReady() {
+        let readyColor = IngredientPreviewView.READY_COLOR_CODE
+        this.backgroundIngredientPreview.setTint(readyColor)
     }
 
     public updateClearTintAllCell() {

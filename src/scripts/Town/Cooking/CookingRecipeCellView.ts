@@ -312,7 +312,7 @@ export class CookingRecipeCellView extends GameObjects.Container implements IScr
             this.rewardPointCellView.setPointCell(bean.rewardPoint.toString())
         }
 
-        this.ingredientPreview.setPreviewView(bean, this.isDesktop ? 0.693 : 0.65, 5, true)
+        this.ingredientPreview.setPreviewView(bean, this.isDesktop ? 0.693 : 0.65, 5, true, 10, 0, true)
         this.handleButton(bean.secretUnlock ? CookingCellState.Secret : CookingCellState.Uncook)
         this.cookingCellState = bean.secretUnlock ? CookingCellState.Secret : CookingCellState.Uncook
 

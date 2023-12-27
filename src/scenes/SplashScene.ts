@@ -55,10 +55,16 @@ export class SplashScene extends Scene {
             }
 
             const tutorialManager = PodProvider.instance.tutorialManager
+            tutorialManager.getTutorialData(false)
 
             if (url.isCompletedTutorial != null || url.isCompletedTutorial != undefined) {
                 console.log(url.isCompletedTutorial)
-                tutorialManager.getTutorialData(true, JSON.parse(url.isCompletedTutorial))
+                tutorialManager.getTutorialData(
+                    true,
+                    tutorialManager.isCompletedTutorial()
+                        ? tutorialManager.isCompletedTutorial()
+                        : JSON.parse(url.isCompletedTutorial)
+                )
             } else {
                 tutorialManager.getTutorialData(false)
             }

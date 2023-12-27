@@ -42,7 +42,7 @@ export class MinigameCPPuzzleScene extends Scene {
         this.minigameScenePod.setSceneState(MinigameState.StartMenu)
         this.minigameScenePod.setGameId(1)
         this.minigameMenuUIView = new MinigameMenuUIView(this)
-        this.minigameStartMenuUIView = new MinigameStartMenuUIView(this).setDepth(2)
+        this.minigameStartMenuUIView = new MinigameStartMenuUIView(this)
         this.minigameCPuzzleGameplayUIView = new MinigameCPPuzzleGameplayUIView(this)
         this.minigameResultUIView = new MinigameResultUIView(this)
         this.minigameResultUIMiniView = new MinigameResultUIMiniView(this)

@@ -422,85 +422,85 @@ export class AnimationController {
     }
 
     createSpriteSheetAnimation(scene: Phaser.Scene) {
-        if(!scene.anims.exists('idle-nong-som')) 
-        scene.anims.create({
-            key: 'idle-nong-som',
-            frames: scene.anims.generateFrameNumbers('nong-som', { start: 0, end: 1 }),
-            repeat: -1,
-            repeatDelay: 2000,
-            yoyo: true,
-            frameRate: 5,
-        })
-        if(!scene.anims.exists('interact-vending')) 
-        scene.anims.create({
-            key: 'interact-vending',
-            frames: scene.anims.generateFrameNumbers('vending-machine', { start: 0, end: 17 }),
-            frameRate: 11,
-        })
-        if(!scene.anims.exists('idle')) 
-        scene.anims.create({
-            key: 'idle',
-            frames: scene.anims.generateFrameNumbers('vending-machine', { start: 0, end: 0 }),
-            frameRate: 1,
-        })
-        if(!scene.anims.exists('loading-cooking-loop')) 
-        scene.anims.create({
-            key: 'loading-cooking-loop',
-            frames: scene.anims.generateFrameNumbers('loading-cooking', { start: 0, end: 52 }),
-            frameRate: 14,
-            repeat: -1,
-        })
-        if(!scene.anims.exists('loading-text-loop')) 
-        scene.anims.create({
-            key: 'loading-text-loop',
-            frames: scene.anims.generateFrameNumbers('loading-text', { start: 0, end: 3 }),
-            frameRate: 4,
-            repeat: -1,
-        })
-        if(!scene.anims.exists('led-pixel-smile-1')) 
-        scene.anims.create({
-            key: 'led-pixel-smile-1',
-            frames: scene.anims.generateFrameNames('led-smile-01', {
-                prefix: 'smile-',
-                suffix: '.png',
-                end: 35,
-            }),
-            frameRate: 10,
-        })
-        if(!scene.anims.exists('led-pixel-smile-2')) 
-        scene.anims.create({
-            key: 'led-pixel-smile-2',
-            frames: scene.anims.generateFrameNames('led-smile-02', {
-                prefix: 'shy-',
-                suffix: '.png',
-                end: 33,
-            }),
-            frameRate: 10,
-        })
-        if(!scene.anims.exists('mini-food-truck-idle-close')) 
-        scene.anims.create({
-            key: 'mini-food-truck-idle-close',
-            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 0, end: 0 }),
-            frameRate: 1,
-        })
-        if(!scene.anims.exists('mini-food-truck-idle-open')) 
-        scene.anims.create({
-            key: 'mini-food-truck-idle-open',
-            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 5, end: 5 }),
-            frameRate: 1,
-        })
-        if(!scene.anims.exists('mini-food-truck-open')) 
-        scene.anims.create({
-            key: 'mini-food-truck-open',
-            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 0, end: 5 }),
-            frameRate: 20,
-        })
-        if(!scene.anims.exists('mini-food-truck-close')) 
-        scene.anims.create({
-            key: 'mini-food-truck-close',
-            frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 5, end: 0 }),
-            frameRate: 20,
-        })
+        if (!scene.anims.exists('idle-nong-som'))
+            scene.anims.create({
+                key: 'idle-nong-som',
+                frames: scene.anims.generateFrameNumbers('nong-som', { start: 0, end: 1 }),
+                repeat: -1,
+                repeatDelay: 2000,
+                yoyo: true,
+                frameRate: 5,
+            })
+        if (!scene.anims.exists('interact-vending'))
+            scene.anims.create({
+                key: 'interact-vending',
+                frames: scene.anims.generateFrameNumbers('vending-machine', { start: 0, end: 17 }),
+                frameRate: 11,
+            })
+        if (!scene.anims.exists('idle'))
+            scene.anims.create({
+                key: 'idle',
+                frames: scene.anims.generateFrameNumbers('vending-machine', { start: 0, end: 0 }),
+                frameRate: 1,
+            })
+        if (!scene.anims.exists('loading-cooking-loop'))
+            scene.anims.create({
+                key: 'loading-cooking-loop',
+                frames: scene.anims.generateFrameNumbers('loading-cooking', { start: 0, end: 52 }),
+                frameRate: 14,
+                repeat: -1,
+            })
+        if (!scene.anims.exists('loading-text-loop'))
+            scene.anims.create({
+                key: 'loading-text-loop',
+                frames: scene.anims.generateFrameNumbers('loading-text', { start: 0, end: 3 }),
+                frameRate: 4,
+                repeat: -1,
+            })
+        if (!scene.anims.exists('led-pixel-smile-1'))
+            scene.anims.create({
+                key: 'led-pixel-smile-1',
+                frames: scene.anims.generateFrameNames('led-smile-01', {
+                    prefix: 'smile-',
+                    suffix: '.png',
+                    end: 35,
+                }),
+                frameRate: 10,
+            })
+        if (!scene.anims.exists('led-pixel-smile-2'))
+            scene.anims.create({
+                key: 'led-pixel-smile-2',
+                frames: scene.anims.generateFrameNames('led-smile-02', {
+                    prefix: 'shy-',
+                    suffix: '.png',
+                    end: 33,
+                }),
+                frameRate: 10,
+            })
+        if (!scene.anims.exists('mini-food-truck-idle-close'))
+            scene.anims.create({
+                key: 'mini-food-truck-idle-close',
+                frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 0, end: 0 }),
+                frameRate: 1,
+            })
+        if (!scene.anims.exists('mini-food-truck-idle-open'))
+            scene.anims.create({
+                key: 'mini-food-truck-idle-open',
+                frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 5, end: 5 }),
+                frameRate: 1,
+            })
+        if (!scene.anims.exists('mini-food-truck-open'))
+            scene.anims.create({
+                key: 'mini-food-truck-open',
+                frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 0, end: 5 }),
+                frameRate: 20,
+            })
+        if (!scene.anims.exists('mini-food-truck-close'))
+            scene.anims.create({
+                key: 'mini-food-truck-close',
+                frames: scene.anims.generateFrameNumbers('mini-food-truck', { start: 5, end: 0 }),
+                frameRate: 20,
+            })
     }
 
     getTweenAnimationContainer(
@@ -525,8 +525,9 @@ export class AnimationController {
                                 y: { from: container.y, to: container.y + 15 },
                             },
                         })
+                    default:
+                        return undefined
                 }
-                break
             case 104:
                 switch (objectAnimationBean.stateType) {
                     case ObjectAnimationState.Transition1:
@@ -539,9 +540,8 @@ export class AnimationController {
                             },
                         })
                     default:
-                        break
+                        return undefined
                 }
-                break
             case 2:
             case 3:
             case 4:
@@ -565,9 +565,8 @@ export class AnimationController {
                             },
                         })
                     default:
-                        break
+                        return undefined
                 }
-                break
             case 22:
             case 23:
             case 24:
@@ -588,9 +587,8 @@ export class AnimationController {
                             },
                         })
                     default:
-                        break
+                        return undefined
                 }
-                break
             case 28:
                 switch (objectAnimationBean.stateType) {
                     case ObjectAnimationState.Transition1:
@@ -604,11 +602,10 @@ export class AnimationController {
                             },
                         })
                     default:
-                        break
+                        return undefined
                 }
-                break
             default:
-                break
+                return undefined
         }
     }
 

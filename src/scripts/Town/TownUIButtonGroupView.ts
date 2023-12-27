@@ -12,6 +12,7 @@ import { AnimationController } from './AnimationController'
 import { DimButton } from '../button/DimButton'
 import { SceneState } from '../../scenes/SceneState'
 import { TutorialStepState } from '../../Tutorial/TutorialStepState'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class TownUIButtonGroupView extends GameObjects.Container {
     private dimButton: DimButton
@@ -51,7 +52,7 @@ export class TownUIButtonGroupView extends GameObjects.Container {
         this.townBuildingPod = PodProvider.instance.townbuildingPod
         this.townUIPod = PodProvider.instance.townUIPod
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.TOWN_UI_BUTTON_GROUP)
         this.dimButton = new DimButton(this.scene)
         this.setupButtonGroupUI()
         this.add([this.dimButton, this.buttonGroupUIContainer])

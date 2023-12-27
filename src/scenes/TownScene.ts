@@ -11,6 +11,7 @@ import { PodProvider } from '../scripts/pod/PodProvider'
 import { GameConfig } from '../scripts/GameConfig'
 import { TutorialHintView } from '../Tutorial/TutorialHintView'
 import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
+import { UIDepthConfig } from '../scripts/UIDepthConfig'
 
 export class TownScene extends Scene {
     private townBuildingView: TownBuildingView
@@ -47,7 +48,7 @@ export class TownScene extends Scene {
         this.townDayNightView.doInit()
 
         if (!this.tutorialManager.tutorialSaveBean.isCompletedTutorial && GameConfig.IS_START_WITH_TUTORIAL) {
-            this.hintTutorialTownBuildingView = new TutorialHintView(this).setDepth(99)
+            this.hintTutorialTownBuildingView = new TutorialHintView(this).setDepth(UIDepthConfig.TUTORIAL_HINT)
             this.hintTutorialTownBuildingView.doInit()
         }
     }

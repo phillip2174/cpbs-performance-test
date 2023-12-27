@@ -15,6 +15,7 @@ import { InventorySlotCellView } from './InventorySlotCellView'
 import { APILoadingManager } from '../../api-loading/APILoadingManager'
 import { BoldText } from '../../../BoldText/BoldText'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class InventoryUIPanelView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -57,7 +58,7 @@ export class InventoryUIPanelView extends GameObjects.Container {
         this.townUIPod = PodProvider.instance.townUIPod
         this.inventoryPod = PodProvider.instance.inventoryPod
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-        this.setDepth(200)
+        this.setDepth(UIDepthConfig.INVENTORY)
         this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setupUI(width, height)
         this.createTween()

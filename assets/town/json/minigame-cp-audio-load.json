@@ -87,14 +87,32 @@
             },
             {
                 "type": "audio",
-                "key": "order_click_sfx",
-                "url": "assets/audio/sfx/minigame/order-minigame/order_click_sfx.mp3",
+                "key": "order_correct_sfx",
+                "url": "assets/audio/sfx/minigame/order-minigame/order_correct_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "order_incorrect_sfx",
+                "url": "assets/audio/sfx/minigame/order-minigame/order_incorrect_sfx.mp3",
                 "autoDecode": true
             },
             {
                 "type": "audio",
                 "key": "order_incoming_sfx",
                 "url": "assets/audio/sfx/minigame/order-minigame/order_incoming_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "alert_dialogue_open_sfx",
+                "url": "assets/audio/sfx/alert-dialogue/alert_dialogue_open_sfx.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "flat_message_alert_sfx",
+                "url": "assets/audio/sfx/flat-message/flat_message_alert_sfx.mp3",
                 "autoDecode": true
             }
         ]

@@ -73,7 +73,9 @@ export class MinigameCPOrderMenuCellView extends GameObjects.Container {
 
     public showSuccessIndicator(isCorrect: boolean): void {
         this.successIndicatorView?.playIndicatorTween(isCorrect)
-        this.audioManager.playSFXSound('order_click_sfx')
+
+        if (isCorrect) this.audioManager.playSFXSound('order_correct_sfx')
+        else this.audioManager.playSFXSound('order_incorrect_sfx')
     }
 
     public onStartGame(): void {

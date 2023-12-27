@@ -3,18 +3,13 @@
         "files": [
             {
                 "type": "image",
-                "key": "minigame-start-button",
-                "url": "assets/minigame/minigame1/button-cta-game.png"
-            },
-            {
-                "type": "image",
                 "key": "minigame-menu-cell-bg-white",
                 "url": "assets/minigame/minigame2/menu-cell-bg-white.png"
             },
             {
                 "type": "image",
-                "key": "minigame-menu-cell-bg-red",
-                "url": "assets/minigame/minigame2/menu-cell-bg-red.png"
+                "key": "minigame-menu-cell-bg-purple",
+                "url": "assets/minigame/minigame2/menu-cell-bg-purple.png"
             },
             {
                 "type": "image",
@@ -105,11 +100,6 @@
                 "type": "image",
                 "key": "line-completed",
                 "url": "assets/global_ui/line-completed.png"
-            },
-            {
-                "type": "image",
-                "key": "minigame-2-countdown-start",
-                "url": "assets/minigame/minigame2/minigame-2-countdown-start.png"
             },
             {
                 "type": "image",

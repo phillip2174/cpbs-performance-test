@@ -33,7 +33,6 @@ export class GuideLineUICellView extends GameObjects.Container {
             .image(x, y, GuideLineUICellView.INGREDIENT_IMAGE_KEY + this.ingredientBean.id)
             .setDisplaySize(48, 48)
             .setSize(48, 48)
-            .setDepth(1)
 
         this.stateSubscription = this.pod.guideLineUICellState.subscribe((state) => {
             switch (state) {

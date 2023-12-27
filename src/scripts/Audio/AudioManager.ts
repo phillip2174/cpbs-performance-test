@@ -21,7 +21,11 @@ export class AudioManager {
     private bgmSound: Phaser.Sound.BaseSound
     private ambientSound: Phaser.Sound.BaseSound
 
-    public doInit(bgmSoundManager:Phaser.Sound.BaseSoundManager, sfxSoundManager: Phaser.Sound.BaseSoundManager, ambientSoundManager: Phaser.Sound.BaseSoundManager): void {
+    public doInit(
+        bgmSoundManager: Phaser.Sound.BaseSoundManager,
+        sfxSoundManager: Phaser.Sound.BaseSoundManager,
+        ambientSoundManager: Phaser.Sound.BaseSoundManager
+    ): void {
         this.bgmSoundManager = bgmSoundManager
         this.sfxSoundManager = sfxSoundManager
         this.ambientSoundManager = ambientSoundManager
@@ -30,22 +34,19 @@ export class AudioManager {
         this.localStorageRepository.getSettingData()
         this.setSoundEffect(this.localStorageRepository.settingDataBean.isSoundEffectOn)
         this.setBgMusic(this.localStorageRepository.settingDataBean.isBgMusicOn)
-        
+
         this.isSoundEffectOn.subscribe((isOn) => {
             this.soundEffectVolume = isOn ? 1 : 0
 
-            if(this.sfxSoundManager != undefined)
-                this.sfxSoundManager.mute = !isOn
+            if (this.sfxSoundManager != undefined) this.sfxSoundManager.mute = !isOn
 
-            if(this.ambientSoundManager != undefined)
-                this.ambientSoundManager.mute = !isOn
+            if (this.ambientSoundManager != undefined) this.ambientSoundManager.mute = !isOn
         })
 
         this.isBgMusicOn.subscribe((isOn) => {
             this.bgMusicVolume = isOn ? 1 : 0
 
-            if(this.bgmSoundManager != undefined)
-            this.bgmSoundManager.mute = !isOn
+            if (this.bgmSoundManager != undefined) this.bgmSoundManager.mute = !isOn
         })
 
         if (localStorage.getItem('settingData') == null || localStorage.getItem('settingData') == undefined)
@@ -79,7 +80,7 @@ export class AudioManager {
     }
 
     public playBGMSound(key: string, isForceStart: boolean = false): Phaser.Sound.BaseSound {
-        if(isForceStart == false && this.bgmSound != undefined && this.bgmSound.key == key) return;
+        if (isForceStart == false && this.bgmSound != undefined && this.bgmSound.key == key) return undefined
         if (this.bgmSound != undefined) this.bgmSound.destroy()
         const config: Phaser.Types.Sound.SoundConfig = {
             mute: false,
@@ -105,7 +106,7 @@ export class AudioManager {
     }
 
     public playAmbientSound(key: string, isForceStart: boolean = false): Phaser.Sound.BaseSound {
-        if(isForceStart == false && this.ambientSound != undefined && this.ambientSound.key == key) return;
+        if (isForceStart == false && this.ambientSound != undefined && this.ambientSound.key == key) return undefined
         if (this.ambientSound != undefined) this.ambientSound.destroy()
         const config: Phaser.Types.Sound.SoundConfig = {
             mute: false,
@@ -124,10 +125,10 @@ export class AudioManager {
     }
 
     public stopAmbientSound() {
-        if (this.ambientSound != undefined){
+        if (this.ambientSound != undefined) {
             this.ambientSound.destroy()
             this.ambientSound = undefined
-        } 
+        }
     }
 
     playSFXSound(key: string, isLoop: boolean = false) {
@@ -138,7 +139,7 @@ export class AudioManager {
             detune: 0,
             seek: 0,
             loop: isLoop,
-            delay: 0,        
+            delay: 0,
         }
 
         this.sfxSoundManager.play(key, config)
@@ -152,7 +153,7 @@ export class AudioManager {
             detune: 0,
             seek: 0,
             loop: isLoop,
-            delay: 0,        
+            delay: 0,
         }
 
         const sfx = this.sfxSoundManager.add(key, config)

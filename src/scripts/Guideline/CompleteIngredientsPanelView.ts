@@ -17,6 +17,7 @@ import { DeviceChecker } from '../plugins/DeviceChecker'
 import { AudioManager } from '../Audio/AudioManager'
 import { AlertDialogue } from '../alert-dialogue/AlertDialogue'
 import { FlatMessageManager } from '../flat-message/FlatMessageManager'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class CompleteIngredientsPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -75,7 +76,7 @@ export class CompleteIngredientsPanelView extends GameObjects.Container {
         this.setupButtonsAction()
         this.createTweens()
         this.setupSubscribe()
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.COMPLETE_INGREDIENT)
         this.add([this.dimButton, this.uiPanelContainer])
     }
 

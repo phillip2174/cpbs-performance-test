@@ -11,6 +11,7 @@ import { TownUIButtonType } from './Type/TownUIButtonType'
 import { ButtonSoundType } from '../button/ButtonSoundType'
 import { BoldText } from '../../BoldText/BoldText'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class TownUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
@@ -508,7 +509,7 @@ export class TownUIButtonView extends GameObjects.Container {
             this.buttonNotification.doInit(35, -34)
             this.buttonIcon.setPosition(0, -32)
             this.buttonText.setPosition(-0.5, 18).setStyle({ fill: '#585858', fontSize: 16 })
-            this.setDepth(202)
+            this.setDepth(UIDepthConfig.TOWN_BUTTON_UI_DESKTOP)
         }
 
         this.add([this.backgroundButton, this.buttonIcon, this.buttonText, this.buttonNotification])

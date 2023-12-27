@@ -35,7 +35,7 @@ export class DailyLoginRewardPreviewView extends GameObjects.Container {
         this.amountText = new BoldText(
             this.scene,
             0,
-            36,
+            0,
             '+' + this.rewardBean.amount,
             this.isDesktop ? 22 : 16,
             '',
@@ -55,6 +55,8 @@ export class DailyLoginRewardPreviewView extends GameObjects.Container {
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
+
+        this.amountText.setPosition(0, this.isDesktop ? 36 : 28)
     }
 
     public updatePreviewOnCollected(): void {

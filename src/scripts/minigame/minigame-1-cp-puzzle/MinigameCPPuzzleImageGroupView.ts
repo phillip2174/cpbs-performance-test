@@ -12,6 +12,7 @@ import { MinigameState } from '../MinigameState'
 import { PodProvider } from '../../pod/PodProvider'
 import { AudioManager } from '../../Audio/AudioManager'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
     private readonly WIDTH = 3
@@ -49,7 +50,7 @@ export class MinigameCPPuzzleImageGroupView extends GameObjects.Container {
             }
         }
 
-        this.setDepth(2)
+        this.setDepth(UIDepthConfig.MINI_GAME_RESULT)
 
         this.isDesktop = DeviceChecker.instance.isDesktop()
     }

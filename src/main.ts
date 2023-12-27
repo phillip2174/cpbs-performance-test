@@ -9,6 +9,8 @@ import { MinigameCPPuzzleScene } from './scenes/MinigameCPPuzzleScene'
 import { MinigameCPOrderScene } from './scenes/MinigameCPOrderScene'
 import OutlinePostFx from 'phaser3-rex-plugins/plugins/outlinepipeline'
 import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin'
+import { MinigameCPGuessThisPictureScene } from './scenes/MinigameCPGuessThisPictureScene'
+import CircleMaskImagePlugin from 'phaser3-rex-plugins/plugins/circlemaskimage-plugin'
 
 function getGameCanvasSize(): { width: number; height: number } {
     let gameScreenWidth
@@ -91,6 +93,11 @@ const config: Phaser.Types.Core.GameConfig = {
                 plugin: OutlinePipelinePlugin,
                 start: true,
             },
+            {
+                key: 'rexCircleMaskImagePlugin',
+                plugin: CircleMaskImagePlugin,
+                start: true,
+            },
         ],
     },
     physics: {
@@ -99,20 +106,27 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: true,
         },
     },
-    
-    scene: [SplashScene, SplashLoaddingScene, TownScene, CityUIScene, MinigameCPPuzzleScene, MinigameCPOrderScene],
+
+    scene: [
+        SplashScene,
+        SplashLoaddingScene,
+        TownScene,
+        CityUIScene,
+        MinigameCPPuzzleScene,
+        MinigameCPOrderScene,
+        MinigameCPGuessThisPictureScene,
+    ],
 
     callbacks: {
-        preBoot: function(game) {
+        preBoot: function (game) {
             // @ts-ignore: Unreachable code error
-            game.bgmAudioManager = Phaser.Sound.SoundManagerCreator.create(game);
+            game.bgmAudioManager = Phaser.Sound.SoundManagerCreator.create(game)
             // @ts-ignore: Unreachable code error
-            game.sfxAudioManager = Phaser.Sound.SoundManagerCreator.create(game);
+            game.sfxAudioManager = Phaser.Sound.SoundManagerCreator.create(game)
             // @ts-ignore: Unreachable code error
-            game.ambientAudioManager = Phaser.Sound.SoundManagerCreator.create(game);
-        }
-    }
-
+            game.ambientAudioManager = Phaser.Sound.SoundManagerCreator.create(game)
+        },
+    },
 }
 
 export default new Phaser.Game(config)

@@ -29,6 +29,7 @@ import { TutorialManager } from '../../Manager/TutorialManager'
 import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
 import { TutorialState } from '../../../Tutorial/TutorialState'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class CookingUIPanelView extends GameObjects.Container {
     public static readonly COOKING_BG_KEY: string = 'cooking-bg-'
@@ -98,7 +99,7 @@ export class CookingUIPanelView extends GameObjects.Container {
 
         this.gameCamera = this.scene.cameras.main
         this.setPosition(this.gameCamera.centerX, this.gameCamera.centerY)
-        this.setDepth(200)
+        this.setDepth(UIDepthConfig.COOKING)
         this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setupUI()

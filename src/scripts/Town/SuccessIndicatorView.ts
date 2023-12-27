@@ -6,6 +6,7 @@ import { PodProvider } from '../pod/PodProvider'
 import { SuccessIndicatorPod } from './Pod/SuccessIndicatorPod'
 import { SuccessIndicatorState } from './Type/SuccessIndicatorState'
 import { AudioManager } from '../Audio/AudioManager'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class SuccessIndicatorView extends GameObjects.Container {
     public static readonly DRAW_SPAWN_TIME: number = 300
@@ -55,7 +56,7 @@ export class SuccessIndicatorView extends GameObjects.Container {
             }
         })
 
-        this.setDepth(100)
+        this.setDepth(UIDepthConfig.SUCCESS_INDICATOR)
     }
 
     private spawnIngredient() {

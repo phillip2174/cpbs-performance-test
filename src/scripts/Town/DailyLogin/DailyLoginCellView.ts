@@ -17,7 +17,7 @@ export class DailyLoginCellView extends GameObjects.Container {
     public static readonly BG_HEIGHT_DESKTOP: number = 112
     public static readonly BG_WIDTH_BIG_MOBILE: number = 152
     public static readonly BG_WIDTH_MOBILE: number = 74
-    public static readonly BG_HEIGHT_MOBILE: number = 100
+    public static readonly BG_HEIGHT_MOBILE: number = 95
     public static readonly STAMP_MAX_SCALE_DESKTOP: number = 0.69
     public static readonly STAMP_MIN_SCALE_DESKTOP: number = 0.23
     public static readonly STAMP_MAX_SCALE_MOBILE: number = 0.54

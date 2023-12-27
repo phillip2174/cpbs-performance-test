@@ -12,7 +12,7 @@ export class UserPod {
     public userBean: UserBean
     public userCPpoint: BehaviorSubject<number> = new BehaviorSubject<number>(0)
     public isFirstLoginOfTheDay: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
-    public userLoginType: UserType = UserType.Login
+    public userLoginType: UserType = UserType.Guest
 
     private currentLoginTime: Date
     private userRepository: UserRepository

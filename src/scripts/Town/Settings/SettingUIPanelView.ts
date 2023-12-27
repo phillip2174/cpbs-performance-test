@@ -11,6 +11,7 @@ import { TownUIPod } from './../Pod/TownUIPod'
 import { Subscription, skip } from 'rxjs'
 import { ButtonSoundType } from '../../button/ButtonSoundType'
 import { BoldText } from '../../../BoldText/BoldText'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class SettingUIPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -39,7 +40,7 @@ export class SettingUIPanelView extends GameObjects.Container {
     public doInit(): void {
         this.townUIPod = PodProvider.instance.townUIPod
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.SETTING)
         this.dimButton = new DimButton(this.scene)
 
         this.setupSettingsUIContainer()
@@ -126,7 +127,17 @@ export class SettingUIPanelView extends GameObjects.Container {
         this.buttonGroupBackground = this.scene.add.image(0, 0, 'setting-button-group-bg').setOrigin(0.5)
         this.settingsText = new BoldText(this.scene, 0, -155.5, 'Settings', 36, '#2B2B2B')
 
-        this.closeButton = new Button(this.scene, 125.5, -180.5, 40, 40, 'close-button', 0, '', ButtonSoundType.Negative)
+        this.closeButton = new Button(
+            this.scene,
+            125.5,
+            -180.5,
+            40,
+            40,
+            'close-button',
+            0,
+            '',
+            ButtonSoundType.Negative
+        )
         this.closeButton.onClick(() => {
             PodProvider.instance.townUIPod.changeUIState(TownUIState.MainMenu)
         })

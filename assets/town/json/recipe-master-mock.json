@@ -2,7 +2,6 @@
     {
         "id": 1,
         "title": "ไข่ตุ๋นฟักทองไข่ตุ๋นฟักทองไข่ตุ๋นฟักทองไข่ตุ๋นฟักทองไข่ตุ๋นฟักทองไข่ตุ๋นฟักทอง",
-        "description": "บ้านไหนที่มีเด็กน้อย ไม่ชอบทานผักต้องลองเมนูนี้ “ไข่ตุ๋น ฟักทอง” เมนูที่สามารถเอาใจได้ทั้งบ้านแถมเด็ก ๆ ก็ชอบ หันมาทานผักอย่าง แน่นอนเพียงนำ \"ซีพีไข่เหลวพาส-เจอร์ไรซ์สูตรไข่ตุ๋นสไตล์ ญี่ปุ่น\" มาเทใส่ฟักทองที่คว้านเม็ดและไส้ออกแล้วนำไปนึ่ง เติมสีสันด้วย แครอทและถั่วลันเตาเท่านั้นก็เป็นอันเสร็จ บอกเลยว่าไม่ว่าจะวัยเด็กหรือผู้สูงวัยต้องชอบเมนูนี้แน่นอน ลองไปทำดูกันนะ หาซื้อได้ที่Lotus’s, makro, Tops market และร้านค้าชั้นนำทั่วไป",
         "type": "Easy",
         "rewardPoint": 15,
         "ingredients": [
@@ -23,50 +22,11 @@
                 "amount": 1
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลวปรุงรสพาสเจอร์ไรซ์",
-                "amount": "1/2",
-                "unit": "ฟอง",
-                "isCPProduct": true
-            },
-            {
-                "title": "ฟักทอง",
-                "amount": "1",
-                "unit": "หัว",
-                "isCPProduct": true
-            },
-            {
-                "title": "แครอท ไข่เหลวปรุงรสพาสเจอร์ไรซ์ สูตร ไข่ตุ๋นสไตล์ญี่ปุ่น ตราซีพี ไข่ตุ๋นสไตล์ญี่ปุ่น",
-                "amount": "10",
-                "unit": "หัว",
-                "isCPProduct": false
-            },
-            {
-                "title": "แครอท",
-                "amount": "10",
-                "unit": "หัว",
-                "isCPProduct": false
-            },
-            {
-                "title": "แครอท",
-                "amount": "10",
-                "unit": "หัว",
-                "isCPProduct": false
-            },
-            {
-                "title": "แครอท",
-                "amount": "10",
-                "unit": "หัว",
-                "isCPProduct": false
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นฟักทอง"
     },
     {
         "id": 2,
         "title": "พุดดิ้งไข่คาราเมลแต่ไม่ใช่ไข่ตุ๋น",
-        "description": "พุดดิ้งไข่แต่ไม่ใช่ไข่ตุ๋น งงอะดิผมก็งง",
         "type": "Normal",
         "rewardPoint": 150,
         "ingredients": [
@@ -87,20 +47,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/พุดดิ้งไข่แต่ไม่ใช่ไข่ตุ๋น"
     },
     {
         "id": 3,
         "title": "ครัวซองต์ไข่ต้ม",
-        "description": "ครัวซองต์ไข่ต้ม โอ้โห้น่าอร่อยมาก",
         "type": "Hard",
         "rewardPoint": 150,
         "ingredients": [
@@ -113,32 +64,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "แพ็ค",
-                "isCPProduct": true
-            },
-            {
-                "title": "ครัวซองต์",
-                "amount": "1",
-                "unit": "ชิ้น",
-                "isCPProduct": false
-            },
-            {
-                "title": "ครัวซองต์ ครัวซองต์",
-                "amount": "1",
-                "unit": "ชิ้น",
-                "isCPProduct": false
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ครัวซองต์ไข่ต้ม"
     },
     {
         "id": 4,
         "title": "แกงเผ็ดเป็ดย่าง",
-        "description": "บ้านไหนที่มีเด็กน้อย ไม่ชอบทานผักต้องลองเมนูนี้ “ไข่ตุ๋น ฟักทอง” เมนูที่สามารถเอาใจได้ทั้งบ้านแถมเด็ก ๆ ก็ชอบ หันมาทานผักอย่าง แน่นอนเพียงนำ \"ซีพีไข่เหลวพาส-เจอร์ไรซ์สูตรไข่ตุ๋นสไตล์ ญี่ปุ่น\" มาเทใส่ฟักทองที่คว้านเม็ดและไส้ออกแล้วนำไปนึ่ง เติมสีสันด้วย แครอทและถั่วลันเตาเท่านั้นก็เป็นอันเสร็จ บอกเลยว่าไม่ว่าจะวัยเด็กหรือผู้สูงวัยต้องชอบเมนูนี้แน่นอน ลองไปทำดูกันนะ หาซื้อได้ที่Lotus’s, makro, Tops market และร้านค้าชั้นนำทั่วไป",
         "type": "Challenge",
         "rewardPoint": 1500,
         "ingredients": [
@@ -155,20 +85,11 @@
                 "amount": 20
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/แกงเผ็ดเป็ดย่าง"
     },
     {
         "id": 29,
         "title": "ข้าวหน้าแซลม่อนไข่ดองเกาหลี",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Hard",
         "rewardPoint": 15,
         "ingredients": [
@@ -189,20 +110,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 36,
         "title": "บะหมี่ไข่พะโล้ยางมะตูมหมูดำคูโรบูตะ",
-        "description": "เป็นอาหารที่คาดว่าคนไทยแทบทุกคนรู้จัก และชอบกินมาตั้งแต่เริ่มเดินเตาะแตะ เป็นอาหารที่กินง่าย รสชาติถูกปากทุกเพศ ทุกวัย และรสไม่จัด และยังนับว่าเป็นอาหารสารพัดประโยชน์  เมืื่อทำ “พะโล้”เป็น ก็ยังสามารถนำไปประยุกต์เป็นอาหารอีกหลายเมนู เช่น “ก๋วยจั๊บ” “ก๋วยเตี๋ยวหลอด”  “เปาะเปี๊ยะ” “ข้าวขาหมู” หรือแม้กระทั่ง “เนื้อตุ๋น” ฯลฯ",
         "type": "Easy",
         "rewardPoint": 15,
         "ingredients": [
@@ -223,20 +135,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 41,
         "title": "ยำวุ้นเส้นอกไก่นุ่มกระเทียมพริกสด",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Challenge",
         "rewardPoint": 15,
         "ingredients": [
@@ -257,20 +160,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 10,
         "title": "ยังไม่มีข้อมูล",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Easy",
         "secretUnlock": {
             "unlockRecipeAmount": 20
@@ -294,20 +188,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 5,
         "title": "กุ้งกรอบซอสสามรสเปรี้ยวหวาน",
-        "description": "กุ้งกรอบซอสสามรส ซอสหอมหวาน อร่อยรสร้อนแรง ชายใดได้ชิมก็ยินดีด้วยนะจ้ะ",
         "type": "Challenge",
         "secretUnlock": {
             "unlockRecipeAmount": 2
@@ -319,20 +204,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 6,
         "title": "ยังไม่มีข้อมูล",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Easy",
         "secretUnlock": {
             "unlockRecipeAmount": 2
@@ -348,20 +224,11 @@
                 "amount": 3
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 7,
         "title": "ยังไม่มีข้อมูล",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Easy",
         "secretUnlock": {
             "unlockRecipeAmount": 6
@@ -381,20 +248,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 8,
         "title": "ยังไม่มีข้อมูล",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Easy",
         "secretUnlock": {
             "unlockRecipeAmount": 10
@@ -418,20 +276,11 @@
                 "amount": 2
             }
         ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
-            }
-        ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"
     },
     {
         "id": 9,
         "title": "ยังไม่มีข้อมูล",
-        "description": "ยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูลยังไม่มีข้อมูล",
         "type": "Easy",
         "secretUnlock": {
             "unlockRecipeAmount": 15
@@ -453,14 +302,6 @@
             {
                 "id": 4,
                 "amount": 2
-            }
-        ],
-        "ingredientDescs": [
-            {
-                "title": "ไข่เหลว CP",
-                "amount": "1/2",
-                "unit": "ถ้วยตราไก่",
-                "isCPProduct": true
             }
         ],
         "linkoutUrl": "https://www.cpbrandsite.com/recipe/ไข่ตุ๋นในเปลืก"

@@ -14,22 +14,32 @@ export class LifeCountCellView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(indexLifeCount: number, scale: number = 1) {
+    public doInitHeart(indexLifeCount: number, scale: number = 1) {
         this.scaleSize = scale
         this.indexLifeCount = indexLifeCount
 
-        this.createUI()
+        this.heartBG = this.scene.add.image(0, 0, 'heart-empty').setScale(this.scaleSize)
+        this.heartImage = this.scene.add.image(0, 0, 'heart-full').setScale(this.scaleSize)
+
+        this.add([this.heartBG, this.heartImage])
         this.createTween()
 
         this.width = this.getBounds().width
         this.height = this.getBounds().height
     }
 
-    private createUI() {
-        this.heartBG = this.scene.add.image(0, 0, 'heart-empty').setScale(this.scaleSize)
-        this.heartImage = this.scene.add.image(0, 0, 'heart-full').setScale(this.scaleSize)
+    public doInitCard(indexLifeCount: number, scale: number = 1) {
+        this.scaleSize = scale
+        this.indexLifeCount = indexLifeCount
+
+        this.heartBG = this.scene.add.image(0, 0, 'minigame-3-chance-empty').setScale(this.scaleSize)
+        this.heartImage = this.scene.add.image(0, 0, 'minigame-3-chance-fill').setScale(this.scaleSize)
 
         this.add([this.heartBG, this.heartImage])
+        this.createTween()
+
+        this.width = this.getBounds().width
+        this.height = this.getBounds().height
     }
 
     private createTween() {

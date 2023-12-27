@@ -11,7 +11,7 @@ import { MinigameCPOrderCharacterView } from './MinigameCPOrderCharacterView'
 import { MinigameCpOrderMenuCellGroupView } from './MinigameCPOrderMenuCellGroupView'
 import { TextAdapter } from '../../text-adapter/TextAdapter'
 import { MinigameCPOrderPod } from './MinigameCPOrderPod'
-import { MinigameCPOrderCountdownView } from './MinigameCPOrderCountdownView'
+import { MinigameCountdownView } from '../MinigameCountdownView'
 import { BoldText } from '../../../BoldText/BoldText'
 import { AudioManager } from '../../Audio/AudioManager'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
@@ -26,7 +26,7 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
 
     private menuCellGroupView: MinigameCpOrderMenuCellGroupView
     private characterView: MinigameCPOrderCharacterView
-    private countdownView: MinigameCPOrderCountdownView
+    private countdownView: MinigameCountdownView
 
     private orderTimer: TimeBarView
     private lifeCount: LifeCountView
@@ -94,7 +94,7 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
         this.menuCellGroupView = new MinigameCpOrderMenuCellGroupView(this.scene)
         this.characterView = new MinigameCPOrderCharacterView(this.scene)
         this.orderTimer = new TimeBarView(this.scene)
-        this.countdownView = new MinigameCPOrderCountdownView(this.scene)
+        this.countdownView = new MinigameCountdownView(this.scene)
 
         this.subBg = this.scene.add.image(0, 0, 'minigame-2-sub-bg')
         this.characterOrderBg = this.scene.add.image(0, 0, 'minigame-2-character-order-bg')
@@ -228,7 +228,7 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
         this.timerZeroSubscription = this.minigamePod.isTimerZero.pipe(skip(1)).subscribe((isZero) => {
             if (isZero) {
                 this.minigamePod.setOrderFailMark()
-                this.audioManager.playSFXSound('order_click_sfx')
+                this.audioManager.playSFXSound('order_incorrect_sfx')
             }
         })
 

@@ -6,9 +6,12 @@
     "scripts": {
         "start": "vite",
         "build": "tsc && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "generate": "graphql-codegen"
     },
     "devDependencies": {
+        "@graphql-codegen/cli": "^5.0.0",
+        "@graphql-codegen/client-preset": "^4.1.0",
         "@typescript-eslint/eslint-plugin": "^5.40.0",
         "@typescript-eslint/parser": "^5.40.0",
         "eslint": "^8.25.0",
@@ -16,6 +19,8 @@
         "vite": "^3.1.0"
     },
     "dependencies": {
+        "@apollo/client": "^3.8.7",
+        "graphql": "16.6.0",
         "lazy-get-decorator": "^2.2.1",
         "phaser": "3.61.0-beta.3",
         "phaser3-rex-plugins": "^1.60.6",

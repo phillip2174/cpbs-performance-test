@@ -171,6 +171,34 @@ export class SplashLoaddingScene extends Scene {
                         )
                     }
                     break
+
+                case SceneState.MinigameCPGuessThisPicture:
+                    observableInit.push(timer(200))
+                    observableInit.push(
+                        ResourceManager.instance.loadPackJson('global-ui-load', `assets/global-ui-load.json`)
+                    )
+                    observableInit.push(
+                        ResourceManager.instance.loadPackJson(
+                            'minigame3-load',
+                            `assets/minigame/minigame3/minigame3-load.json`
+                        )
+                    )
+                    if (this.isDesktop) {
+                        observableInit.push(
+                            ResourceManager.instance.loadPackJson(
+                                'minigame-result-load',
+                                `assets/minigame/result/minigame-result-load.json`
+                            )
+                        )
+                    } else {
+                        observableInit.push(
+                            ResourceManager.instance.loadPackJson(
+                                'minigame-result-load',
+                                `assets/minigame/result/mobile/mobile-minigame-result-load.json`
+                            )
+                        )
+                    }
+                    break
             }
 
             forkJoin(observableInit).subscribe(() => {

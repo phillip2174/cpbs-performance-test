@@ -11,6 +11,7 @@ import { TownUIPod } from '../Pod/TownUIPod'
 import { Subscription, skip } from 'rxjs'
 import { MinigameScenePod } from '../../minigame/MinigameScenePod'
 import { BoldText } from '../../../BoldText/BoldText'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class SettingMinigameUIPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -39,7 +40,7 @@ export class SettingMinigameUIPanelView extends GameObjects.Container {
     public doInit(pod: MinigameScenePod): void {
         this.pod = pod
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.SETTING)
         this.dimButton = new DimButton(this.scene)
 
         this.setupSettingsUIContainer()

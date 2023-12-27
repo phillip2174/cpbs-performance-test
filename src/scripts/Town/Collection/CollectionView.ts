@@ -26,6 +26,7 @@ import { TutorialState } from '../../../Tutorial/TutorialState'
 import { TutorialManager } from '../../Manager/TutorialManager'
 import { TutorialStepState } from '../../../Tutorial/TutorialStepState'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class CollectionView extends GameObjects.Container {
     public static readonly SCROLL_VIEW_LAYER: number = 1
@@ -87,7 +88,7 @@ export class CollectionView extends GameObjects.Container {
         this.townUIPod = PodProvider.instance.townUIPod
         this.recipePod = PodProvider.instance.recipePod
         this.tutorialManager = PodProvider.instance.tutorialManager
-        this.setDepth(200)
+        this.setDepth(UIDepthConfig.COLLECTION)
         this.setupUI()
         this.setInteractiveObject()
         this.createTween()

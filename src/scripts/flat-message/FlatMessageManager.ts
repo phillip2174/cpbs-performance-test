@@ -4,6 +4,7 @@ import { Subscription, timer } from 'rxjs'
 import { DeviceChecker } from '../plugins/DeviceChecker'
 import { AudioManager } from '../Audio/AudioManager'
 import { PodProvider } from '../pod/PodProvider'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class FlatMessageManager {
     private static _instance: FlatMessageManager
@@ -48,9 +49,14 @@ export class FlatMessageManager {
         this.flatContainer.setVisible(true)
         this.flatContainer.setPosition(x, y)
 
-        this.flatMessageText.setText(text)
+        const resultDesc = text.slice(0, text.length > 3 ? 3 : text.length)
+        if (text.length > 3) {
+            resultDesc[resultDesc.length - 1] = resultDesc[resultDesc.length - 1] + '...'
+        }
 
-        this.handleSize(text.length)
+        this.flatMessageText.setText(resultDesc)
+
+        this.handleSize(resultDesc.length)
         this.showTween()
 
         this.audioManager.playSFXSound('flat_message_alert_sfx')
@@ -67,7 +73,7 @@ export class FlatMessageManager {
     }
 
     private createUI() {
-        this.flatContainer = this.scene.add.container(0, 0).setDepth(299)
+        this.flatContainer = this.scene.add.container(0, 0).setDepth(UIDepthConfig.FLAT_MESSAGE)
         this.backgroundMessage = this.scene.add.nineslice(0, 0, 'flat-message-bg', '', 280, 70, 20, 20, 20, 20)
         this.iconMessage = this.scene.add.image(0, 0, 'alert-icon').setDisplaySize(32, 32).setSize(32, 32)
         const lineMessage = ['คุณออกจากเกมนานเกินไป', 'กรุณาลองใหม่อีกครั้ง']

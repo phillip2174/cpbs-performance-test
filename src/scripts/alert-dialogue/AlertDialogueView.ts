@@ -7,6 +7,7 @@ import { DeviceChecker } from '../plugins/DeviceChecker'
 import { AudioManager } from '../Audio/AudioManager'
 import { PodProvider } from '../pod/PodProvider'
 import { ButtonSoundType } from '../button/ButtonSoundType'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class AlertDialogueView extends GameObjects.GameObject {
     container: GameObjects.Container
@@ -42,7 +43,7 @@ export class AlertDialogueView extends GameObjects.GameObject {
         this.callBackOnHide = callBackOnHide
 
         this.container = this.scene.add.container(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
-        this.container.setDepth(299)
+        this.container.setDepth(UIDepthConfig.ALERT_DIALOGUE)
 
         this.isDesktop = DeviceChecker.instance.isDesktop()
 
@@ -76,7 +77,17 @@ export class AlertDialogueView extends GameObjects.GameObject {
         color: number,
         buttonSoundType: ButtonSoundType = ButtonSoundType.Positive
     ) {
-        button = new Button(this.scene, xPositionButton, yPositionButton, widthSize, 48, '', 1000, textInButton, buttonSoundType)
+        button = new Button(
+            this.scene,
+            xPositionButton,
+            yPositionButton,
+            widthSize,
+            48,
+            '',
+            1000,
+            textInButton,
+            buttonSoundType
+        )
 
         button.setNineSlice({
             imageAtlasKey: '',

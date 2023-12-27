@@ -16,6 +16,7 @@ import { BoldText } from '../../../BoldText/BoldText'
 import { TownDayNightPod } from '../../pod/TownDayNightPod'
 import { TownTimeState } from '../Type/TownTimeState'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class DailyLoginUIPanelView extends GameObjects.Container {
     public static readonly BG_WIDTH_DESKTOP: number = 602
@@ -75,7 +76,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
 
         this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setPosition(this.cameraCenterX, this.cameraCenterY)
-        this.setDepth(202)
+        this.setDepth(UIDepthConfig.DAILY_LOGIN)
         this.setupUI()
         this.setupButtonListeners()
         this.createTweens()
@@ -261,7 +262,7 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
             .setFontSize(20)
             .setPosition(this.dailyLoginPanelBg.x, -this.dailyLoginPanelBg.height / 2 + 40)
 
-        this.confirmButton.setPosition(this.dailyLoginPanelBg.x, this.dailyLoginPanelBg.height / 2 - 42)
+        this.confirmButton.setPosition(this.dailyLoginPanelBg.x, this.dailyLoginPanelBg.height / 2 - 50)
 
         this.dailyLoginPanelBg.setInteractive()
         this.dailyLoginUIContainer.add([this.dailyLoginPanelBg, this.dailyLoginText, this.confirmButton])

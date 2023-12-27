@@ -23,6 +23,8 @@ import { Button } from './../button/Button'
 import { TutorialManager } from './../Manager/TutorialManager'
 import { TutorialState } from '../../Tutorial/TutorialState'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { GameConfig } from '../GameConfig'
+import { UIDepthConfig } from '../UIDepthConfig'
 export class TownUIView extends GameObjects.GameObject {
     private guideLineUIView: GuideLineUIView
 
@@ -111,7 +113,7 @@ export class TownUIView extends GameObjects.GameObject {
                 30,
                 0
             )
-            .setDepth(202)
+            .setDepth(UIDepthConfig.TOWN_MENU_BACKGROUND)
             .setInteractive()
 
         this.guideLineUIView = new GuideLineUIView(this.scene)
@@ -180,17 +182,17 @@ export class TownUIView extends GameObjects.GameObject {
                 }
             })
         } else {
-            if (this.tutorialManager.isCompletedTutorial()) {
-                this.loginButton?.setDepth(202)
+            if (this.tutorialManager.isCompletedTutorial() && !GameConfig.IS_START_WITH_TUTORIAL) {
+                this.loginButton?.setDepth(UIDepthConfig.LOGIN_BUTTON)
             } else {
                 this.tutorialStateSubscription = this.tutorialManager.tutorialState.subscribe((state) => {
                     switch (state) {
                         case TutorialState.CountDown:
                         case TutorialState.WaitClick:
-                            this.loginButton?.setDepth(301)
+                            this.loginButton?.setDepth(UIDepthConfig.LOGIN_BUTTON_TUTORIAL_CLOSE)
                             break
                         default:
-                            this.loginButton?.setDepth(299)
+                            this.loginButton?.setDepth(UIDepthConfig.LOGIN_BUTTON_TUTORIAL_OPEN)
                             break
                     }
                 })
@@ -259,15 +261,15 @@ export class TownUIView extends GameObjects.GameObject {
             this.setActionButtonZoom()
 
             this.cpPointButton.doInit(this.gameScreenWidth / 2 - 15, -this.gameScreenHeight / 2 + 105, 'cp-point')
-            this.cpPointButton.setContainerDepth(201)
-            this.setupTownUIButtons()
+            this.cpPointButton.setContainerDepth(UIDepthConfig.CP_POINT_DESKTOP)
+            this.setupTownUIButtonsDesktop()
         }
     }
 
-    private setupTownUIButtons(): void {
+    private setupTownUIButtonsDesktop(): void {
         this.townUIButtonsContainer = this.scene.add
             .container(this.gameScreenCenterX, this.gameScreenCenterY)
-            .setDepth(202)
+            .setDepth(UIDepthConfig.TOWN_UI_BUTTONS_DESKTOP)
 
         this.dailyLoginButton = new TownUIButtonView(this.scene)
         this.dailyLoginButton.doInit(
@@ -320,7 +322,7 @@ export class TownUIView extends GameObjects.GameObject {
             this.gameScreenHeight / 2 - 60,
             'cp-city',
             TownUIButtonType.MainMenu,
-            'CP TOWN'
+            'CP CITY'
         )
         this.cpCityButton.hideNotification()
 
@@ -398,7 +400,7 @@ export class TownUIView extends GameObjects.GameObject {
     private setupCircleButtons(): void {
         this.topButtonsContainer = this.scene.add
             .container(this.gameScreenCenterX, this.gameScreenCenterY - 150)
-            .setDepth(201)
+            .setDepth(UIDepthConfig.TOP_BUTTONS_CONTAINER)
 
         this.userProfileCircleButtonView = new TownUICircleButtonView(this.scene)
         this.userProfileCircleButtonView.doInit(
@@ -408,14 +410,8 @@ export class TownUIView extends GameObjects.GameObject {
         )
 
         if (this.userPod.userLoginType == UserType.Guest) {
-            this.loginButton = this.createButton(
-                this.isDesktop ? 117 : 95,
-                48,
-                'minigame-play-button',
-                'เข้าสู่ระบบ',
-                24
-            )
-                .setDepth(301)
+            this.loginButton = this.createButton(this.isDesktop ? 117 : 95, 48, 'minigame-play-button', 'LOGIN', 24)
+                .setDepth(UIDepthConfig.LOGIN_BUTTON)
                 .setPosition(
                     this.gameScreenCenterX + this.gameScreenWidth / 2 - (this.isDesktop ? 150 : 140),
                     this.gameScreenCenterY + -this.gameScreenHeight / 2 - 110
@@ -437,9 +433,6 @@ export class TownUIView extends GameObjects.GameObject {
 
         this.cpLogoButton = new CPLogoUIButtonView(this.scene)
         this.cpLogoButton.doInit(-this.gameScreenWidth / 2 + 50, this.userProfileCircleButtonView.y)
-        if (this.isDesktop) {
-            this.cpLogoButton.setContainerDepth(201)
-        }
 
         this.topButtonsContainer.add([
             this.userProfileCircleButtonView,

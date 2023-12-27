@@ -15,7 +15,9 @@ import { AnimationController } from '../Town/AnimationController'
 import { BoldText } from '../../BoldText/BoldText'
 import { AudioManager } from '../Audio/AudioManager'
 import { GameConfig } from '../GameConfig'
+import { RunInBackground } from '../../util/RunInBackground'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class MinigameResultUIView extends GameObjects.GameObject {
     protected group: GameObjects.Container
@@ -48,6 +50,9 @@ export class MinigameResultUIView extends GameObjects.GameObject {
 
     private audioManager: AudioManager
 
+    private doOnOutOfTicket: Function
+
+    tweenEffectLoop: Phaser.Tweens.Tween
     onOpenTween: Phaser.Tweens.Tween
     onOpenTweenChain: Phaser.Tweens.TweenChain
     onCloseTween: Phaser.Tweens.Tween
@@ -74,7 +79,7 @@ export class MinigameResultUIView extends GameObjects.GameObject {
 
         this.setUpUI()
         this.group.setScale(this.isDesktop ? 1 : 0.9)
-        this.group.setDepth(2)
+        this.group.setDepth(UIDepthConfig.MINI_GAME_RESULT)
         this.setSubscribe()
         this.createTween()
 
@@ -88,17 +93,12 @@ export class MinigameResultUIView extends GameObjects.GameObject {
             else this.hideUI()
         })
 
-        this.scenePod.setTicket(0)
+        //this.scenePod.setTicket(0)
         this.ticketSubscription = this.scenePod.ticket.subscribe((ticket) => {
             this.minigameResultTicketUIView.setTextTicket(ticket, false)
 
-            if (ticket == 0) {
-                this.playAgainButton.background
-                    .setTexture('minigame-result-free-play')
-                    .setSize(this.isDesktop ? 190 : 168, 48)
-                this.minigameResultTicketUIView.setUICountdown()
-                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1.02 : 0.97)
-            } else {
+            if (ticket != 0) {
+                this.minigameResultTicketUIView.setPosition(0, this.isDesktop ? 317 : 305)
                 this.playAgainButton.background
                     .setTexture('minigame-result-play-again')
                     .setSize(this.isDesktop ? 202 : 178, 48)
@@ -106,6 +106,16 @@ export class MinigameResultUIView extends GameObjects.GameObject {
                 this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.95)
             }
         })
+
+        this.doOnOutOfTicket = () => {
+            this.minigameResultTicketUIView.setPosition(0, 300)
+            this.scenePod.ticket.next(0)
+            this.playAgainButton.background
+                .setTexture('minigame-result-free-play')
+                .setSize(this.isDesktop ? 190 : 168, 48)
+            this.minigameResultTicketUIView.setUICountdown()
+            this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1.02 : 0.97)
+        }
 
         this.minigameResultTicketUIView.setCallBack(() => this.scenePod.getTicket(true).subscribe())
 
@@ -125,6 +135,8 @@ export class MinigameResultUIView extends GameObjects.GameObject {
         let tweensClose = AnimationController.instance.tweenCloseContainer(this.scene, this.group, () => {
             this.group.setActive(false)
             this.group.setVisible(false)
+            this.starEffect.setVisible(false)
+            this.tweenEffectLoop?.destroy()
         })
 
         this.onCloseTween = tweensClose.onCloseTween
@@ -132,6 +144,10 @@ export class MinigameResultUIView extends GameObjects.GameObject {
     }
 
     public showUI() {
+        if (this.doOnOutOfTicket != undefined && this.scenePod.isDoOnOutOfTicket) {
+            this.doOnOutOfTicket()
+        }
+
         this.starEffect.setVisible(false)
         APILoadingManager.instance.showMiniLoading()
         this.scenePod
@@ -153,6 +169,8 @@ export class MinigameResultUIView extends GameObjects.GameObject {
                 this.onOpenTween.restart()
                 this.onOpenTweenChain?.restart()
                 this.onOpenButtonGroup?.restart()
+                this.scenePod.callBackOnOpenResult ? this.scenePod.callBackOnOpenResult() : () => {}
+                RunInBackground.instance.setBackToNormal()
             })
     }
 
@@ -226,9 +244,9 @@ export class MinigameResultUIView extends GameObjects.GameObject {
 
         this.backButton = new Button(
             this.scene,
-            this.isDesktop ? -120 : -100,
+            this.isDesktop ? -115 : -90,
             240,
-            this.isDesktop ? 136 : 101,
+            this.isDesktop ? 136 : 100,
             48,
             'minigame-result-back',
             0,
@@ -241,9 +259,9 @@ export class MinigameResultUIView extends GameObjects.GameObject {
 
         this.playAgainButton = new Button(
             this.scene,
-            this.isDesktop ? 80 : 60,
+            this.isDesktop ? 75 : 57,
             240,
-            this.isDesktop ? 202 : 178,
+            this.isDesktop ? 202 : 177,
             48,
             'minigame-result-play-again',
             0,
@@ -274,6 +292,7 @@ export class MinigameResultUIView extends GameObjects.GameObject {
     protected OnClickPlayAgainButton() {
         if (this.isPlay || this.isClickButton) return
         this.isClickButton = true
+        this.scenePod.isDoOnOutOfTicket = false
         APILoadingManager.instance.showMiniLoading()
         this.scenePod
             .getTicket(false)
@@ -288,9 +307,12 @@ export class MinigameResultUIView extends GameObjects.GameObject {
                     startResult.ticketLeft,
                     this.scenePod.isPlayOnline,
                     () => {
+                        this.scenePod.isDoOnOutOfTicket = startResult.ticketLeft == 0
+                        console.log(this.scenePod.isDoOnOutOfTicket)
                         this.hideUI()
                         this.isPlayAnimationTicket = false
                         this.scenePod.setSceneState(MinigameState.BeforeStart)
+                        RunInBackground.instance.startRunInBackground()
                     }
                 )
             })
@@ -355,7 +377,7 @@ export class MinigameResultUIView extends GameObjects.GameObject {
                 this.audioManager.playSFXSound('star_glow_effect_sfx')
             },
             onComplete: () => {
-                this.scene.tweens.add({
+                this.tweenEffectLoop = this.scene.tweens.add({
                     targets: this.starEffect,
                     ease: `Sine.easeInOut`,
                     duration: 800,
@@ -365,7 +387,7 @@ export class MinigameResultUIView extends GameObjects.GameObject {
                         scale: { from: 1.3, to: 0.8 },
                         alpha: { from: 1, to: 0.8 },
                     },
-                }).play
+                })
             },
         })
     }

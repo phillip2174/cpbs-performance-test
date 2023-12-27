@@ -1,0 +1,122 @@
+{
+    "minigame3-load": {
+        "files": [
+            {
+                "type": "image",
+                "key": "minigame-3-bg",
+                "url": "assets/minigame/minigame3/minigame-3-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-sub-bg",
+                "url": "assets/minigame/minigame3/minigame-3-sub-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-cell-active-color",
+                "url": "assets/minigame/minigame3/minigame-3-guess-cell-active-color.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-cell-active-white",
+                "url": "assets/minigame/minigame3/minigame-3-guess-cell-active-white.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-cell-disactive-color",
+                "url": "assets/minigame/minigame3/minigame-3-guess-cell-disactive-color.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-cell-disactive-white",
+                "url": "assets/minigame/minigame3/minigame-3-guess-cell-disactive-white.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-image",
+                "url": "assets/minigame/minigame3/minigame-3-guess-image.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-cell",
+                "url": "assets/minigame/minigame3/minigame-3-answer-cell.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-image0",
+                "url": "assets/minigame/minigame3/minigame-3-answer-image0.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-image1",
+                "url": "assets/minigame/minigame3/minigame-3-answer-image1.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-image2",
+                "url": "assets/minigame/minigame3/minigame-3-answer-image2.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-image3",
+                "url": "assets/minigame/minigame3/minigame-3-answer-image3.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-image4",
+                "url": "assets/minigame/minigame3/minigame-3-answer-image4.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-chance-fill",
+                "url": "assets/minigame/minigame3/minigame-3-chance-fill.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-chance-empty",
+                "url": "assets/minigame/minigame3/minigame-3-chance-empty.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-select",
+                "url": "assets/minigame/minigame3/minigame-3-answer-select.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-hidecell",
+                "url": "assets/minigame/minigame3/minigame-3-answer-hidecell.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-border-tint",
+                "url": "assets/minigame/minigame3/minigame-3-guess-border-tint.png"
+            },
+
+            {
+                "type": "image",
+                "key": "minigame-3-show-answer-background",
+                "url": "assets/minigame/minigame3/minigame-3-show-answer-background.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-show-answer-header-lose",
+                "url": "assets/minigame/minigame3/minigame-3-show-answer-header-lose.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-show-answer-header-win",
+                "url": "assets/minigame/minigame3/minigame-3-show-answer-header-win.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-show-answer-product-border-lose",
+                "url": "assets/minigame/minigame3/minigame-3-show-answer-product-border-lose.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-show-answer-product-border-win",
+                "url": "assets/minigame/minigame3/minigame-3-show-answer-product-border-win.png"
+            }
+        ]
+    }
+}

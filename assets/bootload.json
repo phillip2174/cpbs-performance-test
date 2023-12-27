@@ -35,6 +35,11 @@
             },
             {
                 "type": "image",
+                "key": "minigame-3-logo",
+                "url": "assets/Boot/minigame-3-logo.png"
+            },
+            {
+                "type": "image",
                 "key": "loading-bar-bg",
                 "url": "assets/Boot/loading-bar-bg.png"
             },

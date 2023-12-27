@@ -6,6 +6,7 @@ import { TutorialPanelView } from './TutorialPanelView'
 import { Subscription, timer } from 'rxjs'
 import { TutorialState } from './TutorialState'
 import { GameConfig } from '../scripts/GameConfig'
+import { UIDepthConfig } from '../scripts/UIDepthConfig'
 
 export class TutorialView extends GameObjects.GameObject {
     private tutorialPanel: TutorialPanelView
@@ -27,8 +28,12 @@ export class TutorialView extends GameObjects.GameObject {
             this.scene,
             this.scene.cameras.main.centerX,
             this.scene.cameras.main.centerY
-        ).setDepth(300)
+        ).setDepth(UIDepthConfig.TUTORIAL_PANEL)
         this.tutorialPanel.doInit()
+
+        if (this.tutorialManager.isCompletedTutorial()) {
+            this.tutorialManager.setTutorialState(TutorialState.WaitClick)
+        }
 
         this.stateSubscription = this.tutorialManager.tutorialState.subscribe((state) => {
             switch (state) {

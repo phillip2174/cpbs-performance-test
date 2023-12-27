@@ -24,16 +24,15 @@ export class IngredientPreviewCellView extends GameObjects.Container {
         ingredient: IngredientBean,
         isTintFill: boolean,
         isCreateText: boolean = false,
-        isUseGuidelineBg: boolean = false
+        isUseGuidelineBg: boolean = false,
+        colorBG: number = 0xffffff
     ) {
         this.ingredientBean = ingredient
 
         if (isUseGuidelineBg) {
             this.backgroundIngredient = this.scene.add.image(0, 0, 'ingredient-slot')
         } else {
-            this.backgroundIngredient = this.scene.add
-                .image(0, 0, 'white-ingredient-bg')
-                .setTint(isCreateText ? 0xffffff : 0xedf1f8)
+            this.backgroundIngredient = this.scene.add.image(0, 0, 'white-ingredient-bg').setTint(colorBG)
         }
 
         this.ingredientImage = this.scene.add

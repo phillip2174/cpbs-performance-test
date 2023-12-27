@@ -14,6 +14,7 @@ import { TownUIPod } from '../Town/Pod/TownUIPod'
 import { TownUIState } from '../Town/Type/TownUIState'
 import { IngredientBean } from './../Ingredient/IngredientBean'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class NextIngredientsPanelView extends GameObjects.Container {
     private dimButton: DimButton
@@ -55,7 +56,7 @@ export class NextIngredientsPanelView extends GameObjects.Container {
         this.dimButton = new DimButton(this.scene)
         this.setNextIngredientBeans()
         this.setupUIPanelContainer()
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.NEXT_INGREDIENT)
         this.setPosition(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
         this.add([this.dimButton, this.uiPanelContainer])
         this.createTweens()

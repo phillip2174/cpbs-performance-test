@@ -53,6 +53,9 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
 
     private collectionPod: CollectionPod
     private recipePod: RecipePod
+
+    private rewardPoint: number
+
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         GameObjectConstructor(scene, this)
@@ -79,6 +82,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
                 this.collectionPod.setStateDetail(CollectionDetailState.UnlockedDetail)
                 this.collectionPod.changeState(CollectionPanelState.CollectionListFromCongrat)
                 this.collectionPod.changeState(CollectionPanelState.CollectionDetail)
+                PodProvider.instance.tutorialManager.saveUserCPPoint(PodProvider.instance.userPod.userCPpoint.value)
             })
         })
     }
@@ -275,6 +279,7 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
         this.selectedSubscription = this.collectionPod.currentDetailRecipeSelected.subscribe((bean) => {
             this.recipeBean = bean
             if (this.recipeBean.userRecipeBean?.state == CookState.Cooked) {
+                this.rewardPoint = bean.rewardPoint
                 this.rewardPointCellView.setPointCell(bean.rewardPoint.toString())
                 this.setupCookedStateTween(bean)
             }
@@ -344,7 +349,9 @@ export class CollectionDetailCongratCellView extends GameObjects.Container {
                             to: 1,
                         },
                     },
-                    onComplete: () => {},
+                    onComplete: () => {
+                        PodProvider.instance.userPod.addCPPoint(this.rewardPoint)
+                    },
                     ease: 'linear',
                 },
             ],

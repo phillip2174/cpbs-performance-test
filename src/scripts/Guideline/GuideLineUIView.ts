@@ -18,6 +18,7 @@ import { TutorialState } from '../../Tutorial/TutorialState'
 import { Button } from '../button/Button'
 import { DeviceChecker } from '../plugins/DeviceChecker'
 import { UserType } from '../User/UserType'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class GuideLineUIView extends GameObjects.Container {
     private guideLineUI: GameObjects.NineSlice
@@ -80,7 +81,7 @@ export class GuideLineUIView extends GameObjects.Container {
         this.isDesktop = DeviceChecker.instance.isDesktop()
 
         this.setPosition(x, y + 150)
-        this.setDepth(202)
+        this.setDepth(UIDepthConfig.GUIDE_LINE)
         this.clockButton = new Button(
             this.scene,
             0,
@@ -229,7 +230,7 @@ export class GuideLineUIView extends GameObjects.Container {
                 this.scrollViewPosY - 150,
                 this.guideLineUI.width - 20,
                 this.guideLineUI.height,
-                202,
+                this.depth,
                 this.gridCellWidth,
                 this.gridCellHeight,
                 1,
@@ -328,16 +329,14 @@ export class GuideLineUIView extends GameObjects.Container {
     private setupFoundIngredientCountTexts(): void {
         this.textCountContainer = this.scene.add
             .container(this.scene.cameras.main.centerX, this.scene.cameras.main.height + 83)
-            .setDepth(202)
+            .setDepth(UIDepthConfig.TEXT_COUNT_GUIDE_LINE)
 
         this.currentFoundIngredientCountText = new BoldText(this.scene, 0, 0, '0', 18, '#F19D63')
             .setOrigin(1, 0.5)
-            .setDepth(4)
             .setVisible(false)
 
         this.maxIngredientCountText = new BoldText(this.scene, 0, 0, '/??', 18, '#A7A7A7')
             .setOrigin(0, 0.5)
-            .setDepth(4)
             .setVisible(false)
 
         this.textCountContainer.add([this.currentFoundIngredientCountText, this.maxIngredientCountText])

@@ -14,11 +14,11 @@ export class LifeCountView extends GameObjects.Container {
         GameObjectConstructor(scene, this)
     }
 
-    public doInit(lifeLength: number, sizeHeart: number) {
+    public doInit(lifeLength: number, sizeHeart: number, isHeart: boolean = true) {
         this.maxLife = lifeLength
         this.currentLifeCount = this.maxLife
         this.lifeCellsIndex = 0
-        this.createUI(sizeHeart)
+        this.createUI(sizeHeart, isHeart)
     }
 
     public decreaseLifeCount() {
@@ -46,14 +46,15 @@ export class LifeCountView extends GameObjects.Container {
         return this.currentLifeCount
     }
 
-    private createUI(sizeHeart: number) {
+    private createUI(sizeHeart: number, isHeart: boolean) {
         let rect = this.scene.add.rectangle(0, 0, 21 * this.maxLife + 6 * (this.maxLife - 1), 20, 0xff00ff, 0)
         this.add(rect)
 
         let cellCon: GameObjects.Container = this.scene.add.container(0, 0)
         for (let i = 0; i < this.maxLife; i++) {
             let cell = new LifeCountCellView(this.scene)
-            cell.doInit(i, sizeHeart)
+            if (isHeart) cell.doInitHeart(i, sizeHeart)
+            else cell.doInitCard(i, sizeHeart)
             this.lifeCells.push(cell)
             cellCon.add(cell)
         }
@@ -63,7 +64,7 @@ export class LifeCountView extends GameObjects.Container {
 
         this.add([cellCon])
 
-        Phaser.Actions.AlignTo(cellCon.getAll(), Phaser.Display.Align.LEFT_CENTER, 5)
+        Phaser.Actions.AlignTo(cellCon.getAll(), Phaser.Display.Align.LEFT_CENTER, isHeart ? 5 : 4)
         cellCon.width = cellCon.getBounds().width
         cellCon.height = cellCon.getBounds().height
 

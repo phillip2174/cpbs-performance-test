@@ -3,11 +3,6 @@
         "files": [
             {
                 "type": "image",
-                "key": "header-bg-tutorial",
-                "url": "assets/tutorial/header-bg-tutorial.png"
-            },
-            {
-                "type": "image",
                 "key": "tutorial-pin",
                 "url": "assets/tutorial/tutorial-pin.png"
             },
@@ -15,26 +10,6 @@
                 "type": "image",
                 "key": "modal-background-small-size",
                 "url": "assets/tutorial/modal-background-small-size.png"
-            },
-            {
-                "type": "image",
-                "key": "tutorial-character-1",
-                "url": "assets/tutorial/tutorial-character-1.png"
-            },
-            {
-                "type": "image",
-                "key": "tutorial-character-2",
-                "url": "assets/tutorial/tutorial-character-2.png"
-            },
-            {
-                "type": "image",
-                "key": "tutorial-character-3",
-                "url": "assets/tutorial/tutorial-character-3.png"
-            },
-            {
-                "type": "image",
-                "key": "tutorial-character-4",
-                "url": "assets/tutorial/tutorial-character-4.png"
             },
             {
                 "type": "image",

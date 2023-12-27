@@ -148,18 +148,20 @@ export class TutorialModalView extends GameObjects.Container {
 
         this.contentTutorial = this.scene.add.container(0, 0)
 
-        this.backgroundHeader = this.scene.add.nineslice(
-            this.isDesktop ? 25 : 15,
-            0,
-            'header-bg-tutorial',
-            '',
-            this.isDesktop ? 420 : 269,
-            this.isDesktop ? 88 : 73,
-            28,
-            28,
-            24,
-            24
-        )
+        this.backgroundHeader = this.scene.add
+            .nineslice(
+                this.isDesktop ? 25 : 15,
+                0,
+                'header-bg-tutorial',
+                '',
+                this.isDesktop ? 420 : 269,
+                this.isDesktop ? 88 : 73,
+                28,
+                28,
+                24,
+                24
+            )
+            .setTint(0xffe2a5)
 
         this.characterImage = this.scene.add.image(0, 0, 'tutorial-character-1').setScale(this.isDesktop ? 1 : 0.8)
 

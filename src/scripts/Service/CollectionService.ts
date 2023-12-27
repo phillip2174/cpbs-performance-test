@@ -1,1 +1,5 @@
-export class CollectionService {}
+export class CollectionService 
+{
+    
+
+}

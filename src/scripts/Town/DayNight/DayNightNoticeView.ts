@@ -12,6 +12,7 @@ import { TownDayNightPod } from '../../pod/TownDayNightPod'
 import { TownUIState } from '../Type/TownUIState'
 import { DeviceChecker } from '../../plugins/DeviceChecker'
 import { AudioManager } from '../../Audio/AudioManager'
+import { UIDepthConfig } from '../../UIDepthConfig'
 
 export class DayNightNoticeView extends GameObjects.Container {
     public static readonly ICON_KEY: string = 'day-night-notice-'
@@ -77,7 +78,7 @@ export class DayNightNoticeView extends GameObjects.Container {
             this.confirmButton,
         ])
 
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.DAY_NIGHT_NOTICE)
         this.add([this.dimButton, this.noticeUIContainer])
 
         this.createTweens()

@@ -1,12 +1,12 @@
 [
-    ["green", "red", "orange", "blue", "blue", "orange", "green", "red", "green", "red", "blue", "orange"],
-    ["green", "orange", "blue", "red", "red", "green", "orange", "blue", "blue", "orange", "red", "green"],
-    ["orange", "red", "green", "blue", "green", "blue", "red", "orange", "blue", "green", "orange", "red"],
-    ["orange", "green", "red", "blue", "red", "orange", "blue", "green", "green", "blue", "orange", "red"],
-    ["green", "orange", "red", "blue", "orange", "green", "blue", "red", "red", "blue", "orange", "green"],
-    ["orange", "green", "blue", "red", "red", "blue", "green", "orange", "blue", "red", "orange", "green"],
-    ["blue", "green", "red", "orange", "orange", "red", "blue", "green", "red", "blue", "green", "orange"],
-    ["red", "green", "blue", "orange", "orange", "blue", "red", "green", "blue", "red", "green", "orange"],
-    ["blue", "orange", "green", "red", "green", "red", "blue", "orange", "red", "orange", "green", "blue"],
-    ["orange", "red", "blue", "green", "blue", "green", "red", "orange", "orange", "blue", "green", "red"]
+    ["green", "blue", "purple", "orange", "orange", "purple", "green", "blue", "green", "blue", "orange", "purple"],
+    ["green", "purple", "orange", "blue", "blue", "green", "purple", "orange", "orange", "purple", "blue", "green"],
+    ["purple", "blue", "green", "orange", "green", "orange", "blue", "purple", "orange", "green", "purple", "blue"],
+    ["purple", "green", "blue", "orange", "blue", "purple", "orange", "green", "green", "orange", "purple", "blue"],
+    ["green", "purple", "blue", "orange", "purple", "green", "orange", "blue", "blue", "orange", "purple", "green"],
+    ["purple", "green", "orange", "blue", "blue", "orange", "green", "purple", "orange", "blue", "purple", "green"],
+    ["orange", "green", "blue", "purple", "purple", "blue", "orange", "green", "blue", "orange", "green", "purple"],
+    ["blue", "green", "orange", "purple", "purple", "orange", "blue", "green", "orange", "blue", "green", "purple"],
+    ["orange", "purple", "green", "blue", "green", "blue", "orange", "purple", "blue", "purple", "green", "orange"],
+    ["purple", "blue", "orange", "green", "orange", "green", "blue", "purple", "purple", "orange", "green", "blue"]
 ]

@@ -12,6 +12,7 @@ import { TrainObjectWithIngredientView } from './TrainObjectWithIngredientView'
 import { TownTimeState } from './Type/TownTimeState'
 import { APILoadingManager } from '../api-loading/APILoadingManager'
 import { CameraControlPod } from '../camera/CameraControlPod'
+import { ObjectDepthConfig } from '../ObjectDepthConfig'
 
 export class TownBuildingView extends GameObjects.GameObject {
     private rangeMapRectangleBackground: GameObjects.Rectangle
@@ -121,37 +122,37 @@ export class TownBuildingView extends GameObjects.GameObject {
     public createBackgroundAndGround() {
         this.rangeMapRectangleBackground = this.scene.add
             .rectangle(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY + 125, 3840, 2467, 0xffffff)
-            .setDepth(-2)
+            .setDepth(ObjectDepthConfig.RANGE_MAP)
 
         this.townBackgroundImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-bg')
             .setScale(1)
-            .setDepth(0)
+            .setDepth(ObjectDepthConfig.CITY_BACKGROUND)
         // .setTint(0x63668f)
 
         this.townGroundImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-floor-day')
             .setScale(1)
-            .setDepth(1)
+            .setDepth(ObjectDepthConfig.CITY_FLOOR)
         // .setTint(0xb8bacc)
 
         this.fenceImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'fence-day')
             .setScale(1)
-            .setDepth(3)
+            .setDepth(ObjectDepthConfig.FENCE)
 
         this.buildingImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building')
             .setScale(1)
-            .setDepth(5)
+            .setDepth(ObjectDepthConfig.CITY_BUILDING)
 
         this.buildingRoofImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'city-building-roof')
-            .setDepth(6)
+            .setDepth(ObjectDepthConfig.CITY_BUILDING_ROOF)
 
         this.trainTrailImage = this.scene.add
             .image(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY, 'train-rail')
-            .setDepth(3)
+            .setDepth(ObjectDepthConfig.TRIAL_RAIL)
 
         this.onTownTimeStateNight()
     }

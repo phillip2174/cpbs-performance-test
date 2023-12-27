@@ -4,6 +4,7 @@ import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { PodProvider } from '../pod/PodProvider'
 import { BillboardObjectPod } from './Pod/BillboardObjectPod'
 import { BillboardSizeType } from './Type/BillboardSizeType'
+import { ObjectDepthConfig } from '../ObjectDepthConfig'
 
 export class BillboardObjectView extends GameObjects.GameObject {
     private currentBillboardImage: GameObjects.Image
@@ -31,13 +32,13 @@ export class BillboardObjectView extends GameObjects.GameObject {
 
         this.currentBillboardImage = this.scene.add
             .image(x, y, this.billboardImageKeys[this.currentImageKeyIndex])
-            .setDepth(97)
+            .setDepth(ObjectDepthConfig.BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(1)
 
         this.nextBillboardImage = this.scene.add
             .image(x, y, this.billboardImageKeys[this.nextImageKeyIndex])
-            .setDepth(97)
+            .setDepth(ObjectDepthConfig.BILLBOARD)
             .setOrigin(0.5)
             .setAlpha(0)
     }

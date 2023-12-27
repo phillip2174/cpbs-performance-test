@@ -183,7 +183,7 @@ export class CookingDetailSelectRecipeView extends GameObjects.Container {
             this.rewardPointCellView.setPointCell(bean.rewardPoint.toString(), -1, -1)
         }
 
-        this.ingredientPreview.setPreviewView(bean, 1, 5, true, 50)
+        this.ingredientPreview.setPreviewView(bean, 1, 5, true, 60, 0, true)
         this.isIngredientAllFull = this.ingredientPreview.updateCellIngredientPreviewUser()
         this.recipePreview.setCellWithRecipeType(bean.type)
 

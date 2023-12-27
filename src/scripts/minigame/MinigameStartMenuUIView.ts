@@ -13,7 +13,10 @@ import { PodProvider } from '../pod/PodProvider'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 import { AudioManager } from '../Audio/AudioManager'
 import { FlatMessageManager } from '../flat-message/FlatMessageManager'
+import { RunInBackground } from '../../util/RunInBackground'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UIDepthConfig } from '../UIDepthConfig'
+import { ErrorAlertFactory } from '../../error-factory/ErrorAlertFactory'
 
 export class MinigameStartMenuUIView extends GameObjects.Container {
     private startButton: Button
@@ -41,6 +44,7 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
         APILoadingManager.instance.showSceneLoading(PodProvider.instance.splashPod.launchScene)
 
         FlatMessageManager.instance.doInit(this.scene)
+        ErrorAlertFactory.instance.init()
 
         timer(400).subscribe((_) => {
             ResourceManager.instance
@@ -53,6 +57,8 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
                     this.audioManager.playBGMSound('minigame_bgm', true)
                 })
         })
+
+        this.setDepth(UIDepthConfig.MINI_GAME_START_MENU)
     }
 
     public doInit(minigameId: number, pod: MinigameScenePod): void {
@@ -199,8 +205,10 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
         APILoadingManager.instance.showMiniLoading()
         this.scenePod.startGame().subscribe((startResult) => {
             this.setTextTicket(startResult.ticketLeft, isAnimate, () => {
+                this.scenePod.isDoOnOutOfTicket = startResult.ticketLeft == 0
                 APILoadingManager.instance.hideMiniLoading()
                 this.hideUI()
+                //RunInBackground.instance.startRunInBackground()
                 this.scenePod.setSceneState(MinigameState.BeforeStart)
             })
         })

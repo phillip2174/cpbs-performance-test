@@ -6,6 +6,8 @@ import { PodProvider } from '../pod/PodProvider'
 import { AudioManager } from '../Audio/AudioManager'
 import { MinigameCountdownTimerPod } from '../pod/MinigameCountdownTimerPod'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { Subscription, interval } from 'rxjs'
+import { BoldText } from '../../BoldText/BoldText'
 
 export class MinigameResultTicketUIView extends GameObjects.Container {
     private audioManager: AudioManager
@@ -19,9 +21,10 @@ export class MinigameResultTicketUIView extends GameObjects.Container {
     countdownText: GameObjects.Text
     ticketGroup: GameObjects.Group
     countdownGroup: GameObjects.Group
-    countdownTimerEvent: Phaser.Time.TimerEvent
     pod: MinigameCountdownTimerPod
     callback: Function
+
+    private inveterSubscription: Subscription
 
     constructor(scene: Scene, x: number, y: number, pod: MinigameScenePod) {
         super(scene, x, y)
@@ -35,16 +38,17 @@ export class MinigameResultTicketUIView extends GameObjects.Container {
 
         this.pod.setupTimeStamps()
         this.pod.getCurrentTimeStamp().subscribe()
+    }
 
-        this.countdownTimerEvent = this.scene.time.addEvent({
-            delay: 100,
-            repeat: -1,
-            callback: () => {
-                this.checkUpdateTime()
-                this.updateCountdownTimerText()
-            },
+    createIntervalCountDown() {
+        this.inveterSubscription = interval(100).subscribe((_) => {
+            this.checkUpdateTime()
+            this.updateCountdownTimerText()
         })
-        this.countdownTimerEvent.paused = true
+
+        this.on('destroy', () => {
+            this.inveterSubscription?.unsubscribe()
+        })
     }
 
     setUpUI() {
@@ -68,28 +72,19 @@ export class MinigameResultTicketUIView extends GameObjects.Container {
         this.add(this.ticketText)
         this.ticketGroup.add(this.ticketText)
 
-        this.countdownText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('00:00:00')
-            .setOrigin(0.5)
-            .setPosition(35, -5)
-            .setStyle({
-                fill: '#EE843C',
-                fontSize: 28,
-            })
+        this.countdownText = new BoldText(this.scene, 35, -5, '00:00:00', 28, '#EE843C')
         this.add(this.countdownText)
         this.alertImage = this.scene.add.image(-140, this.isDesktop ? 48 : 43, 'minigame-result-alert')
         this.add(this.alertImage)
-        this.alertText = TextAdapter.instance
-            .getVectorText(this.scene, 'DB_HeaventRounded_Bd')
-            .setText('การเล่นแบบ Free Play จะไม่ได้รับ Rewards')
-            .setOrigin(0.5)
-            .setPosition(15, this.isDesktop ? 45 : 40)
-            .setStyle({
-                fill: '#E8AE37',
-                fontSize: 22,
-            })
-            .setAlign('center')
+
+        this.alertText = new BoldText(
+            this.scene,
+            15,
+            this.isDesktop ? 45 : 40,
+            'การเล่นแบบ Free Play จะไม่ได้รับ Rewards',
+            22,
+            '#E8AE37'
+        ).setAlign('center')
         this.add(this.alertText)
         this.countdownGroup.addMultiple([this.countdownText, this.alertText, this.alertImage])
     }
@@ -147,11 +142,14 @@ export class MinigameResultTicketUIView extends GameObjects.Container {
 
     startCountDown() {
         this.pod.setupTimeStamps()
-        this.pod.getCurrentTimeStamp().subscribe((_) => (this.countdownTimerEvent.paused = false))
+        this.pod.getCurrentTimeStamp().subscribe((_) => {
+            this.stopCountDown()
+            this.createIntervalCountDown()
+        })
     }
 
     stopCountDown() {
-        this.countdownTimerEvent.paused = true
+        this.inveterSubscription?.unsubscribe()
     }
 
     private updateCountdownTimerText(): void {
@@ -177,7 +175,7 @@ export class MinigameResultTicketUIView extends GameObjects.Container {
     private checkUpdateTime(): void {
         this.pod.updateTimeDiffTimeStamp()
         if (this.pod.checkIsCountdownFinish()) {
-            this.countdownTimerEvent.paused = true
+            this.stopCountDown()
             if (this.callback != undefined) {
                 this.callback()
             }

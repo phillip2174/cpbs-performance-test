@@ -17,7 +17,9 @@ import { HeaderScoreView } from './HeaderScroeView'
 import { MinigameState } from './MinigameState'
 import { APILoadingManager } from '../api-loading/APILoadingManager'
 import { AudioManager } from '../Audio/AudioManager'
+import { RunInBackground } from '../../util/RunInBackground'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class MinigameMenuUIView extends GameObjects.GameObject {
     private startButton: Button
@@ -49,7 +51,7 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
         this.minigameNumber = minigameNumber
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
-        this.group = this.scene.add.container(centerX, centerY).setDepth(2)
+        this.group = this.scene.add.container(centerX, centerY).setDepth(UIDepthConfig.MINI_GAME_MENU)
         this.isDesktop = DeviceChecker.instance.isDesktop()
         this.setUpImage()
         this.setUpButton()

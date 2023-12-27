@@ -14,15 +14,23 @@ import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class CPPointUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
+    public static readonly UPDATE_POINT_TEXT_DURATION: number = 700
+    public static readonly UPDATE_BUTTON_WIDTH_DURATION: number = 300
     private backgroundButton: Button
     private buttonIcon: GameObjects.Image
     private buttonText: GameObjects.Text
+    private calculateButtonWidthText: GameObjects.Text
 
     private buttonPosX: number
     private buttonPosY: number
+    private previousPoint: number
+    private previousButtonWidth: number
+    private currentButtonWidth: number
 
     private onOpenTween: Tweens.Tween
     private onCloseTween: Tweens.Tween
+    private updatePointTween: Tweens.Tween
+    private updateButtonWidthTween: Tweens.Tween
 
     private callback: Function
     private holdCallback: Function
@@ -68,9 +76,19 @@ export class CPPointUIButtonView extends GameObjects.Container {
             this.convertFormatPoint(this.userPod.userCPpoint.value)
         ).setOrigin(1, 0.5)
 
-        this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
+        this.calculateButtonWidthText = new BoldText(
+            this.scene,
+            0,
+            0,
+            this.convertFormatPoint(this.userPod.userCPpoint.value)
+        )
+            .setOrigin(1, 0.5)
+            .setVisible(false)
 
+        this.previousPoint = this.userPod.userCPpoint.value
+        this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
         this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
+        this.previousButtonWidth = this.backgroundButton.width
 
         this.add([this.backgroundButton, this.buttonIcon, this.buttonText])
         this.setPosition(this.buttonPosX, this.buttonPosY)
@@ -144,9 +162,8 @@ export class CPPointUIButtonView extends GameObjects.Container {
         }
 
         this.cpPointSubscription = this.userPod.userCPpoint.subscribe((point) => {
-            this.buttonText.setText(this.convertFormatPoint(point))
-            this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
-            this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
+            this.setupCurrentButtonWidth(point)
+            this.updatePointButtonUI(point)
         })
     }
 
@@ -182,7 +199,7 @@ export class CPPointUIButtonView extends GameObjects.Container {
 
     private setupButtonMobile(): void {
         this.buttonText.setPosition(-8, -5).setStyle({ fill: '#D97837', fontSize: 32 })
-        this.backgroundButton.setButtonSize((this.buttonText.width <= 28 ? 25 : this.buttonText.width) + 50, 42)
+        this.backgroundButton.setButtonSize((this.buttonText.width <= 25 ? 25 : this.buttonText.width) + 50, 42)
         this.buttonIcon.setScale(0.85)
     }
 
@@ -222,6 +239,64 @@ export class CPPointUIButtonView extends GameObjects.Container {
                 }
             }
         )
+    }
+
+    private setupCurrentButtonWidth(point: number): void {
+        this.calculateButtonWidthText.setText(this.convertFormatPoint(point))
+        if (this.isDesktop) {
+            this.calculateButtonWidthText.setPosition(-15, -5).setStyle({ fill: '#D97837', fontSize: 36 })
+            this.currentButtonWidth =
+                (this.calculateButtonWidthText.width <= 28 ? 28 : this.calculateButtonWidthText.width) + 65
+        } else {
+            this.calculateButtonWidthText.setPosition(-8, -5).setStyle({ fill: '#D97837', fontSize: 32 })
+            this.currentButtonWidth =
+                (this.calculateButtonWidthText.width <= 25 ? 25 : this.calculateButtonWidthText.width) + 50
+        }
+    }
+
+    private updatePointButtonUI(point: number, isTween: boolean = true): void {
+        if (isTween) {
+            if (this.updatePointTween?.isPlaying() && this.updateButtonWidthTween?.isPlaying()) {
+                this.updatePointTween?.updateTo('value', point)
+                this.updateButtonWidthTween?.updateTo('value', this.currentButtonWidth)
+            } else {
+                this.updatePointTween = this.scene.tweens.addCounter({
+                    from: this.previousPoint,
+                    to: point,
+                    duration: CPPointUIButtonView.UPDATE_POINT_TEXT_DURATION,
+                    ease: 'linear',
+                    onUpdate: (tween) => {
+                        const value = Math.floor(tween.getValue())
+                        this.buttonText.setText(this.convertFormatPoint(value))
+                        this.previousPoint = value
+                    },
+                })
+
+                this.updateButtonWidthTween = this.scene.tweens.addCounter({
+                    from: this.previousButtonWidth,
+                    to: this.currentButtonWidth,
+                    duration: CPPointUIButtonView.UPDATE_BUTTON_WIDTH_DURATION,
+                    ease: 'linear',
+                    onUpdate: (tween) => {
+                        const value = Math.floor(tween.getValue())
+                        if (this.isDesktop) {
+                            this.backgroundButton.setButtonSize(value, 50)
+                        } else {
+                            this.backgroundButton.setButtonSize(value, 42)
+                            this.buttonIcon.setScale(0.85)
+                        }
+                        this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
+                        this.previousButtonWidth = value
+                    },
+                })
+            }
+        } else {
+            this.buttonText.setText(this.convertFormatPoint(point))
+            this.isDesktop ? this.setupButtonDesktop() : this.setupButtonMobile()
+            this.buttonIcon.setPosition(-this.backgroundButton.getBounds().width + 5, 1)
+            this.previousPoint = point
+            this.previousButtonWidth = this.backgroundButton.width
+        }
     }
 
     destroy(fromScene?: boolean): void {

@@ -17,6 +17,7 @@ import { CollectionDetailSecretCellView } from './CollectionDetailSecretCellView
 import { TutorialManager } from '../../../Manager/TutorialManager'
 import { TutorialState } from '../../../../Tutorial/TutorialState'
 import { DeviceChecker } from '../../../plugins/DeviceChecker'
+import { UIDepthConfig } from '../../../UIDepthConfig'
 
 export class CollectionDetailView extends GameObjects.Container {
     public static readonly SIZE_WIDTH_BG_DESKTOP: number = 528
@@ -68,7 +69,7 @@ export class CollectionDetailView extends GameObjects.Container {
         this.tutorialManager = PodProvider.instance.tutorialManager
         this.isDesktop = DeviceChecker.instance.isDesktop()
 
-        this.setDepth(203)
+        this.setDepth(UIDepthConfig.COLLECTION_DETAIL)
         this.createUI()
         this.createButtonGroup()
         this.createTween()

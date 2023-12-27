@@ -13,33 +13,34 @@ import { BoldText } from '../../BoldText/BoldText'
 import { MinigameResultTicketUIView } from './MinigameResultTicketUIView'
 import { APILoadingManager } from '../api-loading/APILoadingManager'
 import { GameConfig } from '../GameConfig'
+import { RunInBackground } from '../../util/RunInBackground'
 
 export class MinigameResultUIMiniView extends MinigameResultUIView {
     protected setSubscribe() {
-        this.sceneStateSubscription =   this.scenePod.sceneState.subscribe((state) => {
+        this.sceneStateSubscription = this.scenePod.sceneState.subscribe((state) => {
             if (state == MinigameState.Completed && !this.scenePod.isPlayOnline) this.showUI()
             else this.hideUI()
         })
-        
-        this.ticketSubscription = this.scenePod.ticket.subscribe((ticket) => {
 
+        this.ticketSubscription = this.scenePod.ticket.subscribe((ticket) => {
             this.minigameResultTicketUIView.setTextTicket(ticket, false)
 
             if (ticket == 0) {
-                this.playAgainButton.background.setTexture('minigame-result-free-play').setSize(this.isDesktop ?  190 : 168,48)
+                this.playAgainButton.background
+                    .setTexture('minigame-result-free-play')
+                    .setSize(this.isDesktop ? 190 : 168, 48)
                 this.minigameResultTicketUIView.setUICountdown()
-                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.90)
+                this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 1 : 0.9)
             } else {
-                this.playAgainButton.background.setTexture('minigame-result-play-again').setSize(this.isDesktop ?  202 : 178,48)
+                this.playAgainButton.background
+                    .setTexture('minigame-result-play-again')
+                    .setSize(this.isDesktop ? 202 : 178, 48)
                 this.minigameResultTicketUIView.setUITicket()
                 this.bg.setScale(this.isDesktop ? 1 : 0.8, this.isDesktop ? 0.93 : 0.85)
             }
         })
 
-        this.minigameResultTicketUIView.setCallBack( () => 
-            this.scenePod.getTicket(true).subscribe()
-        );
-
+        this.minigameResultTicketUIView.setCallBack(() => this.scenePod.getTicket(true).subscribe())
 
         this.on('destroy', () => {
             this.ticketSubscription?.unsubscribe()
@@ -47,9 +48,7 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
         })
     }
 
-    protected onShowScore() {
-
-    }
+    protected onShowScore() {}
 
     protected setUpUI() {
         this.dim = this.scene.add.rectangle(
@@ -63,8 +62,8 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
         this.dim.setInteractive()
         //this.group.add(this.dim)
 
-        this.bg = this.scene.add.image(0, this.isDesktop ? -170 : -150, 'minigame-result-bg-mini').setOrigin(0.5,0)
-        this.bg.setScale(this.isDesktop ? 1 : 0.75, this.isDesktop ? 1 : 0.8 )
+        this.bg = this.scene.add.image(0, this.isDesktop ? -170 : -150, 'minigame-result-bg-mini').setOrigin(0.5, 0)
+        this.bg.setScale(this.isDesktop ? 1 : 0.75, this.isDesktop ? 1 : 0.8)
         this.group.add(this.bg)
 
         this.starGroup = this.scene.add.container(0, this.isDesktop ? -105 : -90)
@@ -97,9 +96,9 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
 
         this.backButton = new Button(
             this.scene,
-            this.isDesktop ? -120 : -90,
+            this.isDesktop ? -105 : -90,
             145,
-            this.isDesktop ? 136 : 101,
+            this.isDesktop ? 136 : 100,
             48,
             'minigame-result-back',
             0,
@@ -114,7 +113,7 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
             this.scene,
             this.isDesktop ? 80 : 60,
             145,
-            this.isDesktop ?   190 : 168,
+            this.isDesktop ? 202 : 177,
             48,
             'minigame-result-free-play',
             0,
@@ -127,11 +126,15 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
             this.OnClickPlayAgainButton()
         })
 
-        this.minigameResultTicketUIView = new MinigameResultTicketUIView(this.scene, 0, this.isDesktop ? 220 : 210, this.scenePod)
+        this.minigameResultTicketUIView = new MinigameResultTicketUIView(
+            this.scene,
+            0,
+            this.isDesktop ? 220 : 210,
+            this.scenePod
+        )
         this.group.add(this.minigameResultTicketUIView)
         this.minigameResultTicketUIView.setUICountdown()
     }
-
 
     protected OnClickBackButton() {
         if (this.isClickButton) return
@@ -150,6 +153,7 @@ export class MinigameResultUIMiniView extends MinigameResultUIView {
                 APILoadingManager.instance.hideMiniLoading()
                 this.hideUI()
                 this.scenePod.setSceneState(MinigameState.BeforeStart)
+                RunInBackground.instance.startRunInBackground()
             })
     }
 }

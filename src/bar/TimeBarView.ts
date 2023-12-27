@@ -273,7 +273,7 @@ export class TimeBarView extends GameObjects.Container {
 
             this.countdownIntervalSubscription = interval(this.timeMillisecondToPlaySFX).subscribe((count) => {
                 if(this.isUseDifferentSFXWhenTimeIsAlmostUp) {
-                    if (this.changeValueRange(0, (timeMillisecond / 1000) - 1, 0, 1, count) >= 0.5)
+                    if (this.changeValueRange(0, (timeMillisecond / 1000) - 1, 0, 1, count) >= TimeBarView.RED_PERCENT)
                         this.timeAlmostUpCountdownSound.play()
                     else
                         this.countdownSFXSound.play()

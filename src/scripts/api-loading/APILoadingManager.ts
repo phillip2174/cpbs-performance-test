@@ -5,6 +5,7 @@ import { PodProvider } from '../pod/PodProvider'
 import { timer } from 'rxjs'
 import { GameConfig } from '../GameConfig'
 import { DeviceChecker } from '../plugins/DeviceChecker'
+import { UIDepthConfig } from '../UIDepthConfig'
 
 export class APILoadingManager {
     private static _instance: APILoadingManager
@@ -113,6 +114,10 @@ export class APILoadingManager {
                 this.background.setFillStyle(0x2b2b2b)
                 this.setIconTweenAndScale(false, 0.8, 0.6, isTween, 'minigame-2-logo')
                 break
+            case SceneState.MinigameCPGuessThisPicture:
+                this.background.setFillStyle(0x2b2b2b)
+                this.setIconTweenAndScale(false, 0.8, 0.6, isTween, 'minigame-3-logo')
+                break
         }
         PodProvider.instance.splashPod.setIsCloseLogo(true)
         this.sceneLoadingContainer.setVisible(true)
@@ -154,7 +159,7 @@ export class APILoadingManager {
     private createSceneLoadingObject(): void {
         this.sceneLoadingContainer = this.scene.add
             .container()
-            .setDepth(1000)
+            .setDepth(UIDepthConfig.API_SCENE_LOAD)
             .setSize(this.scene.cameras.main.width, this.scene.cameras.main.height)
             .setInteractive()
 
@@ -162,7 +167,7 @@ export class APILoadingManager {
             .rectangle(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height, 0x2b2b2b, 1)
             .setOrigin(0)
             .setInteractive()
-            .setDepth(998)
+            .setDepth(UIDepthConfig.API_BACKGROUND_LOAD)
 
         this.createCloudLoading()
 
@@ -190,7 +195,7 @@ export class APILoadingManager {
     private createMiniLoadingObject(): void {
         this.miniLoadingContainer = this.scene.add
             .container()
-            .setDepth(1000)
+            .setDepth(UIDepthConfig.API_MINI_LOAD)
             .setSize(this.scene.cameras.main.width, this.scene.cameras.main.height)
             .setInteractive()
 
@@ -223,13 +228,13 @@ export class APILoadingManager {
             this.scene,
             this.scene.cameras.main.centerX,
             this.isDesktop ? this.scene.cameras.main.centerY + 200 : this.scene.cameras.main.centerY + 140
-        ).setDepth(1001)
+        ).setDepth(UIDepthConfig.API_LOADING_BAR)
 
         this.loadingBar.doInit(startLoadingValue)
     }
 
     private createCloudLoading() {
-        this.cloudGroupContainer = this.scene.add.container(0, 0).setDepth(999)
+        this.cloudGroupContainer = this.scene.add.container(0, 0).setDepth(UIDepthConfig.API_CLOUD_LOAD)
         this.cloudContainer = this.scene.add.container(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY)
 
         const valueScreen = this.normalize(
