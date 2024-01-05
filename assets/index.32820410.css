@@ -41,7 +41,7 @@ body {
 .loading-indicator {
     width: 252px;
     height: 52px;
-    background: url(/assets/bootload.b855df42.png) 0 0 no-repeat;
+    background: url(./bootload.b855df42.png) 0 0 no-repeat;
     animation: loading 0.75s steps(2) infinite;
 }
 p {
