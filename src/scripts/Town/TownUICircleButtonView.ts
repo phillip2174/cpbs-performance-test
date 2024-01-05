@@ -4,16 +4,15 @@ import { GameObjectConstructor } from '../plugins/objects/GameObjectConstructor'
 import { TownUIButtonType } from './Type/TownUIButtonType'
 import { DeviceChecker } from '../plugins/DeviceChecker'
 import { PodProvider } from '../pod/PodProvider'
+import CircleMaskImage from 'phaser3-rex-plugins/plugins/circlemaskimage'
 
 export class TownUICircleButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
     public static readonly BUTTON_ICON_DEFAULT_SCALE: number = 1
-    public static readonly BUTTON_ICON_MAX_SCALE: number = 1.15
-    public static readonly BUTTON_ICON_MIN_SCALE: number = 0.7
 
     private backgroundButton: Button
 
-    private buttonIcon: GameObjects.Image
+    private buttonIcon: CircleMaskImage
     private buttonNotificationIcon: GameObjects.Image
 
     private onHoverButtonIconTween: Tweens.Tween
@@ -23,6 +22,9 @@ export class TownUICircleButtonView extends GameObjects.Container {
     private holdCallback: Function
 
     private isInteractable: boolean = true
+    private isUseDefault: boolean = true
+
+    private buttonType: TownUIButtonType
 
     constructor(scene: Scene) {
         super(scene)
@@ -30,18 +32,39 @@ export class TownUICircleButtonView extends GameObjects.Container {
     }
 
     public doInit(x: number, y: number, iconKey: string, buttonType?: TownUIButtonType): void {
-        this.buttonIcon = this.scene.add.image(0, 0, iconKey + TownUICircleButtonView.ICON_IMAGE_KEY).setOrigin(0.5)
+        this.buttonType = buttonType
+        this.buttonIcon = this.scene.add
+            .rexCircleMaskImage(0, 0, iconKey + TownUICircleButtonView.ICON_IMAGE_KEY, {
+                maskType: buttonType == TownUIButtonType.UserProfile ? 0 : null,
+            })
+            .setOrigin(0.5)
 
-        if (buttonType == TownUIButtonType.Zoom) {
-            this.backgroundButton = new Button(this.scene, 0, 0, 40, 40, 'zoom-circle-button-bg', 0)
-            this.add([this.backgroundButton, this.buttonIcon])
-        } else {
-            if (buttonType == TownUIButtonType.MenuGroup) {
-                this.buttonIcon.setPosition(0, -2).setScale(0.65)
-            } else if (buttonType == TownUIButtonType.MainMenu) {
+        switch (buttonType) {
+            case TownUIButtonType.Zoom:
+                this.backgroundButton = new Button(this.scene, 0, 0, 40, 40, 'zoom-circle-button-bg', 0)
+                this.add([this.backgroundButton, this.buttonIcon])
+                break
+            case TownUIButtonType.MainMenu:
                 this.buttonIcon.setPosition(0, -2).setDisplaySize(38, 38)
-            }
+                break
+            case TownUIButtonType.MenuGroup:
+                this.buttonIcon.setPosition(0, -2).setScale(0.65)
+                break
+            case TownUIButtonType.UserProfile:
+                this.buttonIcon.setPosition(1, DeviceChecker.instance.isDesktop() ? -2 : -1)
+                if (iconKey == 'user-profile-default') {
+                    this.isUseDefault = true
+                    this.buttonIcon.setScale(1)
+                } else {
+                    this.isUseDefault = false
+                    this.buttonIcon.setScale(0.04)
+                }
+                break
+            default:
+                break
+        }
 
+        if (buttonType != TownUIButtonType.Zoom) {
             this.backgroundButton = new Button(this.scene, 0, 0, 48, 48, 'ui-circle-button-bg')
             this.buttonNotificationIcon = this.scene.add
                 .image(15, -15, 'button-notification')
@@ -89,8 +112,10 @@ export class TownUICircleButtonView extends GameObjects.Container {
             yoyo: false,
             props: {
                 scale: {
-                    from: TownUICircleButtonView.BUTTON_ICON_DEFAULT_SCALE,
-                    to: TownUICircleButtonView.BUTTON_ICON_MAX_SCALE,
+                    from: this.buttonIcon.scale,
+                    to:
+                        this.buttonIcon.scale +
+                        (this.buttonType == TownUIButtonType.UserProfile ? (this.isUseDefault ? 0.15 : 0.0075) : 0.15),
                 },
             },
             persist: true,
@@ -105,8 +130,10 @@ export class TownUICircleButtonView extends GameObjects.Container {
             yoyo: false,
             props: {
                 scale: {
-                    from: TownUICircleButtonView.BUTTON_ICON_MAX_SCALE,
-                    to: TownUICircleButtonView.BUTTON_ICON_DEFAULT_SCALE,
+                    from:
+                        this.buttonIcon.scale +
+                        (this.buttonType == TownUIButtonType.UserProfile ? (this.isUseDefault ? 0.15 : 0.0075) : 0.15),
+                    to: this.buttonIcon.scale,
                 },
             },
             persist: true,

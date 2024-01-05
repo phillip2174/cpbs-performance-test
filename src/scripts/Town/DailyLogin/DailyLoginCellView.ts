@@ -24,6 +24,7 @@ export class DailyLoginCellView extends GameObjects.Container {
     public static readonly STAMP_MIN_SCALE_MOBILE: number = 0.18
 
     private cellBg: GameObjects.NineSlice
+    private cellSelectBg: GameObjects.NineSlice
 
     private dayText: GameObjects.Text
 
@@ -113,6 +114,7 @@ export class DailyLoginCellView extends GameObjects.Container {
         this.setupRewardPreviewsContainer()
         this.add([
             this.cellBg,
+            this.cellSelectBg,
             this.dayText,
             this.rewardPreviewContainer,
             this.rewardPreviewPosRect,
@@ -137,6 +139,20 @@ export class DailyLoginCellView extends GameObjects.Container {
                 30,
                 30
             )
+            this.cellSelectBg = this.scene.add
+                .nineslice(
+                    0,
+                    0,
+                    'daily-login-current-day',
+                    '',
+                    DailyLoginCellView.BG_WIDTH_BIG_DESKTOP,
+                    DailyLoginCellView.BG_HEIGHT_DESKTOP,
+                    30,
+                    30,
+                    30,
+                    30
+                )
+                .setVisible(false)
         } else {
             this.cellBg = this.scene.add.nineslice(
                 0,
@@ -150,6 +166,20 @@ export class DailyLoginCellView extends GameObjects.Container {
                 30,
                 30
             )
+            this.cellSelectBg = this.scene.add
+                .nineslice(
+                    0,
+                    0,
+                    'daily-login-current-day',
+                    '',
+                    DailyLoginCellView.BG_WIDTH_DESKTOP,
+                    DailyLoginCellView.BG_HEIGHT_DESKTOP,
+                    30,
+                    30,
+                    30,
+                    30
+                )
+                .setVisible(false)
         }
     }
 
@@ -167,6 +197,20 @@ export class DailyLoginCellView extends GameObjects.Container {
                 30,
                 30
             )
+            this.cellSelectBg = this.scene.add
+                .nineslice(
+                    0,
+                    0,
+                    'daily-login-current-day',
+                    '',
+                    DailyLoginCellView.BG_WIDTH_BIG_MOBILE,
+                    DailyLoginCellView.BG_HEIGHT_MOBILE,
+                    30,
+                    30,
+                    30,
+                    30
+                )
+                .setVisible(false)
         } else {
             this.cellBg = this.scene.add.nineslice(
                 0,
@@ -180,6 +224,20 @@ export class DailyLoginCellView extends GameObjects.Container {
                 30,
                 30
             )
+            this.cellSelectBg = this.scene.add
+                .nineslice(
+                    0,
+                    0,
+                    'daily-login-current-day',
+                    '',
+                    DailyLoginCellView.BG_WIDTH_MOBILE,
+                    DailyLoginCellView.BG_HEIGHT_MOBILE,
+                    30,
+                    30,
+                    30,
+                    30
+                )
+                .setVisible(false)
         }
     }
 
@@ -281,6 +339,9 @@ export class DailyLoginCellView extends GameObjects.Container {
             case DailyLoginCollectState.Collected:
                 this.collectedStamp.setVisible(true)
                 this.updateCellCollectedState()
+                break
+            case DailyLoginCollectState.Collecting:
+                this.cellSelectBg.setVisible(true)
                 break
         }
     }

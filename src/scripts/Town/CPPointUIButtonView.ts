@@ -14,7 +14,7 @@ import { DeviceChecker } from '../plugins/DeviceChecker'
 
 export class CPPointUIButtonView extends GameObjects.Container {
     public static readonly ICON_IMAGE_KEY: string = `-button-icon`
-    public static readonly UPDATE_POINT_TEXT_DURATION: number = 700
+    public static readonly UPDATE_POINT_TEXT_DURATION: number = 1200
     public static readonly UPDATE_BUTTON_WIDTH_DURATION: number = 300
     private backgroundButton: Button
     private buttonIcon: GameObjects.Image
@@ -129,6 +129,11 @@ export class CPPointUIButtonView extends GameObjects.Container {
     }
 
     private setupSubscribe(): void {
+        this.cpPointSubscription = this.userPod.userCPpoint.subscribe((point) => {
+            this.setupCurrentButtonWidth(point)
+            this.updatePointButtonUI(point)
+        })
+
         if (!this.isDesktop) return
 
         if (PodProvider.instance.splashPod.launchScene == SceneState.TownScene) {
@@ -160,11 +165,6 @@ export class CPPointUIButtonView extends GameObjects.Container {
                 this.setActiveButton(true, false)
             }
         }
-
-        this.cpPointSubscription = this.userPod.userCPpoint.subscribe((point) => {
-            this.setupCurrentButtonWidth(point)
-            this.updatePointButtonUI(point)
-        })
     }
 
     private checkIsStateUseDimSprite(state: TownUIState): boolean {
@@ -173,7 +173,8 @@ export class CPPointUIButtonView extends GameObjects.Container {
             state != TownUIState.DailyLogin &&
             state != TownUIState.Settings &&
             state != TownUIState.CompleteIngredients &&
-            state != TownUIState.NextIngredients
+            state != TownUIState.NextIngredients &&
+            state != TownUIState.UserProfile
         )
     }
 

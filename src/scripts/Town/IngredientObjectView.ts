@@ -137,6 +137,7 @@ export class IngredientObjectView extends GameObjects.Container {
                     TownUIState.DailyLogin,
                     TownUIState.CompleteIngredients,
                     TownUIState.NextIngredients,
+                    TownUIState.UserProfile,
                 ]
 
                 if (validStates.includes(state)) {

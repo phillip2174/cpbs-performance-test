@@ -26,6 +26,8 @@ export class UIDepthConfig {
     public static readonly TUTORIAL_PANEL: number = 300
     public static readonly TUTORIAL_HINT: number = 99
     public static readonly SUCCESS_INDICATOR: number = 100
+    public static readonly COOKIE_CONSENT_PANEL: number = 600
+    public static readonly USER_PROFILE: number = 204
 
     //APILOADING AND ALERT POPUP
 

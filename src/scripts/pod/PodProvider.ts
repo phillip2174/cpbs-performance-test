@@ -18,7 +18,8 @@ import { SplashPod } from './SplashPod'
 import { MinigameCPOrderPod } from '../minigame/minigame-2-cp-order/MinigameCPOrderPod'
 import { MinigameScenePod } from './../minigame/MinigameScenePod'
 import { TutorialManager } from '../Manager/TutorialManager'
-import { MinigameCPGuessPod } from '../minigame/minigame-3-cp-guess-this-picture/MinigameCPGuessPod'
+import { MinigameCPWhatPod } from '../minigame/minigame-3-cp-what-the-pic/MinigameCPWhatPod'
+import { CookieConsentManager } from '../Manager/CookieConsentManager'
 
 export class PodProvider {
     private static _instance: PodProvider
@@ -130,7 +131,12 @@ export class PodProvider {
     }
 
     @LazyGetter()
-    get minigameCPGuessThisPicturePod(): MinigameCPGuessPod {
-        return new MinigameCPGuessPod()
+    get minigameCPWhatPod(): MinigameCPWhatPod {
+        return new MinigameCPWhatPod()
+    }
+
+    @LazyGetter()
+    get cookieConsentManager(): CookieConsentManager {
+        return new CookieConsentManager()
     }
 }

@@ -116,20 +116,20 @@ export class MinigameCPOrderGameplayUIView extends GameObjects.GameObject {
     }
 
     private setupUIDesktop(): void {
-        this.subBg.setSize(489, 680).setDisplaySize(489, 680)
+        this.subBg.setSize(489, 680).setDisplaySize(489, 680).setPosition(0, 40)
 
         this.characterOrderBg
-            .setPosition(-3, -this.subBg.height / 2 + 230)
+            .setPosition(-3, -this.subBg.height / 2 + 270)
             .setSize(400, 220)
             .setDisplaySize(400, 220)
 
         this.gameLogo
-            .setPosition(-this.subBg.width / 2 + 65, -this.subBg.height / 2 + 45)
+            .setPosition(-this.subBg.width / 2 + 65, -this.subBg.height / 2 + 85)
             .setSize(232, 184)
             .setDisplaySize(232, 184)
 
-        this.menuCellGroupView.doInit(0, 60, this.orderTimer)
-        this.orderTimer.doInit(this.cameraCenterX + 65, this.cameraCenterY - 265, 271, 70, 0, 199, 18, -10, 18, 8, 48)
+        this.menuCellGroupView.doInit(0, 100, this.orderTimer)
+        this.orderTimer.doInit(this.cameraCenterX + 65, this.cameraCenterY - 225, 271, 70, 0, 199, 18, -10, 18, 8, 48)
         this.lifeCount = new LifeCountView(this.scene, this.orderTimer.x + 85, this.orderTimer.y - 10)
         this.orderText = new BoldText(this.scene, this.orderTimer.x - 42, this.lifeCount.y - 1, 'ORDER', 24, '#EE843C')
 

@@ -114,7 +114,7 @@ export class APILoadingManager {
                 this.background.setFillStyle(0x2b2b2b)
                 this.setIconTweenAndScale(false, 0.8, 0.6, isTween, 'minigame-2-logo')
                 break
-            case SceneState.MinigameCPGuessThisPicture:
+            case SceneState.MinigameCPWhatThePic:
                 this.background.setFillStyle(0x2b2b2b)
                 this.setIconTweenAndScale(false, 0.8, 0.6, isTween, 'minigame-3-logo')
                 break

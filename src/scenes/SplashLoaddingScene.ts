@@ -172,10 +172,16 @@ export class SplashLoaddingScene extends Scene {
                     }
                     break
 
-                case SceneState.MinigameCPGuessThisPicture:
+                case SceneState.MinigameCPWhatThePic:
                     observableInit.push(timer(200))
                     observableInit.push(
                         ResourceManager.instance.loadPackJson('global-ui-load', `assets/global-ui-load.json`)
+                    )
+                    observableInit.push(
+                        ResourceManager.instance.loadPackJson(
+                            'ingredient-asset-load',
+                            `assets/town/json/ingredient-asset-load.json`
+                        )
                     )
                     observableInit.push(
                         ResourceManager.instance.loadPackJson(

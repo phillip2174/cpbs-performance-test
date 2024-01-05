@@ -1,4 +1,5 @@
 import { TutorialSaveBean } from '../../Tutorial/TutorialSaveBean'
+import { CookieConsentBean } from '../CookieConsent/CookieConsentBean'
 import { GameConfig } from '../GameConfig'
 import { UserIngredientBean } from '../Ingredient/UserIngredientBean'
 import { InventoryItemBean } from '../Town/Inventory/InventoryItemBean'
@@ -6,6 +7,7 @@ import { SettingDataBean } from '../Town/Settings/SettingDataBean'
 
 export class LocalStorageRepository {
     public settingDataBean: SettingDataBean
+    private cookieConsentBean: CookieConsentBean
     private tutorialSaveBean: TutorialSaveBean
     private userIngredientBeans: UserIngredientBean[]
     private inventoryItemBean: InventoryItemBean[]
@@ -30,6 +32,29 @@ export class LocalStorageRepository {
     public clearAllTutorial() {
         localStorage.removeItem('tutorialSaveBean')
         this.clearLocalStorageUserIngredient()
+    }
+
+    public saveCookieConsentData(cookieConsentBean: CookieConsentBean): void {
+        console.log('Saved cookieConsentBean')
+        console.log(this.cookieConsentBean)
+        this.cookieConsentBean = cookieConsentBean
+        localStorage.setItem('cookieConsentBean', JSON.stringify(this.cookieConsentBean))
+    }
+
+    public getCookieConsentData(): CookieConsentBean {
+        const cookieBean = localStorage.getItem('cookieConsentBean')
+        if (cookieBean == null || cookieBean == undefined) {
+            this.cookieConsentBean = new CookieConsentBean(false)
+            localStorage.setItem('cookieConsentBean', JSON.stringify(this.cookieConsentBean))
+        } else {
+            this.cookieConsentBean = JSON.parse(cookieBean)
+        }
+        console.log(this.cookieConsentBean)
+        return this.cookieConsentBean
+    }
+
+    public clearCookieConsentBean() {
+        localStorage.removeItem('cookieConsentBean')
     }
 
     public getTutorialSaveData(): TutorialSaveBean {

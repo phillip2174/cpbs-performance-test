@@ -58,6 +58,7 @@ export class IdleObjectGroupView extends GameObjects.GameObject {
                 TownUIState.DailyLogin,
                 TownUIState.CompleteIngredients,
                 TownUIState.NextIngredients,
+                TownUIState.UserProfile,
             ]
 
             if (validStates.includes(state)) {

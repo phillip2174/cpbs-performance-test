@@ -10,6 +10,7 @@ import { MinigameResultUIView } from '../scripts/minigame/MinigameResultUIView'
 import { MinigameResultUIMiniView } from '../scripts/minigame/MinigameResultUIMiniView'
 import { SettingMinigameUIPanelView } from '../scripts/Town/Settings/SettingMinigameUIPanelView'
 import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
+import { UserProfileMinigamePanelView } from '../scripts/User/UserProfileMinigamePanelView'
 
 export class MinigameCPOrderScene extends Scene {
     private minigameScenePod: MinigameScenePod
@@ -19,6 +20,7 @@ export class MinigameCPOrderScene extends Scene {
     private minigameResultUIView: MinigameResultUIView
     private minigameResultUIMiniView: MinigameResultUIMiniView
     private settingUIPanelView: SettingMinigameUIPanelView
+    private userProfilePanelView: UserProfileMinigamePanelView
 
     constructor() {
         super({ key: 'MinigameCPOrder' })
@@ -48,6 +50,8 @@ export class MinigameCPOrderScene extends Scene {
 
         this.settingUIPanelView = new SettingMinigameUIPanelView(this)
         this.settingUIPanelView.doInit(this.minigameScenePod)
+        this.userProfilePanelView = new UserProfileMinigamePanelView(this)
+        this.userProfilePanelView.doInit(this.minigameScenePod)
     }
 
     public update(): void {

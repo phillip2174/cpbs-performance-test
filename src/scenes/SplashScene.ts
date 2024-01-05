@@ -88,7 +88,12 @@ export class SplashScene extends Scene {
 
         this.userDataSubscription = userPod
             .getUserBean()
-            .pipe(concatMap((_) => userPod.getUserCPPoint()))
+            .pipe(
+                concatMap((_) => userPod.getUserCPPoint()),
+                concatMap((_) =>
+                    ResourceManager.instance.loadTexture('user-profile-button-icon', userPod.userBean.profileImageUrl)
+                )
+            )
             .subscribe((_) => {
                 userPod.checkFirstLoginOfTheDay()
                 this.userDataSubscription?.unsubscribe()

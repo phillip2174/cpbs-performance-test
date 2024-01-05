@@ -12,4 +12,5 @@ export enum TownUIButtonType {
     Guide,
     SoundEffect,
     BGMusic,
+    UserProfile,
 }

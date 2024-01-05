@@ -42,7 +42,7 @@ export class MinigameCpOrderMenuCellGroupView extends GameObjects.Container {
         if (this.isDesktop) {
             this.cellSize = 98
             this.cellGroupBg
-                .setPosition(-3, y + 37)
+                .setPosition(-3, y - 2)
                 .setSize(400, 300)
                 .setDisplaySize(400, 300)
         } else {

@@ -24,6 +24,8 @@ import { ErrorAlertFactory } from '../error-factory/ErrorAlertFactory'
 import { TutorialStepState } from '../Tutorial/TutorialStepState'
 import { DeviceChecker } from '../scripts/plugins/DeviceChecker'
 import { UserType } from '../scripts/User/UserType'
+import { CookieConsentUIPanelView } from '../scripts/CookieConsent/CookieConsentUIPanelView'
+import { CookieConsentManager } from '../scripts/Manager/CookieConsentManager'
 
 export class CityUIScene extends Scene {
     private townUIView: TownUIView
@@ -37,12 +39,14 @@ export class CityUIScene extends Scene {
     private dayNightNoticeView: DayNightNoticeView
     private completeIngredientsPanelView: CompleteIngredientsPanelView
     private nextIngredientsPanelView: NextIngredientsPanelView
+    private cookieConsentUIPanelView: CookieConsentUIPanelView
     private firstInitSubscription: Subscription
 
     private townBuildingPod: TownBuildingPod
 
     private grayscalePipeline: GrayscalePipeline
     private tutorialManager: TutorialManager
+    private cookieConsentManager: CookieConsentManager
 
     constructor() {
         super('CityUIScene')
@@ -118,6 +122,13 @@ export class CityUIScene extends Scene {
             this.nextIngredientsPanelView.doInit()
 
             this.firstInitSubscription?.unsubscribe()
+
+            this.cookieConsentManager = PodProvider.instance.cookieConsentManager
+            this.cookieConsentManager.getCookieConsentData()
+            if (!this.cookieConsentManager.isAcceptCookie) {
+                this.cookieConsentUIPanelView = new CookieConsentUIPanelView(this)
+                this.cookieConsentUIPanelView.doInit()
+            }
         })
     }
 

@@ -1,6 +1,6 @@
 {
     "productName": "เกี๊ยวซ่าหมู ตรา ซีพี",
-    "productImageUrl": "minigame-3-guess-image",
+    "productImageUrl": "assets/minigame/minigame3/minigame-3-guess-image.png",
     "choiceImageUrl": ["minigame-3-answer-image1", "minigame-3-answer-image4", "minigame-3-answer-image3"],
     "answerIndex": 2
 }

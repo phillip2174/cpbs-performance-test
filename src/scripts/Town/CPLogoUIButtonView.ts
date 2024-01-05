@@ -98,7 +98,8 @@ export class CPLogoUIButtonView extends GameObjects.Container {
             state != TownUIState.DailyLogin &&
             state != TownUIState.Settings &&
             state != TownUIState.CompleteIngredients &&
-            state != TownUIState.NextIngredients
+            state != TownUIState.NextIngredients &&
+            state != TownUIState.UserProfile
         )
     }
 

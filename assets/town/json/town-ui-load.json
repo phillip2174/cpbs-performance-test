@@ -343,6 +343,11 @@
             },
             {
                 "type": "image",
+                "key": "daily-login-current-day",
+                "url": "assets/town/daily_login/daily-login-current-day.png"
+            },
+            {
+                "type": "image",
                 "key": "day-night-notice-night-icon",
                 "url": "assets/town/day_night/day-night-notice-night-icon.png"
             },

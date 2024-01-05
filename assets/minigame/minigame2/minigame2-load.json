@@ -100,11 +100,6 @@
                 "type": "image",
                 "key": "line-completed",
                 "url": "assets/global_ui/line-completed.png"
-            },
-            {
-                "type": "image",
-                "key": "minigame-background-countdown-ticket",
-                "url": "assets/minigame/minigame1/minigame-background-countdown-ticket.png"
             }
         ]
     }

@@ -3,8 +3,14 @@
         "files": [
             {
                 "type": "audio",
-                "key": "minigame_bgm",
-                "url": "assets/audio/bgm/minigame_bgm.mp3",
+                "key": "minigamer_1_cp_puzzle_bgm",
+                "url": "assets/audio/bgm/minigamer_1_cp_puzzle_bgm.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "minigamer_2_cp_order_bgm",
+                "url": "assets/audio/bgm/minigamer_2_cp_order_bgm.mp3",
                 "autoDecode": true
             },
             {

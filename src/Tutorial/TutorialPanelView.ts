@@ -73,7 +73,7 @@ export class TutorialPanelView extends GameObjects.Container {
                             this.onBGCloseTween?.pause()
                             this.setVisible(true)
                             this.dimBackground.fillAlpha = 0.01
-                            this.reloadWindowTimerSubscription = timer(1000).subscribe((_) => {
+                            this.reloadWindowTimerSubscription = timer(1500).subscribe((_) => {
                                 this.reloadWindowTimerSubscription?.unsubscribe()
                                 window.location.reload()
                             })

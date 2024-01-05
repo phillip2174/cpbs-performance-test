@@ -8,11 +8,6 @@
             },
             {
                 "type": "image",
-                "key": "minigame-background-countdown-ticket",
-                "url": "assets/minigame/minigame1/minigame-background-countdown-ticket.png"
-            },
-            {
-                "type": "image",
                 "key": "minigame-1-bg",
                 "url": "assets/minigame/minigame1/minigame-1-bg.png"
             },

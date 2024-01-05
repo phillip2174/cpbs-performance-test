@@ -1,4 +1,4 @@
-import { Observable, Observer } from 'rxjs'
+import { Observable, Observer, of } from 'rxjs'
 import { SpineConfig } from '../spineConfig'
 import { ResourceLoader } from './ResourceLoader'
 
@@ -38,25 +38,31 @@ export class ResourceManager {
 
     loadPackJson(key: string, path: string): Observable<string> {
         return Observable.create((obs: Observer<string>) => {
-            this.loader
-                .loadPackJson(this.scene, key, path)
-                .subscribe((keyList) => {
-                    obs.next(key)
-                    obs.complete()
-                })
-        })
-    }
-
-    loadTexture(imageKey: string, imagePath: string): Observable<string> {
-        return Observable.create((obs: Observer<string>) => {
-            this.loader.loadImage(imageKey, imagePath).subscribe((path) => {
-                obs.next(path)
+            this.loader.loadPackJson(this.scene, key, path).subscribe((keyList) => {
+                obs.next(key)
                 obs.complete()
             })
         })
     }
 
-    loadSpriteSheet(imageKey: string, imagePath: string, frameConfig: Phaser.Types.Loader.FileTypes.ImageFrameConfig): Observable<string> {
+    loadTexture(imageKey: string, imagePath: string): Observable<string> {
+        if (imagePath && !!imagePath.trim()) {
+            return Observable.create((obs: Observer<string>) => {
+                this.loader.loadImage(imageKey, imagePath).subscribe((path) => {
+                    obs.next(path)
+                    obs.complete()
+                })
+            })
+        } else {
+            return of('')
+        }
+    }
+
+    loadSpriteSheet(
+        imageKey: string,
+        imagePath: string,
+        frameConfig: Phaser.Types.Loader.FileTypes.ImageFrameConfig
+    ): Observable<string> {
         return Observable.create((obs: Observer<string>) => {
             this.loader.loadSpriteSheet(imageKey, imagePath, frameConfig).subscribe((path) => {
                 obs.next(path)
@@ -64,7 +70,6 @@ export class ResourceManager {
             })
         })
     }
-
 
     loadJson(key: string, path: string): Observable<string> {
         return Observable.create((observer: Observer<string>) => {
@@ -91,31 +96,34 @@ export class ResourceManager {
             if (!isTest) {
                 this.loader.loadSpine(spineConfig.path, spineConfig.key).subscribe((key: string) => {
                     //@ts-ignore
-                    let spine: SpineGameObject = scene.add.spine(spineConfig.x,
+                    let spine: SpineGameObject = scene.add.spine(
+                        spineConfig.x,
                         spineConfig.y,
                         key,
                         spineConfig.startAnimation,
-                        spineConfig.isLooping);
+                        spineConfig.isLooping
+                    )
 
-                    spine.setDepth(1);
+                    spine.setDepth(1)
 
-                    obs.next(spine);
-                    obs.complete();
-                });
+                    obs.next(spine)
+                    obs.complete()
+                })
             } else {
                 this.loader.loadSpine(`coin-pro`, spineConfig.key).subscribe((key: string) => {
                     //@ts-ignore
-                    let spine: SpineGameObject = scene.add.spine(spineConfig.x,
+                    let spine: SpineGameObject = scene.add.spine(
+                        spineConfig.x,
                         spineConfig.y,
                         key,
                         spineConfig.startAnimation,
-                        spineConfig.isLooping);
-                    spine.setDepth(9);
-                    obs.next(spine);
-                    obs.complete();
-                });
+                        spineConfig.isLooping
+                    )
+                    spine.setDepth(9)
+                    obs.next(spine)
+                    obs.complete()
+                })
             }
-        });
-
+        })
     }
 }

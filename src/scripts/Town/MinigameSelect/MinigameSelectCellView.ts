@@ -63,7 +63,7 @@ export class MinigameSelectCellView extends GameObjects.Container {
                     PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPOrder)
                     break
                 case 3:
-                    PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPGuessThisPicture)
+                    PodProvider.instance.splashPod.setLaunchScene(SceneState.MinigameCPWhatThePic)
                     break
             }
             this.scene.scene.stop('TownScene')

@@ -9,7 +9,7 @@ import { MinigameCPPuzzleScene } from './scenes/MinigameCPPuzzleScene'
 import { MinigameCPOrderScene } from './scenes/MinigameCPOrderScene'
 import OutlinePostFx from 'phaser3-rex-plugins/plugins/outlinepipeline'
 import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin'
-import { MinigameCPGuessThisPictureScene } from './scenes/MinigameCPGuessThisPictureScene'
+import { MinigameCPWhatThePicScene } from './scenes/MinigameCPWhatThePicScene'
 import CircleMaskImagePlugin from 'phaser3-rex-plugins/plugins/circlemaskimage-plugin'
 
 function getGameCanvasSize(): { width: number; height: number } {
@@ -114,7 +114,7 @@ const config: Phaser.Types.Core.GameConfig = {
         CityUIScene,
         MinigameCPPuzzleScene,
         MinigameCPOrderScene,
-        MinigameCPGuessThisPictureScene,
+        MinigameCPWhatThePicScene,
     ],
 
     callbacks: {

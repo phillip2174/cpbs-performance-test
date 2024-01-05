@@ -15,6 +15,7 @@ export class MinigameScenePod {
     ticket: BehaviorSubject<number> = new BehaviorSubject(1)
     sceneState: BehaviorSubject<MinigameState> = new BehaviorSubject(MinigameState.StartMenu)
     settingState: BehaviorSubject<boolean> = new BehaviorSubject(false)
+    userProfileState: BehaviorSubject<boolean> = new BehaviorSubject(false)
     isDoOnOutOfTicket: boolean = false
     callBackOnOpenResult: Function = undefined
 

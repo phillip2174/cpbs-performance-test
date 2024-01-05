@@ -97,11 +97,14 @@ export class DailyLoginUIPanelView extends GameObjects.Container {
                     this.townUIPod.setIsShowGuideline(true)
                 }
 
-                if (this.townDayNightPod.getTownTimeState() == TownTimeState.Day)
+                if (this.townDayNightPod.getTownTimeState() == TownTimeState.Day){
                     this.audioManager.playAmbientSound('town_day_ambient', false)
-                else this.audioManager.playAmbientSound('town_night_ambient', false)
-
-                this.audioManager.playBGMSound('citygame_01_bgm', false)
+                    this.audioManager.playBGMSound('citygame_town_day', false)
+                }
+                else {
+                    this.audioManager.playAmbientSound('town_night_ambient', false)
+                    this.audioManager.playBGMSound('citygame_town_night', false)
+                }
             } else {
                 this.setActiveContainer(false)
             }

@@ -120,7 +120,7 @@ export class AlertDialogueView extends GameObjects.GameObject {
                 ? this.background.width / 2 - 88 - this.spacingButton
                 : this.background.width / 2 - 80 - this.spacingButton,
             this.descriptionPositionRect.y + this.descriptionPositionRect.height + (this.isDesktop ? 40 : 40),
-            this.isDesktop ? 177 : 161,
+            this.isDesktop ? 167 : 151,
             textInButton,
             0x29cc6a
         )
@@ -145,7 +145,7 @@ export class AlertDialogueView extends GameObjects.GameObject {
                 ? -this.background.width / 2 + 57 + this.spacingButton
                 : -this.background.width / 2 + 49 + this.spacingButton,
             this.descriptionPositionRect.y + this.descriptionPositionRect.height + (this.isDesktop ? 40 : 40),
-            this.isDesktop ? 114 : 98,
+            this.isDesktop ? 125 : 109,
             textInButton,
             0xee843c,
             ButtonSoundType.Negative

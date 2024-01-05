@@ -25,8 +25,11 @@ import { TutorialState } from '../../Tutorial/TutorialState'
 import { DeviceChecker } from '../plugins/DeviceChecker'
 import { GameConfig } from '../GameConfig'
 import { UIDepthConfig } from '../UIDepthConfig'
+import { UserProfilePanelView } from '../User/UserProfilePanelView'
+import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
 export class TownUIView extends GameObjects.GameObject {
     private guideLineUIView: GuideLineUIView
+    private userProfilePanelView: UserProfilePanelView
 
     private menuGroupButton: TownUIButtonView
     private dailyLoginButton: TownUIButtonView
@@ -119,6 +122,9 @@ export class TownUIView extends GameObjects.GameObject {
         this.guideLineUIView = new GuideLineUIView(this.scene)
         this.guideLineUIView.doInit(this.gameScreenWidth / 2, this.gameScreenHeight - 65)
 
+        this.userProfilePanelView = new UserProfilePanelView(this.scene)
+        this.userProfilePanelView.doInit()
+
         this.setupUIButtons()
         this.createTweens()
         this.playTweens()
@@ -133,11 +139,15 @@ export class TownUIView extends GameObjects.GameObject {
                     this.townUIPod.setLayerScrollView(0)
                     this.showTownUIs()
 
-                    if (this.townDayNightPod.getTownTimeState() == TownTimeState.Day)
+                    if (this.townDayNightPod.getTownTimeState() == TownTimeState.Day){
                         this.audioManager.playAmbientSound('town_day_ambient', false)
-                    else this.audioManager.playAmbientSound('town_night_ambient', false)
+                        this.audioManager.playBGMSound('citygame_town_day', false)
+                    }
+                    else {
+                        this.audioManager.playAmbientSound('town_night_ambient', false)
+                        this.audioManager.playBGMSound('citygame_town_night', false)
+                    }
 
-                    this.audioManager.playBGMSound('citygame_01_bgm', false)
                     break
                 case TownUIState.Collection:
                     this.hideTownUIs()
@@ -388,6 +398,10 @@ export class TownUIView extends GameObjects.GameObject {
             }
         })
 
+        this.userProfileCircleButtonView?.onClick(() => {
+            this.townUIPod.changeUIState(TownUIState.UserProfile)
+        })
+
         this.settingCircleButtonView?.onClick(() => {
             this.townUIPod.changeUIState(TownUIState.Settings)
         })
@@ -403,11 +417,21 @@ export class TownUIView extends GameObjects.GameObject {
             .setDepth(UIDepthConfig.TOP_BUTTONS_CONTAINER)
 
         this.userProfileCircleButtonView = new TownUICircleButtonView(this.scene)
-        this.userProfileCircleButtonView.doInit(
-            this.gameScreenWidth / 2 - 115,
-            -this.gameScreenHeight / 2 + 40,
-            'user-profile'
-        )
+        if (!this.userPod.userBean.profileImageUrl || !this.userPod.userBean.profileImageUrl.trim()) {
+            this.userProfileCircleButtonView.doInit(
+                this.gameScreenWidth / 2 - 115,
+                -this.gameScreenHeight / 2 + 40,
+                'user-profile-default',
+                TownUIButtonType.UserProfile
+            )
+        } else {
+            this.userProfileCircleButtonView.doInit(
+                this.gameScreenWidth / 2 - 115,
+                -this.gameScreenHeight / 2 + 40,
+                'user-profile',
+                TownUIButtonType.UserProfile
+            )
+        }
 
         if (this.userPod.userLoginType == UserType.Guest) {
             this.loginButton = this.createButton(this.isDesktop ? 117 : 95, 48, 'minigame-play-button', 'LOGIN', 24)

@@ -76,6 +76,7 @@ export class TrainObjectWithIngredientView extends GameObjects.Container {
                 TownUIState.DailyLogin,
                 TownUIState.CompleteIngredients,
                 TownUIState.NextIngredients,
+                TownUIState.UserProfile,
             ]
 
             if (validStates.includes(state)) {

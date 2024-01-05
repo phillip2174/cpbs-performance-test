@@ -16,7 +16,14 @@ export class UserRepository {
     public getUserBean(userType: UserType): Observable<UserBean> {
         if (GameConfig.IS_MOCK_API) {
             if (userType == UserType.Login) {
-                this.userBean = new UserBean(1, 'Phillip', 'Liu', 0, 0)
+                this.userBean = new UserBean(
+                    1,
+                    'Phillip',
+                    'Liu',
+                    0,
+                    0,
+                    'https://cdn.discordapp.com/attachments/545221131775246371/1192695294006140958/1797506_765669076788654_2508913238626413675_n.png?ex=65aa030d&is=65978e0d&hm=f217432de5cc436653e981a34dff1b817e59c56872351e83af699147b0ba169b&'
+                )
             } else {
                 this.userBean = new UserBean(0, 'Guest', 'User', 0, 0)
             }

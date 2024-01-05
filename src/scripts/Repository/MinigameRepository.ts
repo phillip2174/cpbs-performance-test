@@ -6,7 +6,7 @@ import { MinigameService, StartGameResultBean } from '../Service/MinigameService
 import { MinigameBean } from '../minigame/MinigameBean'
 import { GameConfig } from '../GameConfig'
 import { ResourceManager } from '../plugins/resource-loader/ResourceManager'
-import { MinigameCPGuessDataBean } from '../minigame/minigame-3-cp-guess-this-picture/MinigameCPGuessDataBean'
+import { MinigameCPWhatDataBean } from '../minigame/minigame-3-cp-what-the-pic/MinigameCPWhatDataBean'
 
 export class MinigameRepository {
     private minigameService: MinigameService
@@ -43,13 +43,13 @@ export class MinigameRepository {
         return this.minigameService.sendResult(id, score)
     }
 
-    public getMinigameCPGuessData(): Observable<MinigameCPGuessDataBean> {
+    public getMinigameCPWhatData(): Observable<MinigameCPWhatDataBean> {
         if (GameConfig.IS_MOCK_API) {
             return ResourceManager.instance
                 .loadText('minigame-3-databean', 'assets/minigame/minigame3/minigame-3-databean.json')
                 .pipe(map((json) => JSON.parse(json)))
         } else {
-            return this.minigameService.getMinigameCPGuessData()
+            return this.minigameService.getMinigameCPWhatData()
         }
     }
 }

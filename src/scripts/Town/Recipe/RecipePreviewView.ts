@@ -76,11 +76,17 @@ export class RecipePreviewView extends GameObjects.Container {
     }
 
     public onHover() {
+        this.onLeaveButtonIconTween?.pause()
+        this.onLeaveRotateButtonIconTween?.pause()
+
         this.onHoverButtonIconTween?.restart()
         this.onHoverRotateButtonIconTween?.restart()
     }
 
     public onLeave() {
+        this.onHoverButtonIconTween?.pause()
+        this.onHoverRotateButtonIconTween?.pause()
+
         this.onLeaveButtonIconTween?.restart()
         this.onLeaveRotateButtonIconTween?.restart()
     }

@@ -53,6 +53,7 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
         var centerY = this.scene.cameras.main.centerY
         this.group = this.scene.add.container(centerX, centerY).setDepth(UIDepthConfig.MINI_GAME_MENU)
         this.isDesktop = DeviceChecker.instance.isDesktop()
+
         this.setUpImage()
         this.setUpButton()
 
@@ -113,10 +114,7 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
             this.group.add(this.settingButton)
 
-            this.userProfileButton = new TownUICircleButtonView(this.scene)
-            this.userProfileButton.doInit(this.settingButton.x - 80, this.settingButton.y, 'user-profile')
-
-            this.group.add(this.userProfileButton)
+            this.setupUserProfileButton(this.settingButton.x - 80, this.settingButton.y)
 
             let line = this.scene.add
                 .rectangle(
@@ -177,9 +175,7 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
             this.group.add(this.settingButton)
 
-            this.userProfileButton = new TownUICircleButtonView(this.scene)
-            this.userProfileButton.doInit(this.settingButton.x - 70, this.settingButton.y, 'user-profile')
-            this.group.add(this.userProfileButton)
+            this.setupUserProfileButton(this.settingButton.x - 70, this.settingButton.y)
 
             this.townCircleButton = new TownUICircleButtonView(this.scene)
             this.townCircleButton.doInit(
@@ -211,5 +207,23 @@ export class MinigameMenuUIView extends GameObjects.GameObject {
 
             this.group.add(line)
         }
+    }
+
+    private setupUserProfileButton(x: number, y: number): void {
+        this.userProfileButton = new TownUICircleButtonView(this.scene)
+        if (
+            !PodProvider.instance.userPod.userBean.profileImageUrl ||
+            !PodProvider.instance.userPod.userBean.profileImageUrl.trim()
+        ) {
+            this.userProfileButton.doInit(x, y, 'user-profile-default', TownUIButtonType.UserProfile)
+        } else {
+            this.userProfileButton.doInit(x, y, 'user-profile', TownUIButtonType.UserProfile)
+        }
+
+        this.userProfileButton.onClick(() => {
+            this.scenePod.userProfileState.next(true)
+        })
+
+        this.group.add(this.userProfileButton)
     }
 }

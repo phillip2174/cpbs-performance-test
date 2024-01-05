@@ -3,8 +3,14 @@
         "files": [
             {
                 "type": "audio",
-                "key": "citygame_01_bgm",
-                "url": "assets/audio/bgm/citygame_01_bgm.mp3",
+                "key": "citygame_town_day",
+                "url": "assets/audio/bgm/citygame_town_day.mp3",
+                "autoDecode": true
+            },
+            {
+                "type": "audio",
+                "key": "citygame_town_night",
+                "url": "assets/audio/bgm/citygame_town_night.mp3",
                 "autoDecode": true
             },
             {

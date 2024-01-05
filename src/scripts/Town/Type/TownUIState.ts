@@ -8,4 +8,5 @@ export enum TownUIState {
     MiniGameSelect,
     CompleteIngredients,
     NextIngredients,
+    UserProfile,
 }

@@ -41,7 +41,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         this.isDesktop = DeviceChecker.instance.isDesktop()
         var centerX = this.scene.cameras.main.centerX
         var centerY = this.scene.cameras.main.centerY
-        this.group = this.scene.add.container(centerX, centerY)
+        this.group = this.scene.add.container(centerX, this.isDesktop ? centerY + 20 : centerY)
         this.group.setDepth(UIDepthConfig.MINI_GAME_GAMEPLAY)
 
         this.setUpImage()
@@ -113,7 +113,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
             this.timeBarView = new TimeBarView(this.scene).setDepth(this.group.depth)
             this.timeBarView.doInit(
                 centerX + 65,
-                centerY - this.subBg.height / 2 + 80,
+                centerY - this.subBg.height / 2 + 105,
                 271,
                 70,
                 0,
@@ -147,7 +147,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
             .image(0, this.isDesktop ? 20 : 30, `minigame-1-sub-bg`)
             .setScale(this.isDesktop ? 1 : 1.05, this.isDesktop ? 1 : 1.15)
         this.group.add(this.subBg)
-        this.logo = this.scene.add.image(this.isDesktop ? -180 : -170, this.isDesktop ? -280 : -290, `minigame-1-logo`)
+        this.logo = this.scene.add.image(this.isDesktop ? -180 : -170, this.isDesktop ? -275 : -290, `minigame-1-logo`)
         this.logo.setScale(this.isDesktop ? 0.5 : 0.45)
 
         this.group.add(this.logo)
@@ -175,7 +175,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
 
         this.groupBeforeStart.add([this.dim])
 
-        this.countdownText = new BoldText(this.scene, 0, this.isDesktop ? 330 : 310, 'Start in : 03s', 28)
+        this.countdownText = new BoldText(this.scene, 0, this.isDesktop ? 352 : 310, 'Start in : 03s', 28)
         this.groupBeforeStart.add(this.countdownText)
 
         this.groupBeforeStart.setActive(false)
@@ -184,7 +184,7 @@ export class MinigameCPPuzzleGameplayUIView extends GameObjects.GameObject {
         this.minigameCPPuzzlePreviewImage = new MinigameCPPuzzleImageGroupView(
             this.scene,
             centerX,
-            this.isDesktop ? centerY : centerY + 7.5
+            this.isDesktop ? centerY + 20 : centerY + 7.5
         )
         this.minigameCPPuzzlePreviewImage.doInit(this.scenePod)
         this.minigameCPPuzzlePreviewImage.setCallBackOnFinish(() => {

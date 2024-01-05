@@ -53,8 +53,7 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
                     APILoadingManager.instance.hideSceneLoading()
 
                     this.audioManager = PodProvider.instance.audioManager
-
-                    this.audioManager.playBGMSound('minigame_bgm', true)
+                    this.playBGM(this.minigameId)
                 })
         })
 
@@ -111,14 +110,14 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
     }
 
     private setUpImage() {
-        this.subBg = this.scene.add.image(0, 20, `minigame-${this.minigameId}-sub-bg`)
+        this.subBg = this.scene.add.image(0, this.isDesktop ? 40 : 70, `minigame-${this.minigameId}-sub-bg`)
         this.add(this.subBg)
-        this.logo = this.scene.add.image(0, -35, `minigame-${this.minigameId}-logo`)
+        this.logo = this.scene.add.image(0, this.isDesktop ? -35 : -5, `minigame-${this.minigameId}-logo`)
         this.add(this.logo)
     }
 
     private setUpButton() {
-        this.startButton = new Button(this.scene, 0, 180, 1, 64, '', 1000, 'PLAY')
+        this.startButton = new Button(this.scene, 0, this.isDesktop ? 160 : 190, 1, 64, '', 1000, 'PLAY')
 
         this.startButton.setNineSlice({
             imageAtlasKey: '',
@@ -143,7 +142,7 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
         this.startButton.add(icon)
         this.add(this.startButton)
 
-        this.freeButton = new Button(this.scene, 0, 180, 1, 299, '', 1000, 'FREE PLAY')
+        this.freeButton = new Button(this.scene, 0, this.isDesktop ? 180 : 190, 1, 299, '', 1000, 'FREE PLAY')
         this.freeButton.setNineSlice({
             imageAtlasKey: '',
             imageKey: 'minigame-start-button',
@@ -173,24 +172,26 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
             this.onClickStart()
         })
 
-        this.ticketImage = this.scene.add.image(0, 280, 'ticket').setScale(1.2)
-        this.ticketAnimateImage = this.scene.add.image(0, 280, 'ticket-use-effect').setScale(1.2)
+        this.ticketImage = this.scene.add
+            .image(0, this.isDesktop ? 260 : 290, 'ticket')
+            .setScale(this.isDesktop ? 1.2 : 1.5)
+        this.ticketAnimateImage = this.scene.add.image(0, this.isDesktop ? 260 : 300, 'ticket-use-effect').setScale(1.2)
         this.add([this.ticketImage, this.ticketAnimateImage])
         this.ticketAnimateImage.setVisible(false)
         this.ticketText = TextAdapter.instance
             .getVectorText(this.scene, 'DB_HeaventRounded')
             .setText('TICKET : 3')
             .setOrigin(0.5)
-            .setPosition(0, 320)
+            .setPosition(0, this.isDesktop ? 300 : 340)
             .setStyle({
                 fill: '#FFFFFF',
-                fontSize: 24,
+                fontSize: this.isDesktop ? 24 : 28,
             })
             .setStroke('#EE843C', 5)
         this.add(this.ticketText)
 
         this.countdownTicket = new MinigameTicketTimerView(this.scene)
-        this.countdownTicket.doInit(0, 280)
+        this.countdownTicket.doInit(0, this.isDesktop ? 290 : 310)
         this.countdownTicket.setVisible(false)
 
         this.countdownTicket.setCallBack(() => {
@@ -208,10 +209,24 @@ export class MinigameStartMenuUIView extends GameObjects.Container {
                 this.scenePod.isDoOnOutOfTicket = startResult.ticketLeft == 0
                 APILoadingManager.instance.hideMiniLoading()
                 this.hideUI()
-                //RunInBackground.instance.startRunInBackground()
+                RunInBackground.instance.startRunInBackground()
                 this.scenePod.setSceneState(MinigameState.BeforeStart)
             })
         })
+    }
+
+    private playBGM(minigameID: number) {
+        switch(minigameID) {
+            case 1:
+                this.audioManager.playBGMSound('minigamer_1_cp_puzzle_bgm', true)
+                break;
+            case 2:
+                this.audioManager.playBGMSound('minigamer_2_cp_order_bgm', true)
+                break;
+            default:
+                this.audioManager.playBGMSound('minigamer_1_cp_puzzle_bgm', true)
+                break;
+        }
     }
 
     public setTextTicket(ticket: number, isAnimate: boolean, callback: Function = () => {}) {

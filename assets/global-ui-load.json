@@ -68,8 +68,8 @@
             },
             {
                 "type": "image",
-                "key": "user-profile-button-icon",
-                "url": "assets/global_ui/user-profile-button-icon.png"
+                "key": "user-profile-default-button-icon",
+                "url": "assets/global_ui/user-profile-default-button-icon.png"
             },
             {
                 "type": "image",
@@ -299,8 +299,43 @@
             },
             {
                 "type": "image",
+                "key": "minigame-background-countdown-ticket",
+                "url": "assets/global_ui/minigame-background-countdown-ticket.png"
+            },
+            {
+                "type": "image",
+                "key": "character-cookie",
+                "url": "assets/global_ui/character-cookie.png"
+            },
+            {
+                "type": "image",
+                "key": "cookie-consent-bg",
+                "url": "assets/global_ui/cookie-consent-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "cookie-consent-button",
+                "url": "assets/global_ui/cookie-consent-button.png"
+            },
+            {
+                "type": "image",
                 "key": "minigame-3-select-bg",
                 "url": "assets/global_ui/minigame-3-select-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "user-profile-show-bg",
+                "url": "assets/global_ui/user-profile-show-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "user-profile-bg",
+                "url": "assets/global_ui/user-profile-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "logout-icon",
+                "url": "assets/global_ui/logout-icon.png"
             }
         ]
     }

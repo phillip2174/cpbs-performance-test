@@ -592,6 +592,9 @@ export class ScrollViewNormalAndPagination extends GameObjects.GameObject {
     }
 
     public clearAll(isDestroy: boolean = true) {
+        this.autoScrollX = false
+        this.autoScrollY = false
+
         this.totalCell = 0
         this.contentContainer.removeAll(isDestroy)
     }

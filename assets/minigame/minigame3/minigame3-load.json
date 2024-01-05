@@ -83,39 +83,53 @@
             },
             {
                 "type": "image",
-                "key": "minigame-3-answer-hidecell",
-                "url": "assets/minigame/minigame3/minigame-3-answer-hidecell.png"
+                "key": "minigame-3-answer-hidecell-desktop",
+                "url": "assets/minigame/minigame3/minigame-3-answer-hidecell-desktop.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-answer-hidecell-mobile",
+                "url": "assets/minigame/minigame3/minigame-3-answer-hidecell-mobile.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-guess-background-tint",
+                "url": "assets/minigame/minigame3/minigame-3-guess-background-tint.png"
             },
             {
                 "type": "image",
                 "key": "minigame-3-guess-border-tint",
                 "url": "assets/minigame/minigame3/minigame-3-guess-border-tint.png"
             },
-
             {
                 "type": "image",
-                "key": "minigame-3-show-answer-background",
-                "url": "assets/minigame/minigame3/minigame-3-show-answer-background.png"
+                "key": "minigame-3-reveal-answer-background",
+                "url": "assets/minigame/minigame3/minigame-3-reveal-answer-background.png"
             },
             {
                 "type": "image",
-                "key": "minigame-3-show-answer-header-lose",
-                "url": "assets/minigame/minigame3/minigame-3-show-answer-header-lose.png"
+                "key": "minigame-3-reveal-answer-header-lose",
+                "url": "assets/minigame/minigame3/minigame-3-reveal-answer-header-lose.png"
             },
             {
                 "type": "image",
-                "key": "minigame-3-show-answer-header-win",
-                "url": "assets/minigame/minigame3/minigame-3-show-answer-header-win.png"
+                "key": "minigame-3-reveal-answer-header-win-desktop",
+                "url": "assets/minigame/minigame3/minigame-3-reveal-answer-header-win-desktop.png"
             },
             {
                 "type": "image",
-                "key": "minigame-3-show-answer-product-border-lose",
-                "url": "assets/minigame/minigame3/minigame-3-show-answer-product-border-lose.png"
+                "key": "minigame-3-reveal-answer-header-win-mobile",
+                "url": "assets/minigame/minigame3/minigame-3-reveal-answer-header-win-mobile.png"
             },
             {
                 "type": "image",
-                "key": "minigame-3-show-answer-product-border-win",
-                "url": "assets/minigame/minigame3/minigame-3-show-answer-product-border-win.png"
+                "key": "minigame-3-reveal-answer-product-border-lose",
+                "url": "assets/minigame/minigame3/minigame-3-reveal-answer-product-border-lose.png"
+            },
+            {
+                "type": "image",
+                "key": "minigame-3-reveal-answer-product-border-win",
+                "url": "assets/minigame/minigame3/minigame-3-reveal-answer-product-border-win.png"
             }
         ]
     }
